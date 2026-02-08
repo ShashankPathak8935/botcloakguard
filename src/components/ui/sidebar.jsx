@@ -51,18 +51,18 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Campaign",
       icon: <FontAwesomeIcon icon={faBullhorn} size="lg" />,
-      route: "/Dashboard/allCampaign",
+      // route: "/Dashboard/allCampaign",
     },
 
     {
       label: "Blacklisted IP",
       icon: <FontAwesomeIcon icon={faShieldHalved} size="lg" />,
-      route: "/Dashboard/IpListings",
+      // route: "/Dashboard/IpListings",
     },
     {
       label: "Analytics",
       icon: <FontAwesomeIcon icon={faChartColumn} size="lg" />,
-      route: "/Dashboard/analytics",
+      // route: "/Dashboard/analytics",
     },
     {
       label: "Report",
@@ -71,19 +71,19 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Pricing",
       icon: <Wallet size={24} />,
-      route: "/Dashboard/pricing",
+      // route: "/Dashboard/pricing",
     },
     {
       label: "Billing",
       icon: <Layers size={24} />,
-      route: "/Dashboard/billing",
+      // route: "/Dashboard/billing",
     },
   ];
 
   const databaseSubItems = [
     {
       label: "Click Logs",
-      route: "/Dashboard/reports",
+      // route: "/Dashboard/reports",
     },
     // {
     //   label: "Stats Overview",

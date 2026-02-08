@@ -5,9 +5,9 @@ import { Outlet } from "react-router-dom";
 import { Steps, Hints } from "intro.js-react";
 import "intro.js/introjs.css";
 import "intro.js/themes/introjs-modern.css";
-import {  Briefcase, Home } from "lucide-react";
+import { Briefcase, Home } from "lucide-react";
 import { PhoneCall } from "lucide-react";
-import {motion} from 'framer-motion'
+import { motion } from "framer-motion";
 import { Box } from "@mui/joy";
 
 const Dashboard = () => {
@@ -18,13 +18,9 @@ const Dashboard = () => {
 
   const handleMenuClick = () => {
     if (window.innerWidth < 768) {
-     
-
       setMobileVisible(!mobileVisible);
       setIsCollapsed(!isCollapsed);
     } else {
-  
-
       setIsCollapsed(!isCollapsed);
     }
   };
@@ -166,50 +162,45 @@ const Dashboard = () => {
     },
   ];
 
- useEffect(() => {
+  useEffect(() => {
+    const hasSeenIntro = localStorage.getItem("introExit") === "true";
 
-  
-  const hasSeenIntro = localStorage.getItem("introExit") === "true";
- 
-   const stepsReady = () => {
-    return steps.every((step) => {
-      const el = document.querySelector(step.element);
-      if (!el) return false;
-      const rect = el.getBoundingClientRect();
-      return rect.width > 0 && rect.height > 0;
-    });
-  };
-
-  if (hasSeenIntro){
-    setStepsDone(false);
-    return
-  }else{
-
-    const startIntroWhenReady = () => {
-      if (stepsReady()) {
-        setStepsDone(true); 
-        observer.disconnect();
-      } else {
-        setTimeout(startIntroWhenReady, 200);
-      }
+    const stepsReady = () => {
+      return steps.every((step) => {
+        const el = document.querySelector(step.element);
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      });
     };
-  
-    const observer = new MutationObserver(() => {
-      if (stepsReady()) {
-        setStepsDone(true);
-        observer.disconnect();
-      }
-    });
-  
-    observer.observe(document.body, { childList: true, subtree: true });
-  
-    setTimeout(startIntroWhenReady, 300);
-  
-    return () => observer.disconnect();
-  }
- 
 
-}, []);
+    if (hasSeenIntro) {
+      setStepsDone(false);
+      return;
+    } else {
+      const startIntroWhenReady = () => {
+        if (stepsReady()) {
+          setStepsDone(true);
+          observer.disconnect();
+        } else {
+          setTimeout(startIntroWhenReady, 200);
+        }
+      };
+
+      const observer = new MutationObserver(() => {
+        if (stepsReady()) {
+          setStepsDone(true);
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      setTimeout(startIntroWhenReady, 300);
+
+      return () => observer.disconnect();
+    }
+  }, []);
 
   return (
     <>
@@ -246,11 +237,11 @@ const Dashboard = () => {
               overflow: "auto",
             }}
           >
-            {/* <Outlet context={{ onIntroReady: () => setStepEnable(true) }} /> */}
+            <Outlet context={{ onIntroReady: () => setStepEnable(true) }} />
           </div>
         </div>
       </div>
-       {/* <Box
+      {/* <Box
         sx={{
           position: "fixed",
           right: "5vw",
@@ -272,7 +263,6 @@ const Dashboard = () => {
           <PhoneCall color= "white" />
         </motion.div>
       </Box> */}
-
     </>
   );
 };

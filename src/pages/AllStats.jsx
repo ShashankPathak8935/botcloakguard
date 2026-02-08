@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
+  PieChart,
+  Pie,
+  Cell,
   BarChart,
+  LineChart,
+  Line,
   Bar,
   XAxis,
   YAxis,
@@ -9,8 +14,11 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
+import { Smartphone, Monitor, Tablet } from "lucide-react";
 
 import { useNavigate, Link } from "react-router-dom";
+import RevenueinSights from "./RevenueInsights.jsx";
+import { StatCard } from "./StatCard.jsx";
 
 // import {ipClicks} from "../api/Apis.js";
 import { apiFunction } from "../api/ApiFunction.js";
@@ -18,7 +26,6 @@ import {
   ipClicks,
   campdata,
   getAllCampaign,
-
   createCampaignApi,
 } from "../api/Apis.js";
 import {
@@ -26,7 +33,6 @@ import {
   showInfoToast,
   showSuccessToast,
 } from "../components/toast/toast.jsx";
-
 
 const Dashboard = () => {
   const [page, setPage] = useState(1);
@@ -55,7 +61,6 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
-  
 
   const ITEMS_PER_PAGE = 5;
 
@@ -66,24 +71,6 @@ const Dashboard = () => {
   });
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-
-  const handleRefresh = async () => {
-    if (isRefreshing) return;
-
-    try {
-      setIsRefreshing(true);
-
-      await Promise.all([fetchIpClicks(), fetchStats(), fetchCampaigns()]);
-    } catch (err) {
-      // console.error(err);
-    } finally {
-      setTimeout(() => setIsRefreshing(false), 600); // smooth UX
-    }
-  };
-
-  // const goToCampaign = (id) => alert("Open campaign: " + id);
-  // const prevPage = () => setPage((p) => Math.max(1, p - 1));
-  // const nextPage = () => setPage((p) => p + 1);
 
   const fetchIpClicks = async () => {
     try {
@@ -116,7 +103,7 @@ const Dashboard = () => {
           acc.moneyClicks += Number(item.total_m_clicks || 0);
           return acc;
         },
-        { totalClicks: 0, safeClicks: 0, moneyClicks: 0 }
+        { totalClicks: 0, safeClicks: 0, moneyClicks: 0 },
       );
 
       setClickSummary(totals);
@@ -137,7 +124,7 @@ const Dashboard = () => {
         "get",
         `${getAllCampaign}?page=${page}&limit=${ITEMS_PER_PAGE}`,
         null,
-        null
+        null,
       );
       // console.log(response);
 
@@ -179,983 +166,330 @@ const Dashboard = () => {
     }
   };
 
-  const handleAddTask = () => {
-    if (!newTask.trim()) return;
-
-    const task = {
-      id: Date.now(),
-      text: newTask,
-      completed: false,
-    };
-
-    setTasks((prev) => [task, ...prev]);
-    setNewTask("");
-  };
-
-  // ✅ Toggle complete/incomplete
-  const handleToggleComplete = (id) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
-  // ✅ Delete task
-  const handleDeleteTask = (id) => {
-    setTasks((prev) => prev.filter((task) => task.id !== id));
-  };
-
-  // ✅ Filtered tasks by search
-  const filteredTasks = tasks.filter((task) =>
-    task.text.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleActionClick = (e, campaignId) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-
-    setDropdownPos({
-      top: rect.bottom + 2, // below button
-      left: rect.right - 150, // align right (w-48 = 192px)
-    });
-    setOpenDropdownId(openDropdownId === campaignId ? null : campaignId);
-  };
-
-  const handleActionSelect = async (action, campaignId, row) => {
-    setOpenDropdownId(null); // मेनू बंद करें
-    switch (action) {
-      case "edit":
-        // alert(`Editing campaign ID: ${campaignId}`);
-        navigate("/Dashboard/create-campaign", {
-          state: {
-            mode: "edit",
-            id: row.uid,
-            data: row, // campaign data from db
-          },
-        });
-        // TODO: Navigate to Edit screen or open a modal
-        break;
-      case "duplicate": {
-        try {
-          if (!row) return;
-          // console.log(row);
-
-          // 🔁 deep clone campaign
-          const payload = JSON.parse(JSON.stringify(row));
-       
-
-          // ❌ backend generated fields hatao
-          delete payload.uid;
-          delete payload._id;
-          delete payload.createdAt;
-          delete payload.updatedAt;
-          delete payload.date_time;
-
-          // 📝 campaign name modify
-          const data = {
-            ...payload,
-
-            campaignName:
-              (payload.campaign_info?.campaignName || "Campaign") + " (Copy)",
-            trafficSource: payload.campaign_info?.trafficSource,
-          };
-
-          // optional default status
-
-
-          // 🚀 CREATE API CALL (same API as create)
-          const res = await apiFunction("post", createCampaignApi, null, data);
-
-          if (res?.data?.status || res?.data?.success) {
-            const newCampaign = res.data.data;
-
-            // ✅ UI update (top me add)
-            setCampaigns((prev) => [newCampaign, ...prev]);
-            
-
-            showSuccessToast("Campaign duplicated successfully");
-            await fetchCampaigns();
-            await fetchStats();
-           
-
-          }
-        } catch (err) {
-          // console.error("Duplicate campaign error:", err);
-          showErrorToast(err?.response?.data?.message || "Failed to duplicate campaign");
-        }
-
-        break;
-      }
-
-      case "delete":
-        if (window.confirm(`Are you sure you want to delete this campaign?`)) {
-          const res = await apiFunction(
-            "delete",
-            createCampaignApi,
-            campaignId,
-            null
-          );
-
-          if (res) {
-            setCampaigns((prev) =>
-              prev.filter((item) => item.uid !== campaignId)
-            );
-            await fetchStats();
-            
-            
-          }
-        }
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleAddNewCampaign = () => {
-    showInfoToast("Redirecting to Creating New Campaign");
-    navigate("/Dashboard/create-campaign");
-  };
-
-  const handleStatusChange = async (uid, newStatus) => {
-    try {
-      // 🔎 current campaign find karo
-      const currentItem = campaigns.find((item) => item.uid === uid);
-      const oldStatus = currentItem?.status;
-
-      // agar same status pe click hua to kuch mat karo
-      if (!currentItem || oldStatus === newStatus) return;
-
-      // ⏳ loading UI
-      setCampaigns((prev) =>
-        prev.map((item) =>
-          item.uid === uid ? { ...item, statusLoading: true } : item
-        )
-      );
-
-      const data = { status: newStatus };
-
-      // 🔗 PATCH API
-      const res = await apiFunction("patch", createCampaignApi, uid, data);
-
-      if (!res?.data?.success) {
-        showErrorToast("Failed updating status");
-        return;
-      }
-
-      // ✅ update campaigns list
-      setCampaigns((prev) =>
-        prev.map((item) =>
-          item.uid === uid
-            ? { ...item, status: newStatus, statusLoading: false }
-            : item
-        )
-      );
-
-      // 🔥 UPDATE STATS WITHOUT RELOAD
-      setStats((prev) => {
-        const updated = { ...prev };
-
-        // old status decrement
-        if (oldStatus === "Active") updated.active_campaigns--;
-        if (oldStatus === "Allow") updated.allowed_campaigns--;
-        if (oldStatus === "Block") updated.blocked_campaigns--;
-
-        // new status increment
-        if (newStatus === "Active") updated.active_campaigns++;
-        if (newStatus === "Allow") updated.allowed_campaigns++;
-        if (newStatus === "Block") updated.blocked_campaigns++;
-
-        return updated;
-      });
-
-      showSuccessToast(`Status updated ✔ : ${newStatus}`);
-    } catch (err) {
-      // console.error("Status update error:", err);
-      showErrorToast("Something went wrong!");
-
-      // ❌ loading hatao
-      setCampaigns((prev) =>
-        prev.map((item) =>
-          item.uid === uid ? { ...item, statusLoading: false } : item
-        )
-      );
-    }
-  };
-
-  const handlePageChange = (page) => {
-    if (page < 1 || page > totalPages) return;
-    fetchCampaigns(page);
-  };
-  
-
-  const startItem = (currentPage - 1) * ITEMS_PER_PAGE + 1;
-  const endItem = Math.min(currentPage * ITEMS_PER_PAGE, totalRecords);
-
   useEffect(() => {
     const token = localStorage.getItem("token");
-  
 
     if (!token) {
       signOut();
       navigate("/signin");
     }
-  
 
     fetchIpClicks();
     fetchStats();
     fetchCampaigns();
   }, []);
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpenDropdownId(null);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  // dummy data for click distribution
+  const clickData = [
+    {
+      name: "Mobile Clicks",
+      value: 12,
+      color: "#3b82f6",
+      icon: <Smartphone size={14} />,
+    },
+    {
+      name: "Desktop Clicks",
+      value: 8,
+      color: "#22c55e",
+      icon: <Monitor size={14} />,
+    },
+    {
+      name: "Tablet Clicks",
+      value: 5,
+      color: "#facc15",
+      icon: <Tablet size={14} />,
+    },
+  ];
 
-  // ✅ Load Todos from LocalStorage on page load
-  useEffect(() => {
-    const savedTasks = localStorage.getItem("todo_tasks");
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
-  }, []);
-
-  // ✅ Auto Save Todos to LocalStorage
-  useEffect(() => {
-    localStorage.setItem("todo_tasks", JSON.stringify(tasks));
-  }, [tasks]);
-
-  // Small reusable StatCard
-  const StatCard = ({ icon, value, title, subtitle }) => (
-    <div className="bg-gray-850/40 border border-gray-700 rounded-lg p-4 flex flex-col justify-between">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-md bg-slate-800 text-lg">{icon}</div>
-          <div>
-            <div className="text-2xl font-semibold text-white">{value}</div>
-            <div className="text-xs text-slate-400">{title}</div>
-          </div>
-        </div>
-        <div className="text-xs text-slate-400">{subtitle}</div>
-      </div>
-    </div>
-  );
-
-  const renderActionDropdown = (campaignId, row) => (
-    // ref को सीधे dropdownRef के बजाय किसी wrapper div को दें ताकि click outside काम करे
-    <div
-      className="fixed right-0 top-full mt-2 w-48 rounded-md shadow-lg bg-gray-700 ring-1 ring-black ring-opacity-5 z-20"
-      style={{
-        zIndex: 9999999, // over ALL elements
-        left: dropdownPos?.left,
-        top: dropdownPos?.top, // adjust dynamically if needed
-      }}
-    >
-      <div className="py-1">
-        <button
-          onClick={() => handleActionSelect("edit", campaignId, row)}
-          className="block w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white transition duration-100 cursor-pointer"
-        >
-          Edit Campaign
-        </button>
-        <button
-          onClick={() => handleActionSelect("duplicate", campaignId, row)}
-          className="block w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white transition duration-100 cursor-pointer"
-        >
-          Duplicate Campaign
-        </button>
-        <button
-          onClick={() => handleActionSelect("delete", campaignId, null)}
-          className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-600 hover:text-red-300 transition duration-100 cursor-pointer"
-        >
-          Delete Campaign
-        </button>
-      </div>
-    </div>
-  );
-
-  const TableColGroup = () => (
-    <colgroup>
-      <col className="w-12" />
-      <col className="w-30" />
-      <col className="w-30" />
-      <col className="w-25" />
-      <col className="w-32" />
-      <col className="w-20" />
-      <col className="w-16" />
-      <col className="w-20" />
-      <col className="w-48" />
-      <col className="w-20" />
-    </colgroup>
-  );
-
-  const renderTableContent = () => {
-    if (isLoading) {
-      return (
-        <tbody>
-          <tr>
-            <td colSpan="10" className="text-center py-10 text-blue-400">
-              Loading Campaigns...
-            </td>
-          </tr>
-        </tbody>
-      );
-    }
-
-    if (error || campaigns.length === 0) {
-      return (
-        <tbody>
-          <tr>
-            <td colSpan="10" className="text-center py-10 text-gray-500">
-              No campaigns found.
-            </td>
-          </tr>
-        </tbody>
-      );
-    }
+  const totalClicks = clickData.reduce((a, b) => a + b.value, 0);
+  
+  // percentage calculation for click distribution
+  const renderPercentage = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+  }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
     return (
-      <tbody className="bg-gray-900 divide-y divide-gray-800">
-        {campaigns.map((item, index) => {
-          const campaignId = item.campaign_info?.campaign_id || index;
-          const isDropdownOpen = openDropdownId === item?.uid;
-          return (
-            <>
-              <tr key={item.campaignId}>
-                <td className="px-3 py-3 text-sm  text-left text-gray-300">
-                  {index + 1}
-                </td>
-                <td className="px-3 py-3 text-sm text-left text-blue-400">
-                  {item.campaign_info?.campaignName}
-                </td>
-                <td className="px-3 py-3 text-sm text-left text-gray-300">
-                  {item.campaign_info?.trafficSource}
-                </td>
-                <td className="px-3 py-3 text-left">
-                  <button
-                    disabled={item.statusLoading}
-                    onClick={() => handleStatusChange(item.uid, "Active")}
-                    className={`p-1 rounded transition-all duration-300 transform hover:scale-110
-        ${
-          item.statusLoading
-            ? "opacity-30 cursor-not-allowed"
-            : "cursor-pointer"
-        }
-        ${
-          item.status === "Active"
-            ? "text-green-500 drop-shadow-[0_0_6px_rgba(16,185,129,.8)]"
-            : "text-gray-500 hover:text-gray-300"
-        }`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className="w-5 h-5"
-                      fill="currentColor"
-                    >
-                      <path d="M7 4v16l13-8L7 4z" />
-                    </svg>
-                  </button>
-
-                  {/* ⚡ Boost */}
-                  <button
-                    disabled={item.statusLoading}
-                    onClick={() => handleStatusChange(item.uid, "Allow")}
-                    className={`p-1 rounded transition-all duration-300 transform hover:scale-110
-        ${
-          item.statusLoading
-            ? "opacity-30 cursor-not-allowed"
-            : "cursor-pointer"
-        }
-        ${
-          item.status === "Allow"
-            ? "text-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,.8)]"
-            : "text-gray-500 hover:text-gray-300"
-        }`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className="w-5 h-5"
-                      fill="currentColor"
-                    >
-                      <path d="M13 2L3 14h7v8l10-12h-7z" />
-                    </svg>
-                  </button>
-
-                  {/* 🚫 Block */}
-                  <button
-                    disabled={item.statusLoading}
-                    onClick={() => handleStatusChange(item.uid, "Block")}
-                    className={`p-1 rounded transition-all duration-300 transform hover:scale-110
-        ${
-          item.statusLoading
-            ? "opacity-30 cursor-not-allowed"
-            : "cursor-pointer"
-        }
-        ${
-          item.status === "Block"
-            ? "text-red-500 drop-shadow-[0_0_6px_rgba(239,68,68,.8)]"
-            : "text-gray-500 hover:text-gray-300"
-        }`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="5" y1="19" x2="19" y2="5" />
-                    </svg>
-                  </button>
-                </td>
-                <td className="px-3 py-3 text-left ">
-                  {" "}
-                  {item.integration ? (
-                    <div className="relative group flex justify-center">
-                      <svg
-                        className="h-5 w-5 text-green-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-
-                      {/* ⭐ Tooltip container */}
-                      <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block bg-gray-800 text-gray-200 text-xs px-3 py-1 rounded shadow-lg whitespace-nowrap z-50 ">
-                        {item.integrationUrl || "No URL Found"}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex justify-center items-center w-full">
-                      <svg
-                        className="h-5 w-5 text-red-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </div>
-                  )}
-                </td>
-                <td className="px-3 py-3 text-gray-300 text-center">
-                  {item?.campclicks?.total_t_clicks || 0}
-                </td>
-                <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-300 text-right w-16">
-                  <div className="flex items-center gap-1 relative group">
-                    {/* i Icon */}
-                    <svg
-                      className="h-4 w-4 text-blue-400 cursor-pointer"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z"
-                      />
-                    </svg>
-
-                    {/* Value */}
-                    <span>{item?.campclicks?.total_s_clicks || 0}</span>
-
-                    {/* Tooltip */}
-                    <div
-                      className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 
-      hidden group-hover:block bg-gray-800 text-gray-200 text-xs 
-      px-3 py-1 rounded shadow-lg whitespace-nowrap z-50"
-                    >
-                      {item?.safe_page || "No URL Found"}
-                    </div>
-                  </div>
-                </td>
-
-                <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-300 text-right w-20">
-                  <div className="flex items-center gap-1 relative group">
-                    {/* i Icon */}
-                    <svg
-                      className="h-4 w-4 text-blue-400 cursor-pointer"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z"
-                      />
-                    </svg>
-
-                    {/* Value */}
-                    <span>{item?.campclicks?.total_m_clicks || 0}</span>
-
-                    {/* Tooltip */}
-                    <div
-                      className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 
-      hidden group-hover:block bg-gray-800 text-gray-200 text-xs 
-      px-3 py-1 rounded shadow-lg whitespace-nowrap z-50"
-                    >
-                      {item?.money_page?.[0]?.url || "No URL Found"}
-                    </div>
-                  </div>
-                </td>
-
-                <td className="px-3 py-3 text-gray-300 text-left">
-                  {new Date(item.date_time).toLocaleString()}
-                </td>
-                <td
-                  ref={isDropdownOpen ? dropdownRef : null}
-                  className="px-3 py-3"
-                >
-                  <button
-                    onClick={(e) => handleActionClick(e, item?.uid)}
-                    className={`text-2xl leading-none font-bold p-1 rounded-full cursor-pointer ${
-                      isDropdownOpen
-                        ? "bg-gray-600 text-white"
-                        : "hover:bg-gray-700"
-                    }`}
-                  >
-                    ⋯ {/* Vertical three dots */}
-                  </button>
-                  {isDropdownOpen && renderActionDropdown(item?.uid, item)}
-                </td>
-              </tr>
-            </>
-          );
-        })}
-      </tbody>
+      <text
+        x={x}
+        y={y}
+        fill="#111827"
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontSize={12}
+        fontWeight={600}
+      >
+        {`${Math.round(percent * 100)}%`}
+      </text>
     );
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0d14] p-6 text-white">
+    <div className="min-h-screen bg-[#F1F3F4] p-6 text-gray-900">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-semibold">Dashboard</h2>
-          <p className="text-slate-400 text-sm">Let's do something new.</p>
+          <p className="text-slate-400 text-sm">
+            Track your campaigns performance.
+          </p>
         </div>
-        <div className="flex space-x-3">
-          <button
-            onClick={handleAddNewCampaign}
-            className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md font-medium text-sm shadow-lg transition duration-150 cursor-pointer"
-          >
-            <svg
-              className="h-5 w-5 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Add New Campaign
-          </button>
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm shadow-lg transition-all duration-200 cursor-pointer
-    ${
-      isRefreshing
-        ? "bg-gray-600 cursor-not-allowed opacity-80"
-        : "bg-gray-700 hover:bg-gray-600 cursor-pointer"
-    }
-  `}
-          >
-            <svg
-              className={`h-5 w-5 ${isRefreshing ? "animate-spin" : ""}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
+      </div>
+      <div className="bg-[#F1F3F4] p-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+          <StatCard
+            title="Total Campaign"
+            value="7"
+            iconBg="bg-green-100"
+            iconColor="text-green-600"
+            footer="+12% from last month"
+          />
 
-            <span className="whitespace-nowrap">
-              {isRefreshing ? "Refreshing data..." : "Refresh"}
-            </span>
-          </button>
+          <StatCard
+            title="Active Campaign"
+            value="6"
+            iconBg="bg-blue-100"
+            iconColor="text-blue-600"
+            footer="Running smoothly"
+          />
+
+          <StatCard
+            title="Paused Campaign"
+            value="1"
+            iconBg="bg-red-100"
+            iconColor="text-red-600"
+            footer="Needs attention"
+          />
+
+          <StatCard
+            title="Plan"
+            value="Pro"
+            amount="99 USDT"
+            footer="Valid until 12 Feb 2026"
+            highlight
+          />
         </div>
       </div>
 
-      {/* Top Stats */}
-      <div className="mb-6 flex gap-6 flex-wrap">
-        <StatCard icon="📊" value={stats.total_campaigns} title="Campaigns" />
-        <StatCard icon="▶️" value={stats.active_campaigns} title="Active" />
-        <StatCard icon="⚡" value={stats.allowed_campaigns} title="Allow All" />
-        <StatCard icon="🚫" value={stats.blocked_campaigns} title="Block All" />
-      </div>
+      {/* MAIN ROW */}
+      <div className="w-full flex gap-4 items-start">
+        {/* LEFT COLUMN – 70% */}
+        <div className="w-[70%] flex flex-col gap-4">
+          {/* GRAPH CARD */}
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            {/* TOP ROW */}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-gray-900 text-lg font-semibold">
+                Clicks Overview
+              </h3>
 
-      <div className="bg-gray-850/40 border border-gray-700 rounded-lg p-6">
-        <h3 className="text-white text-lg font-semibold mb-2">
-          Clicks Overview
-        </h3>
-        <p className="text-sm text-slate-400 mb-4">Cumulative Click Log</p>
-
-        <div style={{ width: "100%", height: 260 }}>
-          {loading ? (
-            <p style={{ textAlign: "center", marginTop: "20px" }}>Loading...</p>
-          ) : chartData?.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <div className="text-4xl mb-2">📉</div>
-              <p className="text-slate-400 text-sm font-medium">
-                No IP Click Data Available
-              </p>
-              <p className="text-slate-500 text-xs mt-1">
-                Data will appear here once clicks are recorded.
-              </p>
-            </div>
-          ) : (
-            <ResponsiveContainer>
-              <BarChart
-                data={chartData}
-                margin={{ top: 10, right: 20, left: -8, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="safeGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.9} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.2} />
-                  </linearGradient>
-
-                  <linearGradient
-                    id="moneyGradient"
-                    x1="0"
-                    y1="0"
-                    x2="0"
-                    y2="1"
-                  >
-                    <stop offset="5%" stopColor="#22c55e" stopOpacity={0.9} />
-                    <stop offset="95%" stopColor="#22c55e" stopOpacity={0.2} />
-                  </linearGradient>
-                </defs>
-
-                <CartesianGrid
-                  stroke="#1e293b"
-                  vertical={false}
-                  strokeDasharray="3 3"
-                />
-
-                <XAxis
-                  dataKey="date"
-                  tick={{ fill: "#9ca3af", fontSize: 12 }}
-                  tickLine={false}
-                  axisLine={false}
-                />
-
-                <YAxis
-                  tick={{ fill: "#9ca3af", fontSize: 12 }}
-                  tickLine={false}
-                  axisLine={false}
-                />
-
-                <Tooltip
-                  contentStyle={{
-                    background: "#0f172a",
-                    border: "1px solid #1e293b",
-                    borderRadius: "6px",
-                    color: "#fff",
-                  }}
-                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
-                />
-
-                <Legend
-                  wrapperStyle={{
-                    color: "#9ca3af",
-                    fontSize: 12,
-                  }}
-                  iconType="circle"
-                  verticalAlign="top"
-                  align="right"
-                />
-
-                <Bar
-                  dataKey="Safe"
-                  stackId="a"
-                  fill="url(#safeGradient)"
-                  barSize={16}
-                  radius={[4, 4, 0, 0]}
-                />
-
-                <Bar
-                  dataKey="Money"
-                  stackId="a"
-                  fill="url(#moneyGradient)"
-                  barSize={16}
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-4 border border-gray-700 rounded-lg overflow-hidden">
-        <div className="flex flex-col border border-gray-700 rounded-lg bg-gray-900 overflow-hidden">
-          {/* ===== FIXED HEADER ===== */}
-          <div className="flex-none overflow-x-auto bg-gray-800">
-            <table className="min-w-full table-fixed">
-              <TableColGroup />
-
-              <thead className="bg-gray-800">
-                <tr>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Sn
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Campaign Name
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Source
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Status
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Integration
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Clicks
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Safe
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Money
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Created on
-                  </th>
-                  <th className="px-3 py-4 text-left text-xs font-medium text-gray-400 uppercase">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-
-          {/* ===== SCROLLABLE BODY ===== */}
-          <div className="flex-1 overflow-y-auto overflow-x-auto custom-scrollbar max-h-[300px]">
-            <table className="min-w-full table-fixed divide-y divide-gray-800 border-t border-gray-700">
-              <TableColGroup />
-              {renderTableContent()}
-            </table>
-          </div>
-
-          {/* ===== FIXED FOOTER ===== */}
-          <div className="flex-none bg-gray-800 border-t border-gray-700 px-6 py-3 flex items-center justify-between">
-            {/* LEFT */}
-            <span className="text-sm text-gray-400">
-              Showing{" "}
-              <span className="text-gray-200 font-medium">
-                {startItem}–{endItem}
-              </span>{" "}
-              of{" "}
-              <span className="text-gray-200 font-medium">{totalRecords}</span>{" "}
-              campaigns
-            </span>
-
-            {/* RIGHT – Numbered Pagination */}
-            <div className="flex items-center gap-1">
-              {/* Prev */}
-              <button
-                disabled={currentPage === 1}
-                onClick={() => handlePageChange(currentPage - 1)}
-                className={`px-3 py-1 text-sm rounded border ${
-                  currentPage === 1
-                    ? "text-gray-500 border-gray-600 cursor-not-allowed"
-                    : "text-white border-gray-500 hover:bg-gray-700 cursor-pointer"
-                }`}
-              >
-                Prev
-              </button>
-
-              {/* Page Numbers */}
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`px-3 py-1 text-sm rounded border cursor-pointer ${
-                      page === currentPage
-                        ? "bg-blue-600 text-white border-blue-600"
-                        : "text-gray-300 border-gray-600 hover:bg-gray-700"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                )
-              )}
-
-              {/* Next */}
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => handlePageChange(currentPage + 1)}
-                className={`px-3 py-1 text-sm rounded border ${
-                  currentPage === totalPages
-                    ? "text-gray-500 border-gray-600 cursor-not-allowed"
-                    : "text-white border-gray-500 hover:bg-gray-700 cursor-pointer"
-                }`}
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        {/* To-do */}
-        <div className="bg-gray-850/40 border border-gray-700 rounded-lg p-6 min-h-[220px]">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-white font-semibold">To do</h4>
-            <div className="text-slate-400 text-sm">Reminders List for me</div>
-          </div>
-
-          <div className="bg-slate-900 border border-gray-800 rounded-md p-4 min-h-[120px]">
-            {/* ✅ Search */}
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-transparent border border-gray-700 px-3 py-2 rounded-md text-slate-300 mb-3"
-              placeholder="Search tasks"
-            />
-
-            {/* ✅ Add Task */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              <input
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-                className="flex-1 w-full bg-transparent border border-gray-700 px-3 py-2 rounded-md text-slate-300"
-                placeholder="Write new task..."
-              />
-              <button
-                onClick={handleAddTask}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md cursor-pointer"
-              >
-                Add
-              </button>
+              <div className="flex gap-2">
+                <span className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                  Money
+                </span>
+                <span className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm">
+                  <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                  Safe
+                </span>
+              </div>
             </div>
 
-            {/* ✅ Task List */}
-            <div className="space-y-2 max-h-[180px] overflow-y-auto">
-              {filteredTasks.length === 0 ? (
-                <p className="text-slate-400 text-sm text-center">
-                  No tasks found
+            {/* STATS */}
+            <div className="flex gap-10 mb-6">
+              <div>
+                <p className="text-sm text-gray-500">Money Clicks</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {clickSummary.moneyClicks}
                 </p>
-              ) : (
-                filteredTasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-center justify-between bg-slate-800 px-3 py-2 rounded-md"
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Safe Clicks</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {clickSummary.safeClicks}
+                </p>
+              </div>
+            </div>
+
+            {/* CHART */}
+            <div style={{ width: "100%", height: 260 }}>
+              <ResponsiveContainer>
+                <LineChart data={chartData}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#E5E7EB"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fill: "#6B7280", fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    domain={[0, 2]}
+                    tick={{ fill: "#6B7280", fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "#FFFFFF",
+                      border: "1px solid #E5E7EB",
+                      borderRadius: "8px",
+                      fontSize: "12px",
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="Money"
+                    stroke="#22c55e"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="Safe"
+                    stroke="#ef4444"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-xl p-6 h-full">
+            <h3 className="text-gray-900 font-semibold mb-0">
+              Click Distribution
+            </h3>
+
+            <div className="flex items-center gap-6">
+              {/* LEFT : PIE CHART */}
+              <div className="relative w-[220px] h-[200px]">
+                <PieChart width={220} height={220}>
+                  <Pie
+                    data={clickData}
+                    dataKey="value"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={90}
+                    label={renderPercentage}
+                    labelLine={false}
                   >
-                    <div
-                      onClick={() => handleToggleComplete(task.id)}
-                      className={`cursor-pointer text-sm ${
-                        task.completed
-                          ? "line-through text-slate-500"
-                          : "text-white"
-                      }`}
-                    >
-                      {task.text}
-                    </div>
+                    {clickData.map((entry, index) => (
+                      <Cell key={index} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
 
-                    <button
-                      onClick={() => handleDeleteTask(task.id)}
-                      className="text-red-400 text-xs hover:text-red-300"
-                    >
-                      ❌
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {/* ✅ Task Count */}
-            <div className="mt-3 text-slate-400 text-xs text-right">
-              {tasks.length} tasks
-            </div>
-          </div>
-        </div>
-
-        {/* Click Metrics */}
-        <div className="bg-gray-850/40 border border-gray-700 rounded-lg p-6 min-h-[220px]">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-white font-semibold">
-              Click Metrics - Realtime Logs
-            </h4>
-            <div className="text-slate-400 text-sm">
-              Recent activity in 10 days
-            </div>
-          </div>
-
-          <div className="bg-slate-900 border border-gray-800 rounded-md p-6">
-            {loading ? (
-              <p className="text-center text-slate-400">Loading...</p>
-            ) : (
-              <div className="grid grid-cols-2 gap-4">
-                {/* 🔥 Total Clicks */}
-                <div className="text-center">
-                  <div className="bg-slate-800 p-4 rounded-md inline-block">
-                    <div className="text-2xl font-semibold text-white">
-                      {clickSummary.totalClicks}
-                    </div>
-                  </div>
-                  <div className="text-slate-400 text-xs mt-2">
-                    Total Clicks
-                  </div>
-                </div>
-
-                {/* 🔥 Safe Clicks */}
-                <div className="text-center">
-                  <div className="bg-slate-800 p-4 rounded-md inline-block">
-                    <div className="text-2xl font-semibold text-white">
-                      {clickSummary.safeClicks}
-                    </div>
-                  </div>
-                  <div className="text-slate-400 text-xs mt-2">Safe Clicks</div>
+                {/* CENTER TOTAL */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="text-xs text-gray-500">Total</p>
+                  <p className="text-xl font-semibold text-gray-900">
+                    {totalClicks}
+                  </p>
                 </div>
               </div>
-            )}
+
+              {/* RIGHT : LEGEND WITH ICON */}
+              <div className="flex-1 space-y-4">
+                {clickData.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <div className="flex items-center gap-1 text-gray-700">
+                        {item.icon}
+                        <span className="text-sm font-medium">{item.name}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-sm font-semibold text-gray-900">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+                <div className="border-t border-gray-200 pt-3 mt-2 flex items-center justify-between">
+                  <span className="text-sm font-semibold text-gray-700">
+                    Total Clicks
+                  </span>
+                  <span className="text-base font-bold text-gray-900">
+                    {clickData.reduce((sum, item) => sum + item.value, 0)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN – 30% */}
+        <div className="w-[30%]">
+          {/* 👇 Tumhara Click Performance card */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6 h-full min-h-[697px]">
+            {/* HEADER */}
+            <div className="mb-4">
+              <div className="flex items-center gap-2">
+                <h3 className="text-gray-900 font-semibold text-lg">
+                  Click Performance
+                </h3>
+                <span className="w-2 h-2 rounded-full bg-green-500"></span>
+              </div>
+              <p className="text-sm text-gray-500">
+                Recent activity across all campaigns
+              </p>
+            </div>
+
+            {/* STATS BOX */}
+            <div className="bg-[#F1F3F4] rounded-xl p-4 flex justify-between mb-4">
+              <div className="flex-1 text-center">
+                <p className="text-xs tracking-wide text-gray-600 mb-2">
+                  MONEY CLICKS
+                </p>
+                <div className="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-green-100 text-green-600 font-semibold">
+                  {clickSummary.moneyClicks}
+                </div>
+                <span className="inline-block mt-2 text-[11px] px-3 py-0.5 rounded-full bg-white text-gray-600">
+                  TODAY
+                </span>
+              </div>
+
+              <div className="flex-1 text-center">
+                <p className="text-xs tracking-wide text-gray-600 mb-2">
+                  SAFE CLICKS
+                </p>
+                <div className="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-red-100 text-red-600 font-semibold">
+                  {clickSummary.safeClicks}
+                </div>
+                <span className="inline-block mt-2 text-[11px] px-3 py-0.5 rounded-full bg-white text-gray-600">
+                  TODAY
+                </span>
+              </div>
+            </div>
+
+            {/* EMPTY STATE */}
+            <div className="bg-[#F1F3F4] rounded-xl py-3 text-center text-sm text-gray-500">
+              No Clicks Data Available.
+            </div>
           </div>
         </div>
       </div>
- 
-
-
+      <div className="my-3">
+        <RevenueinSights />
+      </div>
     </div>
   );
 };
