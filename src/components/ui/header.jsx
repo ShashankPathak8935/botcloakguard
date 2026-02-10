@@ -11,13 +11,17 @@ import {
   HelpCircle,
   Grip,
   Minus,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFunction } from "../../api/ApiFunction";
 import { getUpdatedPlan, signOutApi } from "../../api/Apis";
 
 const Header = ({ onMenuClick }) => {
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const avatarRef = useRef(null);
@@ -70,13 +74,24 @@ const Header = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="w-full h-[64px] flex items-center bg-[#F1F3F4] px-6 shadow-sm">
+    <header
+      className="
+    w-full h-[64px] flex items-center px-6 shadow-sm
+    bg-[#F1F3F4] dark:bg-[#141824]
+    text-gray-800 dark:text-gray-100
+    border-b border-gray-200 dark:border-[#1f2433]
+  "
+    >
       {/* LEFT SECTION */}
       <div className="flex items-center gap-4">
         {/* Sidebar Toggle */}
         <Menu
           // onClick={onMenuClick}
-          className="w-6 h-6 cursor-pointer text-gray-700 hover:text-gray-900"
+          className="
+        w-6 h-6 cursor-pointer
+        text-gray-700 dark:text-gray-300
+        hover:text-gray-900 dark:hover:text-white
+      "
         />
 
         {/* Logo */}
@@ -88,26 +103,51 @@ const Header = ({ onMenuClick }) => {
 
         {/* Brand Text */}
         <div className="flex flex-col leading-tight">
-          <span className="text-sm font-semibold text-gray-800">
+          <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
             BotcloakGuard
           </span>
-          <span className="text-[11px] text-gray-500">
+          <span className="text-[11px] text-gray-500 dark:text-gray-400">
             Run Ads Without Risk
           </span>
         </div>
 
         {/* Search */}
         <div className="relative ml-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
           <input
             type="text"
             placeholder="Search..."
-            className="w-[280px] h-[38px] pl-10 pr-14 rounded-md bg-white text-sm text-gray-700 border border-gray-200 focus:outline-none"
+            className="
+          w-[280px] h-[38px] pl-10 pr-14 rounded-md text-sm
+          bg-white dark:bg-[#1c2130]
+          text-gray-700 dark:text-gray-200
+          border border-gray-200 dark:border-[#2a3042]
+          focus:outline-none
+        "
           />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-gray-400 border px-1.5 rounded">
+          <span
+            className="
+          absolute right-3 top-1/2 -translate-y-1/2
+          text-[11px] px-1.5 rounded border
+          text-gray-400 dark:text-gray-500
+          border-gray-300 dark:border-[#2a3042]
+        "
+          >
             CTRL K
           </span>
         </div>
+        <button
+          onClick={toggleTheme}
+          className="
+        w-9 h-9 flex items-center justify-center rounded-full
+        bg-gray-200 dark:bg-[#1c2130]
+        text-gray-700 dark:text-gray-200
+        hover:bg-gray-300 dark:hover:bg-[#242a3a]
+        transition
+      "
+        >
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
       </div>
 
       {/* CENTER SPACER */}
@@ -118,31 +158,47 @@ const Header = ({ onMenuClick }) => {
         {/* Clicks Box */}
         <div className="flex items-center gap-2 px-3 h-[36px] rounded-md bg-sky-100 text-sky-700 text-sm font-medium">
           <MousePointerClick className="w-4 h-4" />
-          Clicks: <span className="font-semibold text-sky-900">5000</span>
+          Clicks:{" "}
+          <span className="font-semibold text-sky-900 dark:text-sky-300">
+            5000
+          </span>
         </div>
 
         {/* Market Place */}
-        <div className="flex items-center gap-2 px-3 h-[36px] rounded-md bg-red-50 text-red-600 text-sm font-medium cursor-pointer">
+        <div
+          className="
+        flex items-center gap-2 px-3 h-[36px] rounded-md cursor-pointer
+        bg-red-50 dark:bg-[#2a1f25]
+        text-red-600 dark:text-red-400
+        text-sm font-medium
+      "
+        >
           <Trash2 className="w-4 h-4" />
           Market Place
         </div>
 
         {/* Upgrade */}
-        <div className="px-4 h-[36px] rounded-md bg-blue-600 text-white text-sm font-semibold flex items-center cursor-pointer hover:bg-blue-700">
+        <div
+          className="
+        px-4 h-[36px] rounded-md cursor-pointer flex items-center
+        bg-blue-600 hover:bg-blue-700
+        text-white text-sm font-semibold
+      "
+        >
           Upgrade
         </div>
 
         {/* Two Lines Icon */}
-        <Minus className="w-5 h-5 text-gray-600 ml-2" />
+        <Minus className="w-5 h-5 text-gray-500 dark:text-gray-400 ml-2" />
 
         {/* Notification */}
-        <Bell className="w-5 h-5 text-gray-600 cursor-pointer" />
+        <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300 cursor-pointer" />
 
         {/* Help */}
-        <HelpCircle className="w-5 h-5 text-gray-600 cursor-pointer" />
+        <HelpCircle className="w-5 h-5 text-gray-600 dark:text-gray-300 cursor-pointer" />
 
         {/* 9 Dots */}
-        <Grip className="w-5 h-5 text-gray-600 cursor-pointer" />
+        <Grip className="w-5 h-5 text-gray-600 dark:text-gray-300 cursor-pointer" />
 
         {/* Profile */}
         <div
@@ -161,7 +217,6 @@ const Header = ({ onMenuClick }) => {
             </div>
           )}
         </div>
-
         {showProfileModal && (
           <div className="absolute right-0 mt-2 w-44 rounded-md bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 z-50">
             <div className="py-1">
@@ -205,7 +260,9 @@ const Header = ({ onMenuClick }) => {
         )}
 
         {/* Powered By */}
-        <span className="text-[11px] text-gray-400 ml-1">Powered by AI</span>
+        <span className="text-[11px] text-gray-400 dark:text-gray-500 ml-1">
+          Powered by AI
+        </span>
       </div>
     </header>
   );

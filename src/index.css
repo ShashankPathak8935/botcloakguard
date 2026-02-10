@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../node_modules/flag-icons/css/flag-icons.min.css";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -15,7 +16,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
 
 @keyframes rowIn {
   0% {
@@ -37,10 +37,14 @@
   animation: rowIn 0.35s ease-out forwards;
 }
 
-
 @keyframes pulse-fast {
-  0%, 100% { background-color: #0f172a; }
-  50% { background-color: #1f2937; }
+  0%,
+  100% {
+    background-color: #0f172a;
+  }
+  50% {
+    background-color: #1f2937;
+  }
 }
 
 .animate-pulse-fast {
@@ -61,10 +65,3 @@
 .animate-slideDownGlow {
   animation: slideDownGlow 0.45s ease-out;
 }
-
-
-
-
-
-
- 

@@ -1,51 +1,33 @@
-import { ArrowUpRight, Activity, Pause, Layers, Crown } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-const icons = {
-  "Total Campaign": Layers,
-  "Active Campaign": Activity,
-  "Paused Campaign": Pause,
-  Plan: Crown,
-};
-
-export const StatCard = ({
-  title,
-  value,
-  amount,
-  footer,
-  iconBg,
-  iconColor,
-  highlight,
-}) => {
-  const Icon = icons[title];
-
+export const StatCard = ({ title, value, footer }) => {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
+    <div
+      className="
+        rounded-2xl p-5 cursor-pointer transition
+        bg-white border border-gray-200
+        text-gray-900
+        hover:shadow-lg
+
+        dark:bg-[#0F111A]
+        dark:border-white/10
+        dark:text-gray-100
+      "
+    >
       {/* HEADER */}
-      <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium text-gray-500">{title}</h4>
+      <div className="flex justify-between items-center">
+        <h4 className="text-sm text-gray-500 dark:text-gray-400">{title}</h4>
 
-        <div
-          className={`h-10 w-10 flex items-center justify-center rounded-full ${iconBg}`}
-        >
-          <Icon className={`h-5 w-5 ${iconColor}`} />
-        </div>
+        <ArrowUpRight className="h-4 w-4 text-gray-400 dark:text-gray-500" />
       </div>
 
-      {/* MAIN VALUE */}
-      <div className="mt-4">
-        <h2 className="text-3xl font-semibold text-gray-900">{value}</h2>
-
-        {amount && (
-          <p className="mt-1 text-sm font-medium text-gray-600">{amount}</p>
-        )}
-      </div>
+      {/* VALUE */}
+      <h2 className="mt-4 text-3xl font-semibold">{value}</h2>
 
       {/* FOOTER */}
-      <div className="mt-6 flex items-center justify-between">
-        <p className="text-xs text-gray-500">{footer}</p>
-
-        <ArrowUpRight className="h-4 w-4 text-gray-400" />
-      </div>
+      <p className="mt-3 text-xs font-medium text-emerald-500 dark:text-emerald-400">
+        {footer}
+      </p>
     </div>
   );
 };

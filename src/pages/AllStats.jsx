@@ -201,294 +201,99 @@ const Dashboard = () => {
     },
   ];
 
-  const totalClicks = clickData.reduce((a, b) => a + b.value, 0);
-  
-  // percentage calculation for click distribution
-  const renderPercentage = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-  }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="#111827"
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize={12}
-        fontWeight={600}
-      >
-        {`${Math.round(percent * 100)}%`}
-      </text>
-    );
-  };
-
   return (
-    <div className="min-h-screen bg-[#F1F3F4] p-6 text-gray-900">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-semibold">Dashboard</h2>
-          <p className="text-slate-400 text-sm">
-            Track your campaigns performance.
-          </p>
-        </div>
-      </div>
-      <div className="bg-[#F1F3F4] p-2">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-          <StatCard
-            title="Total Campaign"
-            value="7"
-            iconBg="bg-green-100"
-            iconColor="text-green-600"
-            footer="+12% from last month"
-          />
-
-          <StatCard
-            title="Active Campaign"
-            value="6"
-            iconBg="bg-blue-100"
-            iconColor="text-blue-600"
-            footer="Running smoothly"
-          />
-
-          <StatCard
-            title="Paused Campaign"
-            value="1"
-            iconBg="bg-red-100"
-            iconColor="text-red-600"
-            footer="Needs attention"
-          />
-
-          <StatCard
-            title="Plan"
-            value="Pro"
-            amount="99 USDT"
-            footer="Valid until 12 Feb 2026"
-            highlight
-          />
-        </div>
+    <div
+      className="
+    min-h-screen p-6
+    bg-[#F1F3F4] text-gray-900
+    dark:bg-[#0F111A] dark:text-gray-100
+  "
+    >
+      {/* HEADER */}
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold">Good morning, Captain!</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Tuesday, Feb 10, 2026
+        </p>
       </div>
 
       {/* MAIN ROW */}
-      <div className="w-full flex gap-4 items-start">
-        {/* LEFT COLUMN – 70% */}
-        <div className="w-[70%] flex flex-col gap-4">
-          {/* GRAPH CARD */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            {/* TOP ROW */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-gray-900 text-lg font-semibold">
-                Clicks Overview
-              </h3>
+      <div className="flex gap-4">
+        {/* LEFT – 35% */}
+        <div className="w-[35%] space-y-6">
+          <div
+            className="
+      rounded-xl p-5 transition
+      bg-white
+      border border-gray-200
+      text-gray-900
 
-              <div className="flex gap-2">
-                <span className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                  Money
-                </span>
-                <span className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full text-sm">
-                  <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                  Safe
-                </span>
-              </div>
-            </div>
+      dark:bg-[#0F111A]
+      dark:border-white/10
+      dark:text-gray-100
+    "
+          >
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Updates from yesterday
+            </p>
 
-            {/* STATS */}
-            <div className="flex gap-10 mb-6">
+            <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-500">Money Clicks</p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  {clickSummary.moneyClicks}
+                <h3 className="text-2xl font-semibold">2,110</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Visitors
                 </p>
               </div>
+
               <div>
-                <p className="text-sm text-gray-500">Safe Clicks</p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  {clickSummary.safeClicks}
+                <h3 className="text-2xl font-semibold">$8.2M</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Earnings
                 </p>
               </div>
-            </div>
 
-            {/* CHART */}
-            <div style={{ width: "100%", height: 260 }}>
-              <ResponsiveContainer>
-                <LineChart data={chartData}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="#E5E7EB"
-                    vertical={false}
-                  />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fill: "#6B7280", fontSize: 12 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    domain={[0, 2]}
-                    tick={{ fill: "#6B7280", fontSize: 12 }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#FFFFFF",
-                      border: "1px solid #E5E7EB",
-                      borderRadius: "8px",
-                      fontSize: "12px",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="Money"
-                    stroke="#22c55e"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="Safe"
-                    stroke="#ef4444"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-xl p-6 h-full">
-            <h3 className="text-gray-900 font-semibold mb-0">
-              Click Distribution
-            </h3>
-
-            <div className="flex items-center gap-6">
-              {/* LEFT : PIE CHART */}
-              <div className="relative w-[220px] h-[200px]">
-                <PieChart width={220} height={220}>
-                  <Pie
-                    data={clickData}
-                    dataKey="value"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={90}
-                    label={renderPercentage}
-                    labelLine={false}
-                  >
-                    {clickData.map((entry, index) => (
-                      <Cell key={index} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-
-                {/* CENTER TOTAL */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="text-xs text-gray-500">Total</p>
-                  <p className="text-xl font-semibold text-gray-900">
-                    {totalClicks}
-                  </p>
-                </div>
-              </div>
-
-              {/* RIGHT : LEGEND WITH ICON */}
-              <div className="flex-1 space-y-4">
-                {clickData.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: item.color }}
-                      />
-                      <div className="flex items-center gap-1 text-gray-700">
-                        {item.icon}
-                        <span className="text-sm font-medium">{item.name}</span>
-                      </div>
-                    </div>
-
-                    <p className="text-sm font-semibold text-gray-900">
-                      {item.value}
-                    </p>
-                  </div>
-                ))}
-                <div className="border-t border-gray-200 pt-3 mt-2 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-gray-700">
-                    Total Clicks
-                  </span>
-                  <span className="text-base font-bold text-gray-900">
-                    {clickData.reduce((sum, item) => sum + item.value, 0)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT COLUMN – 30% */}
-        <div className="w-[30%]">
-          {/* 👇 Tumhara Click Performance card */}
-          <div className="bg-white border border-gray-200 rounded-xl p-6 h-full min-h-[697px]">
-            {/* HEADER */}
-            <div className="mb-4">
-              <div className="flex items-center gap-2">
-                <h3 className="text-gray-900 font-semibold text-lg">
-                  Click Performance
-                </h3>
-                <span className="w-2 h-2 rounded-full bg-green-500"></span>
-              </div>
-              <p className="text-sm text-gray-500">
-                Recent activity across all campaigns
-              </p>
-            </div>
-
-            {/* STATS BOX */}
-            <div className="bg-[#F1F3F4] rounded-xl p-4 flex justify-between mb-4">
-              <div className="flex-1 text-center">
-                <p className="text-xs tracking-wide text-gray-600 mb-2">
-                  MONEY CLICKS
-                </p>
-                <div className="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-green-100 text-green-600 font-semibold">
-                  {clickSummary.moneyClicks}
-                </div>
-                <span className="inline-block mt-2 text-[11px] px-3 py-0.5 rounded-full bg-white text-gray-600">
-                  TODAY
-                </span>
-              </div>
-
-              <div className="flex-1 text-center">
-                <p className="text-xs tracking-wide text-gray-600 mb-2">
-                  SAFE CLICKS
-                </p>
-                <div className="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-red-100 text-red-600 font-semibold">
-                  {clickSummary.safeClicks}
-                </div>
-                <span className="inline-block mt-2 text-[11px] px-3 py-0.5 rounded-full bg-white text-gray-600">
-                  TODAY
-                </span>
-              </div>
-            </div>
-
-            {/* EMPTY STATE */}
-            <div className="bg-[#F1F3F4] rounded-xl py-3 text-center text-sm text-gray-500">
-              No Clicks Data Available.
-            </div>
-          </div>
-        </div>
+              <div>
+        <h3 className="text-2xl font-semibold">1,124</h3>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          Orders
+        </p>
       </div>
-      <div className="my-3">
-        <RevenueinSights />
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT – 65% */}
+        <div className="w-[65%] space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <StatCard
+              title="Monthly Earnings"
+              value="$25,049"
+              footer="+4.33% vs last month"
+            />
+
+            <StatCard
+              title="Visitor Value"
+              value="$63.02"
+              footer="-1.03% vs last month"
+            />
+          </div>
+
+          {/* IMAGE */}
+          <div
+            className="
+          h-[260px] rounded-2xl overflow-hidden
+          border border-gray-200
+          dark:border-white/10
+          bg-gray-200 dark:bg-gradient-to-br
+          dark:from-emerald-900/40 dark:to-black
+        "
+          >
+            <img
+              src="https://images.unsplash.com/photo-1551288049-bebda4e38f71"
+              className="w-full h-full object-cover opacity-80"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -128,24 +128,36 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
 
   return (
     <div
-      className={`h-full flex flex-col items-center py-4 bg-[#F1F3F4] border-r border-gray-200 ${
-        isCollapsed ? "w-[48px]" : "w-[120px]"
-      } transition-all duration-500 ease-in-out`}
+      className={`h-full flex flex-col items-center py-4
+    bg-[#F1F3F4] dark:bg-[#0F172A]
+    transition-colors
+    ${isCollapsed ? "w-[48px]" : "w-[120px]"}
+  `}
     >
       {/* CREATE BUTTON */}
       <div className="flex flex-col items-center mb-6 cursor-pointer w-full">
         {/* PLUS CIRCLE */}
-        <div className="w-10 h-10 rounded-full bg-white shadow flex items-center justify-center">
-          <span className="text-3xl font-light text-gray-800 leading-none">
+        <div
+          className="w-10 h-10 rounded-full
+  bg-white dark:bg-slate-800
+  shadow
+  flex items-center justify-center
+"
+        >
+          <span
+            className="text-3xl font-light
+    text-gray-800 dark:text-gray-100
+  "
+          >
             +
           </span>
         </div>
 
         {/* CREATE TEXT */}
         <span
-          className={`text-[12px] mt-1 text-gray-700 whitespace-nowrap transition ${
-            isCollapsed ? "scale-90" : "scale-100"
-          }`}
+          className="text-[12px] mt-1
+  text-gray-700 dark:text-gray-300
+"
         >
           Create
         </span>
@@ -169,11 +181,13 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
                     handleNavigate(item.route);
                   }
                 }}
-                className={`w-full flex flex-col items-center py-2 cursor-pointer transition ${
-                  isItemActive
-                    ? "bg-[#ECF3FF] text-[#091ea3]"
-                    : "text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`w-full flex flex-col items-center py-2 cursor-pointer transition
+    ${
+      isItemActive
+        ? "bg-[#ECF3FF] dark:bg-slate-800 text-[#091ea3] dark:text-blue-400"
+        : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-800"
+    }
+  `}
               >
                 <span
                   className={`${
@@ -204,11 +218,13 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
                       <div
                         key={subIndex}
                         onClick={() => handleNavigate(sub.route)}
-                        className={`text-xs px-3 py-1 rounded cursor-pointer transition ${
-                          isSubActive
-                            ? "bg-[#ECF3FF] text-[#465FFF]"
-                            : "text-gray-600 hover:bg-gray-200"
-                        }`}
+                        className={`text-xs px-3 py-1 rounded cursor-pointer transition
+    ${
+      isSubActive
+        ? "bg-[#ECF3FF] dark:bg-slate-700 text-[#465FFF] dark:text-blue-400"
+        : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-800"
+    }
+  `}
                       >
                         {sub.label}
                       </div>
@@ -236,9 +252,13 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
         onMouseLeave={() => setHovered(false)}
       >
         <div
-          className={`h-[100vh] mt-[-8vh] bg-[#F1F3F4] shadow-md ${
-            collapsed && !hovered ? "w-[48px]" : "w-[120px]"
-          } transition-all duration-[600ms] ease-[cubic-bezier(.22,.61,.36,1)]`}
+          className={`h-[100vh] mt-[-8vh]
+    bg-[#F1F3F4] dark:bg-[#0F172A]
+    border-r border-gray-200 dark:border-gray-800
+    shadow-md
+    ${collapsed && !hovered ? "w-[48px]" : "w-[120px]"}
+    transition-all duration-[600ms] ease-[cubic-bezier(.22,.61,.36,1)]
+  `}
         >
           <div className="h-full flex mt-[8vh] flex-col">
             <SidebarContent
