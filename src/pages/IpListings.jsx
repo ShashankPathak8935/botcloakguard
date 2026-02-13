@@ -271,212 +271,219 @@ useEffect(() => {
 
 
   return (
-    <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 400 }} className="min-h-screen bg-[#0b0d14] text-gray-100 p-8 font-sans">
+    <div
+      style={{ fontFamily: "Outfit, sans-serif", fontWeight: 400 }}
+      className="
+min-h-screen p-8 font-sans transition
+
+bg-white text-gray-900
+dark:bg-[#0b0d14] dark:text-gray-100
+"
+    >
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Blacklisted IPs</h1>
-            <p className="text-sm text-gray-400 mt-2">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Blacklisted IPs
+            </h1>
+            <p className="text-sm mt-2 text-gray-500 dark:text-gray-400">
               Manage, add or remove blacklisted IP addresses with ease
             </p>
           </div>
 
           <div className="flex space-x-3">
-          <button
-             onClick={() => setOpenIpModal(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md font-medium text-sm shadow-lg transition duration-150 cursor-pointer"
-          >
-            <svg
-              className="h-5 w-5 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <button
+              onClick={() => setOpenIpModal(true)}
+              className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md font-medium text-sm shadow-lg transition duration-150 cursor-pointer"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Add New Ip
-          </button>
-          <button
-  onClick={handleRefresh}
-  disabled={isRefreshing}
-  className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm shadow-lg transition-all duration-200
+              <svg
+                className="h-5 w-5 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add New Ip
+            </button>
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm shadow-lg transition-all duration-200
     ${
       isRefreshing
         ? "bg-gray-600 cursor-not-allowed opacity-80"
         : "bg-gray-700 hover:bg-gray-600 cursor-pointer"
     }
   `}
->
-  <svg
-    className={`h-5 w-5 transition-transform duration-300 ${
-      isRefreshing ? "animate-spin" : ""
-    }`}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-    />
-  </svg>
+            >
+              <svg
+                className={`h-5 w-5 transition-transform duration-300 ${
+                  isRefreshing ? "animate-spin" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
 
-  {isRefreshing ? "Refreshing..." : "Refresh"}
-</button>
-
+              {isRefreshing ? "Refreshing..." : "Refresh"}
+            </button>
+          </div>
         </div>
-        </div>
-
         {/* Table */}
-       <div className="bg-[#1E293B] rounded-2xl shadow-xl overflow-hidden border border-gray-700">
-
-  {/* Header */}
-  <div className="grid grid-cols-[60px_minmax(0,1fr)_200px_100px] gap-4 px-6 py-4 bg-[#2B3B58] text-gray-300 text-xs font-semibold uppercase tracking-wider">
-    <div>SN</div>
-    <div>IP Address</div>
-    <div>Added On</div>
-    <div className="text-center">Actions</div>
-  </div>
-
-  {/* Body */}
-  <div className="max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-     {loadingIps && (
-    <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-      <svg
-        className="h-8 w-8 animate-spin mb-3"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9"
-        />
-      </svg>
-      <p className="text-sm">Loading blacklisted IPs...</p>
-    </div>
-  )}
-
-  {/* 📭 Empty State */}
-  {!loadingIps && ips.length === 0 && (
-    <div className="flex flex-col items-center justify-center py-20 text-center text-gray-400">
-      <div className="text-4xl mb-3">📭</div>
-      <p className="text-lg font-medium text-gray-300">
-        No Blacklisted IPs Found
-      </p>
-      <p className="text-sm mt-1">
-        You haven’t added any IP addresses yet.
-      </p>
-
-      <button
-        onClick={() => setOpenIpModal(true)}
-        className="mt-5 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm shadow cursor-pointer"
-      >
-        + Add Your First IP
-      </button>
-    </div>
-  )}
-
-  {/* ✅ Data State */}
-  {!loadingIps &&
-    ips.length > 0 &&
-    ips.map((ip) => (
-      <div
-        key={ip.id}
-        className="grid grid-cols-[60px_minmax(0,1fr)_200px_100px] gap-4 px-6 py-3 text-sm text-gray-200 border-t border-gray-700 hover:bg-[#25344E] transition-colors"
-      >
-        <div>{ip.sn}</div>
-
         <div
-          className="font-mono truncate overflow-hidden whitespace-nowrap"
-          title={ip.ip}
+          className="
+rounded-2xl shadow-xl overflow-hidden border transition
+
+bg-white border-gray-200
+dark:bg-[#1E293B] dark:border-gray-700
+"
         >
-          {ip.ip}
+          {/* Header */}
+          <div
+            className="grid grid-cols-[60px_minmax(0,1fr)_200px_100px] gap-4 px-6 py-4 bg-gray-100 text-gray-700
+dark:bg-[#2B3B58] dark:text-gray-300 text-xs font-semibold uppercase tracking-wider"
+          >
+            <div>SN</div>
+            <div>IP Address</div>
+            <div>Added On</div>
+            <div className="text-center">Actions</div>
+          </div>
+
+          {/* Body */}
+          <div
+            className="max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100
+dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800"
+          >
+            {loadingIps && (
+              <div className="flex flex-col items-center justify-center py-16 text-gray-500 dark:text-gray-400">
+                <svg
+                  className="h-8 w-8 animate-spin mb-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9"
+                  />
+                </svg>
+                <p className="text-sm">Loading blacklisted IPs...</p>
+              </div>
+            )}
+
+            {/* 📭 Empty State */}
+            {!loadingIps && ips.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 text-center text-gray-500 dark:text-gray-400">
+                <div className="text-4xl mb-3">📭</div>
+                <p
+                  className="text-lg font-medium text-gray-500 dark:text-gray-400"
+                >
+                  No Blacklisted IPs Found
+                </p>
+                <p className="text-sm mt-1">
+                  You haven’t added any IP addresses yet.
+                </p>
+
+                <button
+                  onClick={() => setOpenIpModal(true)}
+                  className="mt-5 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm shadow cursor-pointer"
+                >
+                  + Add Your First IP
+                </button>
+              </div>
+            )}
+
+            {/* ✅ Data State */}
+            {!loadingIps &&
+              ips.length > 0 &&
+              ips.map((ip) => (
+                <div
+                  key={ip.id}
+                  className="grid grid-cols-[60px_minmax(0,1fr)_200px_100px] gap-4 px-6 py-3 text-sm text-gray-200 border-t border-gray-700 hover:bg-[#25344E] transition-colors"
+                >
+                  <div>{ip.sn}</div>
+
+                  <div
+                    className="font-mono truncate overflow-hidden whitespace-nowrap"
+                    title={ip.ip}
+                  >
+                    {ip.ip}
+                  </div>
+
+                  <div>{ip.addedOn}</div>
+
+                  <div className="flex justify-center items-center">
+                    <TrashIcon onClick={() => deleteBlacklistedIp(ip.id)} />
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
-
-        <div>{ip.addedOn}</div>
-
-        <div className="flex justify-center items-center">
-          <TrashIcon onClick={() => deleteBlacklistedIp(ip.id)} />
-        </div>
-      </div>
-    ))}
-
-    
-  </div>
-</div>
-
-
-
-     
       </div>
 
       {openIpModal && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          {/* Modal Box */}
+          <div className="w-full max-w-xl bg-[#0f172a] text-gray-200 rounded-xl shadow-2xl border border-gray-700">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-700 text-lg font-semibold">
+              Add IP
+            </div>
 
-    {/* Modal Box */}
-    <div className="w-full max-w-xl bg-[#0f172a] text-gray-200 rounded-xl shadow-2xl border border-gray-700">
+            {/* Body */}
+            <div className="px-6 py-4">
+              <textarea
+                value={ipList}
+                onChange={(e) => setIpList(e.target.value)}
+                rows={6}
+                className="w-full bg-[#020617] border border-gray-700 rounded-md p-3 text-sm text-gray-200"
+              />
 
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-700 text-lg font-semibold">
-        Add IP
-      </div>
+              <p className="text-sm text-gray-400 mt-3">
+                Enter one IP per line. Examples:
+              </p>
 
-      {/* Body */}
-      <div className="px-6 py-4">
-       <textarea
-  value={ipList}
-  onChange={(e) => setIpList(e.target.value)}
-  rows={6}
-  className="w-full bg-[#020617] border border-gray-700 rounded-md p-3 text-sm text-gray-200"
-/>
+              <div className="text-sm text-gray-500 mt-1 space-y-1">
+                <div>240.4.91.158</div>
+                <div>115546</div>
+                <div>6b5d:4417:cee5:9676:6926:b272:d8ae:f9e6</div>
+              </div>
+            </div>
 
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-700 flex justify-end gap-3">
+              <button
+                onClick={() => setOpenIpModal(false)}
+                className="px-4 py-2 cursor-pointer border border-red-500 text-red-400 rounded-md hover:bg-red-500/10 transition"
+              >
+                ✕ Cancel
+              </button>
 
-        <p className="text-sm text-gray-400 mt-3">
-          Enter one IP per line. Examples:
-        </p>
-
-        <div className="text-sm text-gray-500 mt-1 space-y-1">
-          <div>240.4.91.158</div>
-          <div>115546</div>
-          <div>6b5d:4417:cee5:9676:6926:b272:d8ae:f9e6</div>
+              <button
+                onClick={() => addBlacklistedIps(ipList)}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white cursor-pointer"
+              >
+                + Add
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="px-6 py-4 border-t border-gray-700 flex justify-end gap-3">
-
-        <button
-          onClick={() => setOpenIpModal(false)}
-          className="px-4 py-2 cursor-pointer border border-red-500 text-red-400 rounded-md hover:bg-red-500/10 transition"
-        >
-          ✕ Cancel
-        </button>
-
-       <button
-  onClick={() => addBlacklistedIps(ipList)}
-  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white cursor-pointer"
->
-  + Add
-</button>
-
-
-
-      </div>
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   );
 };

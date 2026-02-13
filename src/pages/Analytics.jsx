@@ -8,6 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 
 
+import AnalyticsPageCards from "./AnalyticsPageCards";
+import AnalyticsPageChart1 from "./AnalyticsPageChart1";
+import AnalyticsPageUserByCountryTable from "./AnalyticsPageUserByCountryTable";
+import AnalyticsPageUserByOs from "./AnalyticsPageUserByOs";
+import AnalyticsPageUserCohort from "./AnalyticsPageUserCohort";  
 
 
 
@@ -295,9 +300,30 @@ const addUrlCamp = async (signal) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0d14] text-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
+    <div
+      className="
+    min-h-screen p-8 transition-colors duration-300
+    bg-gray-100 text-gray-900
+    dark:bg-[#0b0d14] dark:text-gray-100
+  "
+    >
+      <div>
+        <AnalyticsPageCards />
+      </div>
+      <div className="mt-4">
+        <AnalyticsPageChart1 />
+      </div>
+      <div className="mt-4">
+        <AnalyticsPageUserByCountryTable />
+      </div>
+      <div className="mt-4">
+        <AnalyticsPageUserByOs />
+      </div>
+      <div className="mt-4">
+        <AnalyticsPageUserCohort />
+      </div>
+      {/* <div className="max-w-7xl mx-auto">
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
           <div>
             <h1 className="text-3xl font-bold text-white tracking-tight">
@@ -331,13 +357,13 @@ const addUrlCamp = async (signal) => {
 
             <button
               onClick={handleRefresh}
-              disabled={isLoading} // Disable button while fetching
+              disabled={isLoading} 
               className={`flex items-center cursor-pointer px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-md font-medium text-sm shadow-lg transition duration-150 ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
               <svg
-                className={`h-5 w-5 mr-2 ${isLoading ? "animate-spin" : ""}`} // Spinning animation
+                className={`h-5 w-5 mr-2 ${isLoading ? "animate-spin" : ""}`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -354,7 +380,7 @@ const addUrlCamp = async (signal) => {
           </div>
         </div>
 
-        {/* Table */}
+        
         <div className="bg-[#1E293B] rounded-2xl shadow-xl overflow-hidden border border-gray-700">
           <div className="grid grid-cols-8 gap-4 px-6 py-4 bg-[#2B3B58] text-gray-300 text-xs font-semibold uppercase tracking-wider">
             <div>SN</div>
@@ -386,7 +412,7 @@ const addUrlCamp = async (signal) => {
     </div>
   )}
 
-  {/* 📭 Empty State */}
+
   {!loadingCampaigns && campaigns?.length === 0 && (
     <div className="flex flex-col items-center justify-center py-24 text-center text-gray-400">
       <div className="text-4xl mb-3">🚀</div>
@@ -408,7 +434,7 @@ const addUrlCamp = async (signal) => {
     </div>
   )}
 
-  {/* ✅ Data State */}
+  
   {!loadingCampaigns &&
     campaigns?.length > 0 &&
     campaigns.map((item, index) => (
@@ -422,7 +448,7 @@ const addUrlCamp = async (signal) => {
           {item?.name || "NA"}
         </div>
 
-        {/* Integration URL Tooltip */}
+        
         <div className="relative group inline-block">
           <span className="text-blue-400 cursor-pointer">ℹ️</span>
           <div
@@ -447,7 +473,7 @@ const addUrlCamp = async (signal) => {
           />
         </div>
 
-        {/* Code modal */}
+    
         <div>
           <button
             onClick={() => {
@@ -478,10 +504,10 @@ const addUrlCamp = async (signal) => {
     ))}
         </div>
 
-        {/* View All */}
+  
       </div>
 
-      {/* CODE MODAL */}
+    
       {openCodeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-[750px] shadow-2xl">
@@ -502,7 +528,7 @@ const addUrlCamp = async (signal) => {
               Paste this script inside {"<head>"} of your website:
             </p>
 
-            {/* Code Box */}
+          
             <div className="bg-black border border-slate-700 rounded-lg p-3 text-sm text-green-400">
               <pre className="whitespace-pre-wrap max-h-40 overflow-auto">
                 {selectedCdnCode?.cdn}
@@ -513,8 +539,8 @@ const addUrlCamp = async (signal) => {
               onClick={handleCopyCode}
               className={`mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg cursor-pointer ${
                 isCopied
-                  ? "bg-green-600 hover:bg-green-700 text-white" // Style when copied
-                  : "bg-blue-600 hover:bg-blue-700 text-white" // Original style
+                  ? "bg-green-600 hover:bg-green-700 text-white"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
               }`}
             >
               {isCopied ? (
@@ -530,7 +556,6 @@ const addUrlCamp = async (signal) => {
               )}
             </button>
 
-            {/* URL test */}
             <p className="mt-6 text-gray-300 text-sm mb-3">
               Enter URL to test integration:
             </p>
@@ -562,14 +587,14 @@ const addUrlCamp = async (signal) => {
 
       {open1 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          {/* MODAL BOX */}
+         
           <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-[650px] shadow-2xl">
-            {/* Title */}
+          
             <h2 className="text-xl font-semibold text-white mb-6 border-b border-slate-700 pb-3">
               Add Url
             </h2>
 
-            {/* NAME FIELD */}
+           
             <div className="mb-5">
               <label className="text-gray-400 text-xs block mb-2 uppercase  text-left">
                 Name
@@ -583,7 +608,7 @@ const addUrlCamp = async (signal) => {
 
             </div>
 
-            {/* URL FIELD */}
+          
             <div className="mb-8">
               <label className="text-gray-400 text-xs block mb-2 uppercase  text-left">
                 Url
@@ -597,7 +622,7 @@ const addUrlCamp = async (signal) => {
 
             </div>
 
-            {/* FOOTER BUTTONS */}
+           
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setOpen1(false)}
@@ -618,7 +643,7 @@ const addUrlCamp = async (signal) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

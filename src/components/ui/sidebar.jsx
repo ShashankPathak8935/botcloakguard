@@ -57,12 +57,12 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Blacklisted IP",
       icon: <FontAwesomeIcon icon={faShieldHalved} size="lg" />,
-      // route: "/Dashboard/IpListings",
+      route: "/Dashboard/IpListings",
     },
     {
       label: "Analytics",
       icon: <FontAwesomeIcon icon={faChartColumn} size="lg" />,
-      // route: "/Dashboard/analytics",
+      route: "/Dashboard/analytics",
     },
     {
       label: "Report",

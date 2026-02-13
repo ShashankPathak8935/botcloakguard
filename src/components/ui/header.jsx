@@ -146,7 +146,7 @@ const Header = ({ onMenuClick }) => {
         transition
       "
         >
-          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}   {/*tested */}
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
         </button>
       </div>
 

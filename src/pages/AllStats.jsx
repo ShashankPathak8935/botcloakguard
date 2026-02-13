@@ -19,6 +19,9 @@ import { Smartphone, Monitor, Tablet } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import RevenueinSights from "./RevenueInsights.jsx";
 import { StatCard } from "./StatCard.jsx";
+import TopProductsTable from "./TopProductsTable.jsx";
+import MarketAndActivity from "./MarketAndActivity.jsx";
+import ClientMapAnalytics from "./ClientMapAnalytics.jsx";
 
 // import {ipClicks} from "../api/Apis.js";
 import { apiFunction } from "../api/ApiFunction.js";
@@ -224,6 +227,7 @@ const Dashboard = () => {
           <div
             className="
       rounded-xl p-5 transition
+       h-[955px]
       bg-white
       border border-gray-200
       text-gray-900
@@ -253,11 +257,11 @@ const Dashboard = () => {
               </div>
 
               <div>
-        <h3 className="text-2xl font-semibold">1,124</h3>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          Orders
-        </p>
-      </div>
+                <h3 className="text-2xl font-semibold">1,124</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Orders
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -281,19 +285,124 @@ const Dashboard = () => {
           {/* IMAGE */}
           <div
             className="
-          h-[260px] rounded-2xl overflow-hidden
-          border border-gray-200
-          dark:border-white/10
-          bg-gray-200 dark:bg-gradient-to-br
-          dark:from-emerald-900/40 dark:to-black
-        "
+    h-[350px] rounded-2xl overflow-hidden transition
+
+    bg-white
+    border border-gray-200
+
+    dark:bg-[#0F111A]
+    dark:border-white/10
+  "
           >
             <img
               src="https://images.unsplash.com/photo-1551288049-bebda4e38f71"
               className="w-full h-full object-cover opacity-80"
             />
           </div>
+          <div className="w-[100%] flex flex-col gap-4">
+            {/* GRAPH CARD */}
+            <div className="bg-white dark:bg-[#0F111A] border border-gray-200 dark:border-gray-700 rounded-lg p-6 transition-colors duration-300">
+              {/* TOP ROW */}
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-gray-900 dark:text-gray-100 text-lg font-semibold">
+                  Clicks Overview
+                </h3>
+
+                <div className="flex gap-2">
+                  <span className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-700 dark:text-gray-300">
+                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                    Money
+                  </span>
+                  <span className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-700 dark:text-gray-300">
+                    <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                    Safe
+                  </span>
+                </div>
+              </div>
+
+              {/* STATS */}
+              <div className="flex gap-10 mb-6">
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Money Clicks
+                  </p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    {clickSummary.moneyClicks}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Safe Clicks
+                  </p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    {clickSummary.safeClicks}
+                  </p>
+                </div>
+              </div>
+
+              {/* CHART */}
+              <div style={{ width: "100%", height: 260 }}>
+                <ResponsiveContainer>
+                  <LineChart data={chartData}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="currentColor"
+                      className="text-gray-200 dark:text-gray-700"
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fill: "#9CA3AF", fontSize: 12 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      domain={[0, 2]}
+                      tick={{ fill: "#9CA3AF", fontSize: 12 }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor:
+                          document.documentElement.classList.contains("dark")
+                            ? "#1F2937"
+                            : "#FFFFFF",
+                        border: "1px solid #374151",
+                        borderRadius: "8px",
+                        fontSize: "12px",
+                        color: "#F9FAFB",
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Money"
+                      stroke="#22c55e"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="Safe"
+                      stroke="#ef4444"
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <div className="mt-4">
+        <TopProductsTable />
+      </div>
+      <div className="mt-4">
+        <MarketAndActivity />
+      </div>
+      <div className="mt-4">
+        <ClientMapAnalytics />
       </div>
     </div>
   );
