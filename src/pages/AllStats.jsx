@@ -19,11 +19,11 @@ import { Smartphone, Monitor, Tablet } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import RevenueinSights from "./RevenueInsights.jsx";
 import { StatCard } from "./StatCard.jsx";
-import TopProductsTable from "./TopProductsTable.jsx";
+import CampaignTable from "./CampaignTable.jsx";
 import MarketAndActivity from "./MarketAndActivity.jsx";
 import ClientMapAnalytics from "./ClientMapAnalytics.jsx";
+import DiscountSlider from "./DiscountSlider.jsx";
 
-// import {ipClicks} from "../api/Apis.js";
 import { apiFunction } from "../api/ApiFunction.js";
 import {
   ipClicks,
@@ -168,6 +168,7 @@ const Dashboard = () => {
       // console.error("Stats API Error:", error);
     }
   };
+  console.log("state data", stats);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -182,28 +183,6 @@ const Dashboard = () => {
     fetchCampaigns();
   }, []);
 
-  // dummy data for click distribution
-  const clickData = [
-    {
-      name: "Mobile Clicks",
-      value: 12,
-      color: "#3b82f6",
-      icon: <Smartphone size={14} />,
-    },
-    {
-      name: "Desktop Clicks",
-      value: 8,
-      color: "#22c55e",
-      icon: <Monitor size={14} />,
-    },
-    {
-      name: "Tablet Clicks",
-      value: 5,
-      color: "#facc15",
-      icon: <Tablet size={14} />,
-    },
-  ];
-
   return (
     <div
       className="
@@ -214,9 +193,9 @@ const Dashboard = () => {
     >
       {/* HEADER */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold">Good morning, Captain!</h2>
+        <h2 className="text-xl font-semibold">Good evening, Shashank!</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Tuesday, Feb 10, 2026
+          Saturday, Feb 14, 2026
         </p>
       </div>
 
@@ -226,17 +205,205 @@ const Dashboard = () => {
         <div className="w-[35%] space-y-6">
           <div
             className="
-      rounded-xl p-5 transition
-       h-[955px]
-      bg-white
-      border border-gray-200
-      text-gray-900
-
-      dark:bg-[#0F111A]
-      dark:border-white/10
-      dark:text-gray-100
+      rounded-xl p-5 transition h-[955px]
+      bg-white border border-gray-200 text-gray-900
+      dark:bg-[#0F111A] dark:border-white/10 dark:text-gray-100
     "
           >
+            {/* ⭐ TOP METRIC CARDS */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              {/* Total Clicks */}
+              <div className="rounded-lg p-4 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md bg-blue-100 dark:bg-blue-500/20">
+                    {/* icon */}
+                    <svg
+                      className="w-5 h-5 text-blue-600 dark:text-blue-400"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect x="3" y="6" width="18" height="12" rx="2" />
+                      <circle cx="12" cy="12" r="2" />
+                    </svg>
+                  </div>
+
+                  <h3 className="text-xl font-semibold">
+                    {clickSummary?.totalClicks || 0}
+                  </h3>
+                </div>
+
+                <p className="text-xs mt-2 text-green-500 font-medium">
+                  TOTAL CLICKS
+                </p>
+
+                <span className="text-[10px] px-2 py-1 rounded border border-gray-300 dark:border-white/20">
+                  TODAY
+                </span>
+              </div>
+
+              {/* Safe Clicks */}
+              <div className="rounded-lg p-4 border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-md bg-emerald-100 dark:bg-emerald-500/20">
+                    <svg
+                      className="w-5 h-5 text-emerald-600 dark:text-emerald-400"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M9 12l2 2 4-4" />
+                      <circle cx="12" cy="12" r="9" />
+                    </svg>
+                  </div>
+
+                  <h3 className="text-xl font-semibold">
+                    {" "}
+                    {clickSummary?.safeClicks || 0}
+                  </h3>
+                </div>
+
+                <p className="text-xs mt-2 text-red-400 font-medium">
+                  SAFE CLICKS
+                </p>
+
+                <span className="text-[10px] px-2 py-1 rounded border border-gray-300 dark:border-white/20">
+                  TODAY
+                </span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-5 mb-6">
+              {/* ✅ ALLOW ALL */}
+              <div
+                className="
+    rounded-2xl p-6 min-h-[130px]
+    bg-white
+    border border-gray-200
+    shadow-sm
+
+    dark:bg-[#141824]
+    dark:border-white/10
+
+    hover:shadow-lg
+    hover:-translate-y-1
+    transition-all duration-300
+  "
+              >
+                <div className="flex items-center justify-between">
+                  {/* LEFT CONTENT */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">
+                      ALLOW ALL
+                    </p>
+
+                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {stats?.allowed_campaigns || 0}
+                    </h3>
+
+                    {/* status badge */}
+                    <span
+                      className="
+          inline-block text-[11px] px-3 py-1 rounded-full
+          bg-emerald-100 text-emerald-700
+          dark:bg-emerald-500/15 dark:text-emerald-400
+        "
+                    >
+                      ● Active
+                    </span>
+                  </div>
+
+                  {/* RIGHT ICON */}
+                  <div
+                    className="
+        w-12 h-12 flex items-center justify-center
+        rounded-xl
+        bg-emerald-100
+        dark:bg-emerald-500/15
+      "
+                  >
+                    <svg
+                      className="w-6 h-6 text-emerald-600 dark:text-emerald-400"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* ❌ BLOCK ALL */}
+              <div
+                className="
+    rounded-2xl p-6 min-h-[130px]
+    bg-white
+    border border-gray-200
+    shadow-sm
+
+    dark:bg-[#141824]
+    dark:border-white/10
+
+    hover:shadow-lg
+    hover:-translate-y-1
+    transition-all duration-300
+  "
+              >
+                <div className="flex items-center justify-between">
+                  {/* LEFT CONTENT */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold tracking-wide text-red-600 dark:text-red-400">
+                      BLOCK ALL
+                    </p>
+
+                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {stats?.blocked_campaigns || 0}
+                    </h3>
+
+                    {/* status badge */}
+                    <span
+                      className="
+          inline-block text-[11px] px-3 py-1 rounded-full
+          bg-red-100 text-red-700
+          dark:bg-red-500/15 dark:text-red-400
+        "
+                    >
+                      ● Blocked
+                    </span>
+                  </div>
+
+                  {/* RIGHT ICON */}
+                  <div
+                    className="
+        w-12 h-12 flex items-center justify-center
+        rounded-xl
+        bg-red-100
+        dark:bg-red-500/15
+      "
+                  >
+                    <svg
+                      className="w-6 h-6 text-red-600 dark:text-red-400"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <line x1="5" y1="19" x2="19" y2="5" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ⭐ Existing Content */}
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Updates from yesterday
             </p>
@@ -268,37 +435,23 @@ const Dashboard = () => {
 
         {/* RIGHT – 65% */}
         <div className="w-[65%] space-y-4">
+          {/* right two cards */}
           <div className="grid grid-cols-2 gap-4">
             <StatCard
-              title="Monthly Earnings"
-              value="$25,049"
+              title="Total Campaigns"
+              value={stats.total_campaigns}
               footer="+4.33% vs last month"
             />
 
             <StatCard
-              title="Visitor Value"
-              value="$63.02"
+              title="Active Campaigns"
+              value={stats.active_campaigns}
               footer="-1.03% vs last month"
             />
           </div>
 
-          {/* IMAGE */}
-          <div
-            className="
-    h-[350px] rounded-2xl overflow-hidden transition
-
-    bg-white
-    border border-gray-200
-
-    dark:bg-[#0F111A]
-    dark:border-white/10
-  "
-          >
-            <img
-              src="https://images.unsplash.com/photo-1551288049-bebda4e38f71"
-              className="w-full h-full object-cover opacity-80"
-            />
-          </div>
+          {/*Discount*/}
+          <DiscountSlider />
           <div className="w-[100%] flex flex-col gap-4">
             {/* GRAPH CARD */}
             <div className="bg-white dark:bg-[#0F111A] border border-gray-200 dark:border-gray-700 rounded-lg p-6 transition-colors duration-300">
@@ -309,6 +462,10 @@ const Dashboard = () => {
                 </h3>
 
                 <div className="flex gap-2">
+                  <span className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-700 dark:text-gray-300">
+                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                    Total
+                  </span>
                   <span className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-700 dark:text-gray-300">
                     <span className="w-2 h-2 rounded-full bg-green-500"></span>
                     Money
@@ -322,6 +479,14 @@ const Dashboard = () => {
 
               {/* STATS */}
               <div className="flex gap-10 mb-6">
+                <div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Total Clicks
+                  </p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                    {clickSummary.totalClicks}
+                  </p>
+                </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Money Clicks
@@ -383,6 +548,14 @@ const Dashboard = () => {
                     />
                     <Line
                       type="monotone"
+                      dataKey="Total"
+                      stroke="#3b82f6" // blue color (change kar sakte ho)
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+
+                    <Line
+                      type="monotone"
                       dataKey="Safe"
                       stroke="#ef4444"
                       strokeWidth={2}
@@ -396,7 +569,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mt-4">
-        <TopProductsTable />
+        <CampaignTable campaigns={campaigns} setCampaigns={setCampaigns} />
       </div>
       <div className="mt-4">
         <MarketAndActivity />
