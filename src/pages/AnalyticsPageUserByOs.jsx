@@ -11,13 +11,13 @@ import {
   Tooltip,
 } from "recharts";
 
-const AnalyticsPageUserByOs = () => {
+const AnalyticsPageUserByOs = ({ deviceCount }) => {
   /* ================= STATIC DATA (Replace with API later) ================= */
 
   const deviceData = [
-    { name: "Desktop", value: 70, color: "#3b82f6" },
-    { name: "Mobile", value: 20, color: "#f59e0b" },
-    { name: "Tablet", value: 10, color: "#06b6d4" },
+    { name: "Mobile", value: deviceCount?.Mobile || 5, color: "#f59e0b" },
+    { name: "Desktop", value: deviceCount?.Desktop || 10, color: "#3b82f6" },
+    { name: "Tablet", value: deviceCount?.Tablet || 20, color: "#06b6d4" },
   ];
 
   const osStats = [
@@ -55,7 +55,7 @@ const AnalyticsPageUserByOs = () => {
           <div>
             <h3 className="font-semibold text-lg">Users by OS</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Categorized by devices and their OS
+              Categorized by devices
             </p>
           </div>
 
@@ -76,20 +76,27 @@ const AnalyticsPageUserByOs = () => {
                 style={{ background: item.color }}
               />
               <span>{item.name}</span>
+              <span className="text-gray-500 dark:text-gray-400">
+                ({item.value})
+              </span>
             </div>
           ))}
         </div>
 
         {/* donut chart */}
-        <div className="h-56">
+        {/* full pie chart */}
+        <div className="h-56 relative">
           <ResponsiveContainer>
             <PieChart>
               <Pie
-                data={deviceData}
-                innerRadius={70}
-                outerRadius={90}
-                paddingAngle={4}
+                data={deviceData.filter((d) => d.value > 0)}
+                cx="50%"
+                cy="50%"
+                outerRadius={95}
                 dataKey="value"
+                label={({ percent, value }) =>
+                  `${value} (${(percent * 100).toFixed(0)}%)`
+                }
               >
                 {deviceData.map((entry, i) => (
                   <Cell key={i} fill={entry.color} />
@@ -97,18 +104,16 @@ const AnalyticsPageUserByOs = () => {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-        </div>
 
-        {/* stats */}
-        <div className="grid grid-cols-2 gap-y-2 text-sm mt-4">
-          {osStats.map((item, i) => (
-            <div key={i} className="contents">
-              <span className="text-gray-500 dark:text-gray-400">
-                {item.label}
-              </span>
-              <span>{item.value}</span>
-            </div>
-          ))}
+          {/* center total */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span className="text-2xl font-bold">
+              {deviceData.reduce((sum, item) => sum + item.value, 0)}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              Total Users
+            </span>
+          </div>
         </div>
       </div>
 

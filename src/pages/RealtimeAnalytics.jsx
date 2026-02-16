@@ -19,6 +19,12 @@ import { getOSIcon } from "../utils/getOsIcon";
 import socket from "../utils/socket";
 import { useRef } from "react";
 
+// all components
+import AnalyticsPageCards from "./AnalyticsPageCards";
+import AnalyticsPageChart1 from "./AnalyticsPageChart1";
+import AnalyticsPageUserByCountryTable from "./AnalyticsPageUserByCountryTable";
+import AnalyticsPageUserByOs from "./AnalyticsPageUserByOs";
+import AnalyticsPageUserCohort from "./AnalyticsPageUserCohort";
 
 export default function RealtimeAnalytics({}) {
   const [refreshing, setRefreshing] = useState(false);
@@ -34,35 +40,35 @@ export default function RealtimeAnalytics({}) {
     Desktop: 0,
     Tablet: 0,
     Mobile: 0,
-
   });
   const abortRef = useRef(null);
 
-
-
   const fetchAnalytics = useCallback(async (id) => {
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
 
-     if (abortRef.current) {
-    abortRef.current.abort();
-  }
-
-  // 🟢 new controller
-  const controller = new AbortController();
-  abortRef.current = controller;
+    // 🟢 new controller
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
-      const response = await apiFunction("get", getAllAnalyticsCamp, id, null,controller.signal);
+      const response = await apiFunction(
+        "get",
+        getAllAnalyticsCamp,
+        id,
+        null,
+        controller.signal,
+      );
       if (!response) return;
       const analyticsData = response.data.data;
-      
+
       const uniqueVisitors =
-    analyticsData?.find(item => 'uniquecount' in item)?.uniquecount || 0;
+        analyticsData?.find((item) => "uniquecount" in item)?.uniquecount || 0;
       setUniqueVistors(uniqueVisitors);
 
-      
       const deviceInfo = analyticsData?.[1];
       const deviceinfo2 = analyticsData?.[2];
       const deviceinfo3 = analyticsData?.[3];
-
 
       const deviceMap = {
         Dektop: 0,
@@ -118,39 +124,31 @@ export default function RealtimeAnalytics({}) {
         isNew: false,
       }));
 
-      
-
       setLogs(
         formattedLogs
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // 🔥 IMPORTANT
-          .slice(0, 5)
+          .slice(0, 5),
       );
 
       setLoadingLogs(false);
     } catch (error) {
-  if (
-    error?.name === "CanceledError" ||
-    error?.code === "ERR_CANCELED"
-  ) {
-    
-    return;
-  }
+      if (error?.name === "CanceledError" || error?.code === "ERR_CANCELED") {
+        return;
+      }
 
- 
-  setLoadingLogs(false);
-}
-
+      setLoadingLogs(false);
+    }
   }, []);
 
   useEffect(() => {
     if (id) {
       fetchAnalytics(id);
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-     return () => {
-    if (abortRef.current) {
-      abortRef.current.abort();
     }
-  };
+    return () => {
+      if (abortRef.current) {
+        abortRef.current.abort();
+      }
+    };
   }, [id, fetchAnalytics]);
 
   const handleRefresh = () => {
@@ -192,12 +190,31 @@ export default function RealtimeAnalytics({}) {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-semibold">Realtime Analytics</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+          Get detailed analytics for your URLs and track visitor behavior in
+          real-time.
+        </p>
+      </div>
+      <div>
+        <AnalyticsPageCards view={view} uniqueVisitors={uniqueVisitors} />
+      </div>
+      <div>
+        <AnalyticsPageChart1 />
+      </div>
+      <div>
+        <AnalyticsPageUserByCountryTable logs={logs} />
+      </div>
+      <div>
+        <AnalyticsPageUserByOs deviceCount={deviceCount} />
+      </div>
+      <div>
+        <AnalyticsPageUserCohort />
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Card 1 */}
-        <div className="bg-[#111829] p-5 rounded-lg border border-slate-700">
+        {/* <div className="bg-[#111829] p-5 rounded-lg border border-slate-700">
           <p className="text-slate-300 text-sm">VIEWS IN LAST 5 MINUTES</p>
           <p
             className={`text-3xl font-bold mt-1 transition-all ${
@@ -207,10 +224,10 @@ export default function RealtimeAnalytics({}) {
             {view}
           </p>
           <p className="text-slate-300 mt-1 text-sm">Page Views</p>
-        </div>
+        </div> */}
 
         {/* Card 2 */}
-        <div className="bg-[#111829] p-5 rounded-lg border border-slate-700 flex flex-col items-center">
+        {/* <div className="bg-[#111829] p-5 rounded-lg border border-slate-700 flex flex-col items-center">
           <p className="text-slate-300 text-sm">Unique visitors</p>
           <p
             className={`text-3xl font-bold mt-1 transition-all ${
@@ -223,10 +240,10 @@ export default function RealtimeAnalytics({}) {
             <span className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></span>
             <p className="text-slate-300 text-sm">Real-time</p>
           </div>
-        </div>
+        </div> */}
 
         {/* Card 3 */}
-        <div className="bg-[#111829] p-5 rounded-lg border border-slate-700 flex flex-col justify-between">
+        {/* <div className="bg-[#111829] p-5 rounded-lg border border-slate-700 flex flex-col justify-between">
           <div className="flex justify-between w-full gap-4 mb-3">
             <div className="text-center flex-1">
               <p className="text-slate-300 text-sm">Mobile</p>
@@ -263,11 +280,11 @@ export default function RealtimeAnalytics({}) {
             <span className="h-3 w-3 rounded-full bg-green-500 animate-pulse"></span>
             <p className="text-slate-300 text-sm">Real-time</p>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Refresh button */}
-      <button
+      {/* <button
         onClick={handleRefresh}
         className="flex items-center gap-2 bg-green-600 px-4 py-2 rounded-md hover:bg-green-700 cursor-pointer transition-transform duration-200 active:scale-95"
       >
@@ -277,12 +294,12 @@ export default function RealtimeAnalytics({}) {
           }`}
         />
         Refresh
-      </button>
+      </button> */}
 
       {/* Graph + Logs Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Line graph */}
-        <div className="bg-gray-850/40 border border-gray-700 rounded-xl p-6 flex flex-col">
+        {/* <div className="bg-gray-850/40 border border-gray-700 rounded-xl p-6 flex flex-col">
           <h3 className="text-white text-lg font-semibold mb-2">Page Views</h3>
           <p className="text-sm text-slate-400 mb-3">Daily Traffic Trends</p>
 
@@ -334,10 +351,10 @@ export default function RealtimeAnalytics({}) {
               </ResponsiveContainer>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* Logs */}
-        <div className="bg-gray-850/40 border border-gray-700 rounded-xl p-6 flex flex-col">
+        {/* <div className="bg-gray-850/40 border border-gray-700 rounded-xl p-6 flex flex-col">
           <h3 className="text-white text-lg font-semibold mb-4">
             Click Activity Log
           </h3>
@@ -367,9 +384,9 @@ export default function RealtimeAnalytics({}) {
       flex items-center justify-between
       ${log.isNew ? "opacity-0 animate-rowIn" : "opacity-100"}
     `}
-                      // style={{ animationDelay: `${i * 0.4}s` }}
+                      
                     >
-                      {/* LEFT : DATE */}
+            
                       <div className="text-slate-400 text-xs w-24">
                         <p>
                           {new Date(log.created_at).toLocaleDateString(
@@ -378,7 +395,7 @@ export default function RealtimeAnalytics({}) {
                               day: "2-digit",
                               month: "short",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </p>
                         <p className="opacity-70">
@@ -387,17 +404,17 @@ export default function RealtimeAnalytics({}) {
                             {
                               hour: "2-digit",
                               minute: "2-digit",
-                            }
+                            },
                           )}
                         </p>
                       </div>
 
-                      {/* CENTER : IP */}
+              
                       <div className="flex-1 text-center text-sm text-white font-mono">
                         {log.ip}
                       </div>
 
-                      {/* RIGHT : ICONS with hover tooltip */}
+                  
                       <div className="flex items-center gap-5">
                         <div className="relative group">
                           <img
@@ -465,7 +482,7 @@ export default function RealtimeAnalytics({}) {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

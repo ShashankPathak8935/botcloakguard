@@ -88,7 +88,7 @@ const WebAnalyticsPage = ({
   const TerminalIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5 text-gray-300"
+      className="h-5 w-5 text-gray-600 dark:text-gray-400 hover:text-blue-500"
       viewBox="0 0 20 20"
       fill="currentColor"
     >
@@ -338,13 +338,13 @@ transition-all duration-200 cursor-pointer
               onClick={handleRefresh}
               disabled={isLoading}
               className={`
-flex items-center cursor-pointer px-4 py-2 rounded-lg font-medium text-sm
-bg-white border border-gray-200 text-gray-700
-hover:bg-gray-50 shadow-sm hover:shadow-md
-dark:bg-[#141824] dark:border-white/10 dark:text-gray-200 dark:hover:bg-white/5
-transition-all duration-200
-${isLoading ? "opacity-50 cursor-not-allowed" : ""}
-`}
+               flex items-center cursor-pointer px-4 py-2 rounded-lg font-medium text-sm
+             bg-white border border-gray-200 text-gray-700
+           hover:bg-gray-50 shadow-sm hover:shadow-md
+           dark:bg-[#141824] dark:border-white/10 dark:text-gray-200 dark:hover:bg-white/5
+             transition-all duration-200
+             ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
+           `}
             >
               <svg
                 className={`h-5 w-5 mr-2 ${isLoading ? "animate-spin" : ""}`}

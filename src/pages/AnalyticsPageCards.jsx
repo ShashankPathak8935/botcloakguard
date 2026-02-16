@@ -1,20 +1,20 @@
 import React from "react";
 import { Users, TrendingDown, BadgeCheck, Share2 } from "lucide-react";
 
-export default function AnalyticsPageCards() {
+export default function AnalyticsPageCards({ view, uniqueVisitors }) {
   const cards = [
     {
-      title: "Total Visitors",
-      value: "5.9M",
-      subtitle: "See in-depth Traffic sources",
+      title: "VIEWS IN LAST 5 MINUTES",
+      value: `${view}`,
+      subtitle: "See in-depth Traffic sources of Page Views",
       icon: Users,
       iconBg: "bg-blue-100 dark:bg-blue-900/40",
       iconColor: "text-blue-600 dark:text-blue-400",
     },
     {
-      title: "Bounce Rate",
-      value: "62.11%",
-      subtitle: "See page-wise Performance",
+      title: "Unique visitors",
+      value: `${uniqueVisitors}`,
+      subtitle: "See page-wise Performance in Real time",
       icon: TrendingDown,
       iconBg: "bg-orange-100 dark:bg-orange-900/40",
       iconColor: "text-orange-600 dark:text-orange-400",

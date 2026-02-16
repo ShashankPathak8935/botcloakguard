@@ -1,7 +1,9 @@
 import React from "react";
 import ReactCountryFlag from "react-country-flag";
-
-
+import { getBrowserIcon } from "../utils/getBrowserIcon";
+import { getDeviceIcon } from "../utils/getDeviceIcon";
+import { getCountryIcon } from "../utils/getCountryIcon";
+import { getOSIcon } from "../utils/getOsIcon";
 
 /* ---------- STATIC DATA ---------- */
 
@@ -95,10 +97,9 @@ const ChangeBadge = ({ type, value }) => {
   );
 };
 
-
 /* ---------- COMPONENT ---------- */
 
-export default function AnalyticsPageUserByCountryTable() {
+export default function AnalyticsPageUserByCountryTable({ logs }) {
   return (
     <div
       className="
@@ -110,7 +111,7 @@ export default function AnalyticsPageUserByCountryTable() {
       {/* HEADER */}
       <div className="flex justify-between mb-6">
         <div>
-          <h2 className="text-lg font-semibold">Users by Country</h2>
+          <h2 className="text-lg font-semibold">Click Activity of Users</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Detail informations of users
           </p>
@@ -135,61 +136,151 @@ export default function AnalyticsPageUserByCountryTable() {
         <table className="w-full text-sm">
           <thead className="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-white/10">
             <tr>
-              <th className="py-4">#</th>
+              <th className="py-4">S.no</th>
+              <th>Created at</th>
+              <th>User IP</th>
+              <th>Browser</th>
+              <th>Device</th>
               <th>Country</th>
-              <th>Total User</th>
-              <th>vs. Last week</th>
-              <th>New User</th>
-              <th>Engaged Sessions</th>
-              <th></th>
+              <th>OS</th>
             </tr>
           </thead>
 
           <tbody>
-            {usersData.map((item) => (
-              <tr
-                key={item.id}
-                className="
-                border-b border-gray-200 dark:border-white/10
-                hover:bg-gray-50 dark:hover:bg-white/5 transition
-              "
-              >
-                <td className="py-4 text-gray-500">{item.id}</td>
+            {logs?.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="py-16 text-center">
+                  <div className="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
+                    <p className="text-lg font-medium">No Data Found</p>
 
-                <td>
-                  <div className="flex items-center gap-3">
-                    <ReactCountryFlag
-                      countryCode={item.code}
-                      svg
-                      style={{
-                        width: "24px",
-                        height: "24px",
-                        borderRadius: "4px",
-                      }}
-                    />
-                    <span className="font-medium">{item.country}</span>
+                    <p className="text-sm mt-1">
+                      No visitor logs available right now.
+                    </p>
                   </div>
                 </td>
-
-                <td className="text-gray-700 dark:text-gray-300">
-                  {item.total}
-                </td>
-
-                <td>
-                  <ChangeBadge type={item.changeType} value={item.change} />
-                </td>
-
-                <td className="text-gray-700 dark:text-gray-300">
-                  {item.newUsers}
-                </td>
-
-                <td className="text-gray-700 dark:text-gray-300">
-                  {item.sessions}
-                </td>
-
-                <td className="text-gray-400 cursor-pointer">•••</td>
               </tr>
-            ))}
+            ) : (
+              logs.slice(0, 5).map((log, index) => (
+                <tr
+                  key={log?.uniqueKey}
+                  className="
+          border-b border-gray-200 dark:border-white/10
+          hover:bg-gray-50 dark:hover:bg-white/5 transition
+        "
+                >
+                  <td className="text-gray-700 dark:text-gray-300">
+                    {index + 1}
+                  </td>
+
+                  <td className="py-4 text-gray-500">
+                    {new Date(log.created_at).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+
+                  <td className="text-gray-700 dark:text-gray-300">{log.ip}</td>
+
+                  <td className="text-gray-700 dark:text-gray-300">
+                    <div className="relative group w-fit">
+                      <img
+                        src={getBrowserIcon(log.browser)}
+                        alt={log.browser}
+                        className="w-5 h-5"
+                      />
+
+                      <span
+                        className="
+      absolute -top-7 left-1/2 -translate-x-1/2
+      px-2 py-1 text-xs rounded-md whitespace-nowrap
+      opacity-0 group-hover:opacity-100 transition
+
+      bg-gray-900 text-white
+      dark:bg-white dark:text-black
+    "
+                      >
+                        {log.browser || "Unknown"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-4 text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center">
+                      <div className="relative group w-fit flex items-center justify-center">
+                        {/* device icon */}
+                        <div className="w-5 h-5 flex items-center justify-center">
+                          {getDeviceIcon(log.device)}
+                        </div>
+
+                        {/* tooltip */}
+                        <span
+                          className="
+          absolute -top-7 left-1/2 -translate-x-1/2
+          px-2 py-1 text-xs rounded-md whitespace-nowrap
+          opacity-0 group-hover:opacity-100 transition
+          pointer-events-none z-50
+
+          bg-gray-900 text-white
+          dark:bg-white dark:text-black
+        "
+                        >
+                          {log.device || "Unknown"}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center">
+                      <div className="relative group w-fit flex items-center justify-center">
+                        {/* country flag */}
+                        <img
+                          src={getCountryIcon(log.country)}
+                          className="w-6 h-5 object-cover rounded-sm border border-gray-200 dark:border-white/10"
+                          alt={log.country}
+                        />
+
+                        {/* tooltip */}
+                        <span
+                          className="
+          absolute -top-7 left-1/2 -translate-x-1/2
+          px-2 py-1 text-xs rounded-md whitespace-nowrap
+          opacity-0 group-hover:opacity-100 transition
+          pointer-events-none z-50
+
+          bg-gray-900 text-white
+          dark:bg-white dark:text-black
+        "
+                        >
+                          {log.country || "Unknown"}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4 text-gray-700 dark:text-gray-300">
+                    <div className="relative group w-fit">
+                      <img
+                        src={getOSIcon(log.os)}
+                        alt={log.os}
+                        className="w-6 h-6 object-contain rounded-sm border border-gray-200 dark:border-white/10 p-[2px]"
+                      />
+
+                      <span
+                        className="
+        absolute -top-7 left-1/2 -translate-x-1/2
+        px-2 py-1 text-xs rounded-md whitespace-nowrap
+        opacity-0 group-hover:opacity-100 transition
+        pointer-events-none z-50
+        bg-gray-900 text-white
+        dark:bg-white dark:text-black
+      "
+                      >
+                        {log.os || "Unknown"}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
