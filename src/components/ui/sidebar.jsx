@@ -13,7 +13,9 @@ import {
   Power,
   HandCoins,
   NotepadText,
+  FileText,
   LayoutDashboard,
+  HardDrive,
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,6 +29,12 @@ import {
   faCircleXmark,
   faShieldHalved,
   faChartColumn,
+  faSliders,
+  faChartLine,
+  faWrench,
+  faTools,
+  faGear,
+  faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import { CreditCard, Layers, Wallet } from "lucide-react";
 import { Layer } from "recharts";
@@ -53,20 +61,35 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       icon: <FontAwesomeIcon icon={faBullhorn} size="lg" />,
       // route: "/Dashboard/allCampaign",
     },
+    {
+      label: "Custom filter",
+      icon: <FontAwesomeIcon icon={faSliders} size="lg" />,
+      // route: "/Dashboard/allCampaign",
+    },
 
+    {
+      label: "Report",
+      icon: <FileText size={24} />,
+    },
+    {
+      label: "Analytics",
+      icon: <FontAwesomeIcon icon={faChartLine} size="lg" />,
+      route: "/Dashboard/analytics",
+    },
+    {
+      label: "Tools",
+      icon: <FontAwesomeIcon icon={faGear} size="lg" />,
+      route: "/Dashboard/analytics",
+    },
+    {
+      label: "Url Shortner",
+      icon: <FontAwesomeIcon icon={faLink} size="lg" />,
+      route: "/Dashboard/analytics",
+    },
     {
       label: "Blacklisted IP",
       icon: <FontAwesomeIcon icon={faShieldHalved} size="lg" />,
       route: "/Dashboard/IpListings",
-    },
-    {
-      label: "Analytics",
-      icon: <FontAwesomeIcon icon={faChartColumn} size="lg" />,
-      route: "/Dashboard/analytics",
-    },
-    {
-      label: "Report",
-      icon: <NotepadText size={24} />,
     },
     {
       label: "Pricing",
@@ -76,6 +99,11 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Billing",
       icon: <Layers size={24} />,
+      // route: "/Dashboard/billing",
+    },
+    {
+      label: "Server",
+      icon: <Database size={24} />,
       // route: "/Dashboard/billing",
     },
   ];
@@ -140,13 +168,13 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
         <div
           className="w-10 h-10 rounded-full
   bg-white dark:bg-slate-800
-  shadow
+  shadow-md
   flex items-center justify-center
 "
         >
           <span
             className="text-3xl font-light
-    text-gray-800 dark:text-gray-100
+    text-gray-800 dark:text-white
   "
           >
             +
@@ -156,7 +184,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
         {/* CREATE TEXT */}
         <span
           className="text-[12px] mt-1
-  text-gray-700 dark:text-gray-300
+  text-gray-700 dark:text-gray-200
 "
         >
           Create
@@ -164,7 +192,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       </div>
 
       {/* NAVIGATION */}
-      <nav className="flex flex-col items-center gap-4 w-full">
+      <nav className="flex flex-col items-center gap-3 w-full">
         {navItems.map((item, index) => {
           const isActive = location.pathname === item.route;
           const isDatabase = item.label === "Report";
@@ -181,28 +209,35 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
                     handleNavigate(item.route);
                   }
                 }}
-                className={`w-full flex flex-col items-center py-2 cursor-pointer transition
+                className={`w-full flex flex-col items-center py-2 cursor-pointer transition-all duration-200
     ${
       isItemActive
-        ? "bg-[#ECF3FF] dark:bg-slate-800 text-[#091ea3] dark:text-blue-400"
-        : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-800"
+        ? "bg-[#ECF3FF] dark:bg-blue-500/10 text-[#091ea3] dark:text-blue-400"
+        : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/10"
     }
   `}
               >
                 <span
-                  className={`${
-                    isItemActive ? "text-[#091ea3]" : "text-gray-600"
-                  }`}
+                  className={`
+              transition-colors
+              ${
+                isItemActive
+                  ? "text-[#091ea3] dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200"
+              }
+            `}
                 >
                   {item.icon}
                 </span>
 
                 <span
-                  className={`text-[12px] mt-0 text-center leading-tight transition-all ${
-                    isCollapsed
-                      ? "opacity-100 scale-90"
-                      : "opacity-100 scale-100"
-                  } ${isItemActive ? "text-[#091ea3]" : "text-gray-700"}`}
+                  className={`text-[12px] mt-0 text-center leading-tight transition-all
+              ${isCollapsed ? "scale-90" : "scale-100"}
+              ${
+                isItemActive
+                  ? "text-[#091ea3] dark:text-blue-400 font-medium"
+                  : "text-gray-700 dark:text-gray-200"
+              }`}
                 >
                   {item.label}
                 </span>
@@ -219,11 +254,11 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
                         key={subIndex}
                         onClick={() => handleNavigate(sub.route)}
                         className={`text-xs px-3 py-1 rounded cursor-pointer transition
-    ${
-      isSubActive
-        ? "bg-[#ECF3FF] dark:bg-slate-700 text-[#465FFF] dark:text-blue-400"
-        : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-800"
-    }
+     ${
+       isSubActive
+         ? "bg-[#ECF3FF] dark:bg-blue-500/10 text-[#465FFF] dark:text-blue-400"
+         : "text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10"
+     }
   `}
                       >
                         {sub.label}
@@ -252,15 +287,16 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
         onMouseLeave={() => setHovered(false)}
       >
         <div
-          className={`h-[100vh] mt-[-8vh]
+          className={`h-[calc(100vh-8vh)] overflow-y-auto  overflow-x-hidden
     bg-[#F1F3F4] dark:bg-[#0F172A]
     border-r border-gray-200 dark:border-gray-800
     shadow-md
+    scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700
     ${collapsed && !hovered ? "w-[48px]" : "w-[120px]"}
     transition-all duration-[600ms] ease-[cubic-bezier(.22,.61,.36,1)]
   `}
         >
-          <div className="h-full flex mt-[8vh] flex-col">
+          <div className="h-full flex flex-col pb-6">
             <SidebarContent
               isCollapsed={collapsed && !hovered}
               mobileVisible={mobileVisible}
@@ -273,7 +309,7 @@ const Sidebar = ({ collapsed, mobileVisible, onCloseMobile }) => {
       {/* Mobile Sidebar */}
       {mobileVisible && (
         <div className="absolute inset-0 z-50 flex md:hidden">
-          <div className="w-[120px] bg-[#F1F3F4] shadow-lg h-[100vh] overflow-hidden">
+          <div className="w-[120px] bg-[#F1F3F4] dark:bg-[#0F172A] shadow-lg h-[calc(100vh-8vh)] overflow-y-auto overflow-x-hidden  pb-10">
             <SidebarContent isCollapsed={false} />
           </div>
         </div>
