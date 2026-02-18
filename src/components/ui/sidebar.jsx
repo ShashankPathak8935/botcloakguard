@@ -165,14 +165,9 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       {/* CREATE BUTTON */}
       <div className="flex flex-col items-center mb-6 cursor-pointer w-full">
         {/* PLUS CIRCLE */}
-        <div
-          className="w-10 h-10 rounded-full
-  bg-white dark:bg-slate-800
-  shadow-md
-  flex items-center justify-center
-"
-        >
+        <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center">
           <span
+            onClick={() => navigate("/Dashboard/create-campaign")}
             className="text-3xl font-light
     text-gray-800 dark:text-white
   "
@@ -182,11 +177,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
         </div>
 
         {/* CREATE TEXT */}
-        <span
-          className="text-[12px] mt-1
-  text-gray-700 dark:text-gray-200
-"
-        >
+        <span className="text-[12px] mt-1 text-gray-700 dark:text-gray-200">
           Create
         </span>
       </div>

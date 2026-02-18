@@ -1,5 +1,4 @@
-
-
+// all campaign creation page
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import Tooltip from "@mui/material/Tooltip";
@@ -261,12 +260,12 @@ const InputField = ({
   step,
 }) => (
   <div>
-    <label className="flex items-center text-xs font-semibold text-slate-400 tracking-wider mb-2">
+    <label className="flex items-center text-xs font-semibold text-gray-600 dark:text-slate-400 tracking-wider mb-2">
       {label} {required && <span className="text-red-500 ml-1">*</span>}
       {tooltip && (
         <Tooltip title={tooltip} placement="top">
           <span className="ml-2 cursor-pointer">
-            <Info className="w-4 h-4 text-slate-500" />
+            <Info className="w-4 h-4 text-gray-500 dark:text-slate-500" />
           </span>
         </Tooltip>
       )}
@@ -274,7 +273,7 @@ const InputField = ({
 
     <div className="relative">
       {icon && (
-        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-slate-400">
           {icon}
         </span>
       )}
@@ -283,8 +282,16 @@ const InputField = ({
         placeholder={placeholder}
         defaultValue={defaultValue}
         step={step}
-        className={`w-full bg-slate-800 border text-sm rounded-lg py-2 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${icon ? "pl-10" : "px-4"
-          } ${error ? "border-red-500" : "border-slate-700"}`}
+        className={` w-full
+          bg-white dark:bg-slate-800
+          border
+          text-gray-900 dark:text-white
+          placeholder-gray-400 dark:placeholder-slate-500
+          text-sm rounded-lg py-2
+          focus:outline-none focus:ring-2 focus:ring-blue-500
+          transition-colors duration-200 ${
+            icon ? "pl-10" : "px-4"
+          } ${error ? "border-red-500" : "border-gray-300 dark:border-slate-700"}`}
         {...register(name, {
           required: required ? `${label} is required.` : false,
           pattern: pattern || undefined,
@@ -319,8 +326,9 @@ const SelectField = ({
     </label>
     <div className="relative">
       <select
-        className={`w-full appearance-none bg-slate-800 border rounded-lg py-2 px-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${error ? "border-red-500" : "border-slate-700"
-          }`}
+        className={`w-full appearance-none bg-slate-800 border rounded-lg py-2 px-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+          error ? "border-red-500" : "border-slate-700"
+        }`}
         {...register(name, { required: required && `${label} is required.` })}
       >
         {options.map((opt, i) => (
@@ -340,17 +348,19 @@ const StatusButton = ({ label, Icon, isActive, onClick }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 h-20 w-full cursor-pointer ${isActive
+    className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 h-20 w-full cursor-pointer ${
+      isActive
         ? "border-blue-500 bg-blue-500/10"
         : "border-slate-700 bg-slate-800 hover:bg-slate-700/50"
-      }`}
+    }`}
   >
     <Icon
       className={`w-5 h-5 ${isActive ? "text-blue-400" : "text-slate-400"}`}
     />
     <span
-      className={`text-sm font-medium mt-2 ${isActive ? "text-white" : "text-slate-300"
-        }`}
+      className={`text-sm font-medium mt-2 ${
+        isActive ? "text-white" : "text-slate-300"
+      }`}
     >
       {label}
     </span>
@@ -361,12 +371,16 @@ const StatusButton = ({ label, Icon, isActive, onClick }) => (
 const DashboardLayout = ({ children }) => (
   <div
     style={{ fontFamily: "Outfit, sans-serif", fontWeight: 400 }}
-    className="min-h-screen bg-slate-950 text-white font-sans"
+    className="
+      min-h-screen
+      bg-[#F1F3F4] dark:bg-[#0F172A]
+      text-gray-900 dark:text-white
+      transition-colors duration-300
+    "
   >
     <div className="max-w-7xl mx-auto p-6">{children}</div>
-    <div className="fixed bottom-6 right-6">
-   
-    </div>
+
+    <div className="fixed bottom-6 right-6">{/* floating content */}</div>
   </div>
 );
 
@@ -394,92 +408,57 @@ export default function CampaignBuilder() {
 
   const [activeStatus, setActiveStatus] = useState("Active");
 
-
-
   const navigate = useNavigate();
   const location = useLocation();
 
-  // useEffect(() => {
-  //   if (location?.state?.mode === "edit") {
-  //     const c = location.state.data; // jo campaign data aya wo
-  //     // set form default
-  //     reset({
-  //       campaignName: c?.campaign_info?.campaignName,
-  //       comment: c?.campaign_info?.comment,
-  //       epc: c?.campaign_info?.epc,
-  //       cpc: c?.campaign_info?.cpc,
-  //       trafficSource: c?.campaign_info?.trafficSource,
-  //       money_page: c?.campaign_info?.money_page,
-  //       safe_page: c?.campaign_info?.safe_page,
-  //       conditions: c?.campaign_info?.conditions,
-  //       filters: c?.campaign_info?.filters,
-  //       automate: c?.campaign_info?.automate,
-  //       page_guard: c?.campaign_info?.page_guard,
-  //       http_code: c?.campaign_info?.http_code,
-  //     });
-
-  //     // local states as well
-
-  //     setMoneyPages(
-  //       c?.money_page || [{ description: "", url: "", weight: 100 }]
-  //     );
-  //     setDynamicVariables(c?.dynamicVariables || []);
-  //     setActiveStatus(c?.status);
-  //   }
-  // }, []);
-
   const fetchCampaignById = async (id) => {
-  try {
-    const res = await apiFunction("get", `${createCampaignApi}/${id}`, null, null);
-   
-    
-    const c = res.data.data;
+    try {
+      const res = await apiFunction(
+        "get",
+        `${createCampaignApi}/${id}`,
+        null,
+        null,
+      );
 
-    
+      const c = res.data.data;
 
-    reset({
-      campaignName: c?.campaign_info?.campaignName,
-      comment: c?.campaign_info?.comment,
-      epc: c?.campaign_info?.epc,
-      cpc: c?.campaign_info?.cpc,
-      trafficSource: c?.campaign_info?.trafficSource,
-      money_page: c?.money_page,
-      safe_page: c?.safe_page,
-      conditions: c?.conditions,
-      filters: c?.filters,
-      afterX:c?.afterX,
-      automate: c?.automate,
-      page_guard: c?.page_guard,
-      http_code: c?.http_code,
-    });
+      reset({
+        campaignName: c?.campaign_info?.campaignName,
+        comment: c?.campaign_info?.comment,
+        epc: c?.campaign_info?.epc,
+        cpc: c?.campaign_info?.cpc,
+        trafficSource: c?.campaign_info?.trafficSource,
+        money_page: c?.money_page,
+        safe_page: c?.safe_page,
+        conditions: c?.conditions,
+        filters: c?.filters,
+        afterX: c?.afterX,
+        automate: c?.automate,
+        page_guard: c?.page_guard,
+        http_code: c?.http_code,
+      });
 
-    setMoneyPages(
-      c?.money_page || [
-        { description: "", url: "", weight: 100 },
-      ]
-    );
+      setMoneyPages(
+        c?.money_page || [{ description: "", url: "", weight: 100 }],
+      );
 
-    setDynamicVariables(c?.dynamicVariables || []);
-    setActiveStatus(c?.status);
-  } catch (err) {
-    // console.error("Failed to fetch campaign", err);
-  }
-};
-
+      setDynamicVariables(c?.dynamicVariables || []);
+      setActiveStatus(c?.status);
+    } catch (err) {
+      // console.error("Failed to fetch campaign", err);
+    }
+  };
 
   useEffect(() => {
-  if (location?.state?.mode === "edit" && location.state.id) {
-    setEditCampaignId(location.state.id);
-  }
-}, [location.state]);
-useEffect(() => {
-  if (editCampaignId) {
-    fetchCampaignById(editCampaignId);
-  }
-}, [editCampaignId]);
-
-
-
+    if (location?.state?.mode === "edit" && location.state.id) {
+      setEditCampaignId(location.state.id);
+    }
+  }, [location.state]);
+  useEffect(() => {
+    if (editCampaignId) {
+      fetchCampaignById(editCampaignId);
+    }
+  }, [editCampaignId]);
 
   // options copied from parts
   const adPlatforms = [
@@ -658,9 +637,8 @@ useEffect(() => {
       safe_page: null,
       conditions: [],
       filters: [],
-       afterX: null,
+      afterX: null,
       automate: {
-       
         frequencyCap: { value: "" },
         zeroRedirect: { curl: false, iframe: false },
         gclid: false,
@@ -671,7 +649,7 @@ useEffect(() => {
     },
   });
 
-    const afterXValue = watch("afterX");
+  const afterXValue = watch("afterX");
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -680,11 +658,10 @@ useEffect(() => {
   const selectedTypes = watch("conditions").map((c) => c.type);
 
   useEffect(() => {
-  if (Number(afterXValue) > 0) {
-    setShowInputs((p) => ({ ...p, afterX: true }));
-  }
-}, [afterXValue]);
-
+    if (Number(afterXValue) > 0) {
+      setShowInputs((p) => ({ ...p, afterX: true }));
+    }
+  }, [afterXValue]);
 
   /* ---------------------------
      helper handlers
@@ -742,95 +719,89 @@ useEffect(() => {
       const valid = await trigger(moneyFields);
       if (!valid) return;
     }
-    if(step == 3){
+    if (step == 3) {
       const safePageField = "safe_page";
       const valid = await trigger(safePageField);
-      if(!valid) return;
-
+      if (!valid) return;
     }
     nextStep();
-  };  
-
+  };
 
   const handleStepClick = async (targetStep) => {
-  // 🔙 Backward movement → always allowed
-  if (targetStep <= step) {
+    // 🔙 Backward movement → always allowed
+    if (targetStep <= step) {
+      setStep(targetStep);
+      return;
+    }
+
+    // 👉 Forward movement → validate CURRENT step only
+    if (step === 1) {
+      const fieldsToValidate = ["campaignName", "trafficSource"];
+      const valid = await trigger(fieldsToValidate);
+      if (!valid) return;
+    }
+
+    if (step === 2) {
+      const moneyFields = moneyPages.map((_, i) => `money_page.${i}.url`);
+      const valid = await trigger(moneyFields);
+      if (!valid) return;
+    }
+
+    if (step === 3) {
+      const valid = await trigger("safe_page");
+      if (!valid) return;
+    }
+
+    // ✅ validation passed → go to clicked step
     setStep(targetStep);
-    return;
-  }
-
-  // 👉 Forward movement → validate CURRENT step only
-  if (step === 1) {
-    const fieldsToValidate = ["campaignName", "trafficSource"];
-    const valid = await trigger(fieldsToValidate);
-    if (!valid) return;
-  }
-
-  if (step === 2) {
-    const moneyFields = moneyPages.map(
-      (_, i) => `money_page.${i}.url`
-    );
-    const valid = await trigger(moneyFields);
-    if (!valid) return;
-  }
-
-  if (step === 3) {
-    const valid = await trigger("safe_page");
-    if (!valid) return;
-  }
-
-  // ✅ validation passed → go to clicked step
-  setStep(targetStep);
-};
-
+  };
 
   const onSubmit = async (data) => {
     try {
       // merge moneyPages from local state into data (to ensure latest)
       // data.money_page = moneyPages;
       data.status = activeStatus;
-   
 
       if (location?.state?.mode === "edit") {
         const uid = location?.state?.id;
-      
-        const payload ={...data,campaign_info:{
-          campaignName:data?.campaignName,
-          trafficSource:data?.trafficSource,
-          epc:data?.epc,
-          cpc:data?.cpc,
-          comment:data?.comment,
-        }};
-        
 
-        const res = await apiFunction("patch", `${createCampaignApi}/${uid}`, null, payload);
-    
-        
+        const payload = {
+          ...data,
+          campaign_info: {
+            campaignName: data?.campaignName,
+            trafficSource: data?.trafficSource,
+            epc: data?.epc,
+            cpc: data?.cpc,
+            comment: data?.comment,
+          },
+        };
+
+        const res = await apiFunction(
+          "patch",
+          `${createCampaignApi}/${uid}`,
+          null,
+          payload,
+        );
+
         showSuccessToast("Campaign updated successfully!");
         navigate("/Dashboard/campaign-integration", {
           state: {
             mode: "edit",
-            id:uid,
+            id: uid,
             data: location.state.data,
           },
         });
       } else {
-  
-        
         const response = await apiFunction(
           "post",
           createCampaignApi,
           null,
-          data
+          data,
         );
-
-
-
-
 
         // use response to show success
         showSuccessToast(
-          "Campaign created successfully! you are going to route to Integration page"
+          "Campaign created successfully! you are going to route to Integration page",
         );
         navigate("/Dashboard/campaign-integration", {
           state: {
@@ -840,15 +811,12 @@ useEffect(() => {
         });
       }
     } catch (err) {
-       if (err?.response?.status === 403) {
-    showErrorToast("Campaign limit reached. Upgrade your plan 🚀");
-    navigate('/Dashboard/pricing')
-  } else {
-    showErrorToast(
-      err?.response?.data?.message || "Something went wrong"
-    );
-  }
-     
+      if (err?.response?.status === 403) {
+        showErrorToast("Campaign limit reached. Upgrade your plan 🚀");
+        navigate("/Dashboard/pricing");
+      } else {
+        showErrorToast(err?.response?.data?.message || "Something went wrong");
+      }
     }
   };
 
@@ -860,63 +828,82 @@ useEffect(() => {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-left justify-between">
+        <div
+          className="
+         flex items-left justify-between
+       bg-white dark:bg-slate-900
+       text-gray-900 dark:text-white
+         p-4 rounded-lg
+         transition-colors duration-300
+         "
+        >
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-left text-white">
+            <h1 className="text-2xl font-semibold tracking-tight text-left text-gray-900 dark:text-white">
               {location?.state?.mode === "edit" ? "Update" : "Create"} Campaign
             </h1>
-            <p className="text-slate-400 mt-1 text-left max-w-xl">
-              Transform your traffic into a success story — multi-step campaign
-              builder with advanced cloaking controls.
+
+            <p className="text-gray-600 dark:text-slate-400 mt-1 text-left max-w-xl">
+              Create high-performance campaigns with smart tracking and
+              cloaking.
             </p>
           </div>
-          
         </div>
 
         {/* Stepper */}
-        <nav aria-label="Progress" className="mb-8">
+        {/* <nav aria-label="Progress" className="mb-8">
           <ol role="list" className="flex items-center gap-4">
             {steps.map((s, idx) => {
               const active = idx + 1 <= step;
               return (
                 <li key={s.name} className="flex items-center">
                   <div
-  onClick={() => handleStepClick(idx + 1)}
-  className={`flex items-center justify-center h-10 w-10 rounded-full
+                    onClick={() => handleStepClick(idx + 1)}
+                    className={`flex items-center justify-center h-10 w-10 rounded-full
     ${active ? "bg-blue-600" : "bg-slate-800"}
     cursor-pointer`}
->
+                  >
                     <s.icon
-                      className={`w-5 h-5 cursor-pointer ${active ? "text-white" : "text-slate-400"
-                        }`}
+                      className={`w-5 h-5 cursor-pointer ${
+                        active ? "text-white" : "text-slate-400"
+                      }`}
                     />
                   </div>
                   <div
-                    className={`ml-2 text-sm ${active ? "text-white font-medium" : "text-slate-500"
-                      }`}
+                    className={`ml-2 text-sm ${
+                      active ? "text-white font-medium" : "text-slate-500"
+                    }`}
                   >
                     {s.name}
                   </div>
                   {idx !== steps.length - 1 && (
                     <div
-                      className={`mx-4 h-[2px] w-14 ${idx + 1 < step ? "bg-blue-600" : "bg-slate-800"
-                        }`}
+                      className={`mx-4 h-[2px] w-14 ${
+                        idx + 1 < step ? "bg-blue-600" : "bg-slate-800"
+                      }`}
                     />
                   )}
                 </li>
               );
             })}
           </ol>
-        </nav>
+        </nav> */}
 
         {/* Form container */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Step 1: Campaign Info */}
           {step === 1 && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+            <div
+              className="
+    bg-white dark:bg-slate-900
+    border border-gray-200 dark:border-slate-800
+    rounded-2xl p-6 shadow-xl
+    text-gray-900 dark:text-white
+    transition-colors duration-300
+  "
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
-                  <h2 className="text-lg font-semibold text-white">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Campaign Details
                   </h2>
                   <InputField
@@ -925,7 +912,7 @@ useEffect(() => {
                     register={register}
                     error={errors.campaignName}
                     required
-                    placeholder="Enter a unique name"
+                    placeholder="Enter campaign name"
                     tooltip="Enter Desired Campaign Name to identify it"
                   />
                   <InputField
@@ -946,7 +933,6 @@ useEffect(() => {
                     options={adPlatforms}
                   />
                 </div>
-
                 <div className="space-y-6">
                   <h2 className="text-lg font-semibold text-white">
                     Financials & Status
@@ -1002,22 +988,35 @@ useEffect(() => {
               <div className="flex justify-between mt-6">
                 <div></div>
                 {location?.state?.mode === "edit" ? (
-                    <button
-                      type="button"
-                      // onClick={() => {
-                      //   showCustomAlert(
-                      //     "You can preview changes before creating campaign"
-                      //   );
-                      // }}
-                      onClick={handleSubmit(onSubmit)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
+                  <button
+                    type="button"
+                    // onClick={() => {
+                    //   showCustomAlert(
+                    //     "You can preview changes before creating campaign"
+                    //   );
+                    // }}
+                    onClick={handleSubmit(onSubmit)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
+                  >
+                    <svg
+                      class="svg-inline--fa fa-floppy-disk me-2"
+                      aria-hidden="true"
+                      focusable="false"
+                      data-prefix="fas"
+                      data-icon="floppy-disk"
+                      role="img"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      data-fa-i2svg=""
                     >
-                      <svg class="svg-inline--fa fa-floppy-disk me-2" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="floppy-disk" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"></path></svg>
-                      <span>
-                        Save Changes
-                      </span>
-                    </button>
-                  ) : null}
+                      <path
+                        fill="currentColor"
+                        d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"
+                      ></path>
+                    </svg>
+                    <span>Save Changes</span>
+                  </button>
+                ) : null}
                 <button
                   type="button"
                   onClick={handleNext}
@@ -1210,10 +1209,23 @@ useEffect(() => {
                       onClick={handleSubmit(onSubmit)}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
                     >
-                      <svg class="svg-inline--fa fa-floppy-disk me-2" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="floppy-disk" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"></path></svg>
-                      <span>
-                        Save Changes
-                      </span>
+                      <svg
+                        class="svg-inline--fa fa-floppy-disk me-2"
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fas"
+                        data-icon="floppy-disk"
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        data-fa-i2svg=""
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"
+                        ></path>
+                      </svg>
+                      <span>Save Changes</span>
                     </button>
                   ) : null}
                   <div className="flex gap-3">
@@ -1224,7 +1236,6 @@ useEffect(() => {
                     >
                       Next ›
                     </button>
-
                   </div>
                 </div>
               </div>
@@ -1331,10 +1342,23 @@ useEffect(() => {
                       onClick={handleSubmit(onSubmit)}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
                     >
-                      <svg class="svg-inline--fa fa-floppy-disk me-2" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="floppy-disk" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"></path></svg>
-                      <span>
-                        Save Changes
-                      </span>
+                      <svg
+                        class="svg-inline--fa fa-floppy-disk me-2"
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fas"
+                        data-icon="floppy-disk"
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        data-fa-i2svg=""
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"
+                        ></path>
+                      </svg>
+                      <span>Save Changes</span>
                     </button>
                   ) : null}
                   <div className="flex gap-3">
@@ -1345,7 +1369,6 @@ useEffect(() => {
                     >
                       Next ›
                     </button>
-                    
                   </div>
                 </div>
               </div>
@@ -1370,7 +1393,7 @@ useEffect(() => {
                     <option value="">+ Add condition</option>
 
                     {OPTIONS.filter(
-                      (o) => !selectedTypes.includes(o.value)
+                      (o) => !selectedTypes.includes(o.value),
                     ).map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}
@@ -1427,12 +1450,13 @@ useEffect(() => {
                                   key={mode}
                                   type="button"
                                   onClick={() => field.onChange(mode)}
-                                  className={`px-3 py-1.5 text-sm rounded-md border cursor-pointer ${field.value === mode
+                                  className={`px-3 py-1.5 text-sm rounded-md border cursor-pointer ${
+                                    field.value === mode
                                       ? mode === "allow"
                                         ? "bg-blue-600 text-white border-blue-600"
                                         : "bg-red-600 text-white border-red-600"
                                       : "bg-slate-700 text-slate-300 border-slate-700 hover:bg-slate-700/50"
-                                    }`}
+                                  }`}
                                 >
                                   {mode.charAt(0).toUpperCase() + mode.slice(1)}
                                 </button>
@@ -1460,8 +1484,8 @@ useEffect(() => {
                                       onClick={() =>
                                         field.onChange(
                                           field.value.filter(
-                                            (_, id) => id !== i
-                                          )
+                                            (_, id) => id !== i,
+                                          ),
                                         )
                                       }
                                       className="ml-1 text-slate-400 hover:text-slate-200 cursor-pointer"
@@ -1553,10 +1577,23 @@ useEffect(() => {
                       onClick={handleSubmit(onSubmit)}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
                     >
-                      <svg class="svg-inline--fa fa-floppy-disk me-2" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="floppy-disk" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"></path></svg>
-                      <span>
-                        Save Changes
-                      </span>
+                      <svg
+                        class="svg-inline--fa fa-floppy-disk me-2"
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fas"
+                        data-icon="floppy-disk"
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        data-fa-i2svg=""
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"
+                        ></path>
+                      </svg>
+                      <span>Save Changes</span>
                     </button>
                   ) : null}
                   <div className="flex gap-3">
@@ -1588,40 +1625,40 @@ useEffect(() => {
                         fixedOptions.filter(
                           (opt) =>
                             !(field.value || []).some(
-                              (sel) => sel.id === opt.id
-                            )
-                        )
+                              (sel) => sel.id === opt.id,
+                            ),
+                        ),
                       );
                       const [selectedOptions, setSelectedOptions] = useState(
-                        field.value || []
+                        field.value || [],
                       );
                       const [selectedLeft, setSelectedLeft] = useState([]);
                       const [selectedRight, setSelectedRight] = useState([]);
 
                       const moveRight = () => {
                         const moved = availableOptions.filter((o) =>
-                          selectedLeft.includes(o.id.toString())
+                          selectedLeft.includes(o.id.toString()),
                         );
                         const updatedSelected = [...selectedOptions, ...moved];
                         setSelectedOptions(updatedSelected);
                         setAvailableOptions(
                           availableOptions.filter(
-                            (o) => !selectedLeft.includes(o.id.toString())
-                          )
+                            (o) => !selectedLeft.includes(o.id.toString()),
+                          ),
                         );
                         setSelectedLeft([]);
                         setValue("filters", updatedSelected);
                       };
                       const moveLeft = () => {
                         const moved = selectedOptions.filter((o) =>
-                          selectedRight.includes(o.id.toString())
+                          selectedRight.includes(o.id.toString()),
                         );
                         const updatedAvailable = [
                           ...availableOptions,
                           ...moved,
                         ];
                         const updatedSelected = selectedOptions.filter(
-                          (o) => !selectedRight.includes(o.id.toString())
+                          (o) => !selectedRight.includes(o.id.toString()),
                         );
                         setAvailableOptions(updatedAvailable);
                         setSelectedOptions(updatedSelected);
@@ -1650,8 +1687,7 @@ useEffect(() => {
                       };
 
                       return (
-                        <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-10"
-                        >
+                        <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-10">
                           {/* LEFT COLUMN */}
                           <div
                             style={{
@@ -1680,8 +1716,8 @@ useEffect(() => {
                                 setSelectedLeft(
                                   Array.from(
                                     e.target.selectedOptions,
-                                    (opt) => opt.value
-                                  )
+                                    (opt) => opt.value,
+                                  ),
                                 )
                               }
                             >
@@ -1771,7 +1807,6 @@ useEffect(() => {
                             </button>
                           </div>
 
-
                           {/* RIGHT COLUMN */}
                           <div
                             style={{
@@ -1800,8 +1835,8 @@ useEffect(() => {
                                 setSelectedRight(
                                   Array.from(
                                     e.target.selectedOptions,
-                                    (opt) => opt.value
-                                  )
+                                    (opt) => opt.value,
+                                  ),
                                 )
                               }
                             >
@@ -1841,10 +1876,23 @@ useEffect(() => {
                       onClick={handleSubmit(onSubmit)}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md  cursor-pointer"
                     >
-                      <svg class="svg-inline--fa fa-floppy-disk me-2" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="floppy-disk" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"></path></svg>
-                      <span>
-                        Save Changes
-                      </span>
+                      <svg
+                        class="svg-inline--fa fa-floppy-disk me-2"
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fas"
+                        data-icon="floppy-disk"
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        data-fa-i2svg=""
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"
+                        ></path>
+                      </svg>
+                      <span>Save Changes</span>
                     </button>
                   ) : null}
                   <div className="flex gap-3">
@@ -1855,7 +1903,6 @@ useEffect(() => {
                     >
                       Next ›
                     </button>
-                    
                   </div>
                 </div>
               </div>
@@ -1868,33 +1915,32 @@ useEffect(() => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-slate-800 p-4 rounded border border-slate-700">
-  <label className="flex items-center gap-2">
-    <input
-      type="checkbox"
-      checked={showInputs.afterX>0 ? true:false}
-      onChange={() =>
-        setShowInputs((p) => ({
-          ...p,
-          afterX: !p.afterX,
-        }))
-      }
-    />
-    <span className="text-white">
-      Activate after X unique real visitors
-    </span>
-  </label>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={showInputs.afterX > 0 ? true : false}
+                        onChange={() =>
+                          setShowInputs((p) => ({
+                            ...p,
+                            afterX: !p.afterX,
+                          }))
+                        }
+                      />
+                      <span className="text-white">
+                        Activate after X unique real visitors
+                      </span>
+                    </label>
 
-  {showInputs.afterX && (
-    <InputField
-      label="Enter value"
-      name="afterX"
-      register={register}
-      type="number"
-      placeholder="Enter number of visitors"
-    />
-  )}
-</div>
-
+                    {showInputs.afterX && (
+                      <InputField
+                        label="Enter value"
+                        name="afterX"
+                        register={register}
+                        type="number"
+                        placeholder="Enter number of visitors"
+                      />
+                    )}
+                  </div>
 
                   <div className="bg-slate-800 p-4 rounded border border-slate-700">
                     <label className="flex items-center gap-2">
@@ -1944,7 +1990,7 @@ useEffect(() => {
                             onChange={(e) => {
                               setValue(
                                 "automate.zeroRedirect.curl",
-                                e.target.checked
+                                e.target.checked,
                               );
                               if (e.target.checked)
                                 setValue("automate.zeroRedirect.iframe", false);
@@ -1959,7 +2005,7 @@ useEffect(() => {
                             onChange={(e) => {
                               setValue(
                                 "automate.zeroRedirect.iframe",
-                                e.target.checked
+                                e.target.checked,
                               );
                               if (e.target.checked)
                                 setValue("automate.zeroRedirect.curl", false);
