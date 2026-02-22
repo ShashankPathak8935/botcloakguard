@@ -7,6 +7,8 @@ import { apiFunction } from "../api/ApiFunction";
 import { createCampaignApi } from "../api/Apis";
 import { BROWSER_LIST, COUNTRY_LIST, DEVICE_LIST } from "../data/dataList";
 import { showErrorToast, showSuccessToast } from "../components/toast/toast";
+import { CheckCircle, Ban } from "lucide-react";
+import TrafficSourceSelect from "./TrafficSourceSelect";
 
 /* ===========================
    Icon components (inline SVG)
@@ -111,64 +113,64 @@ const Info = ({ className }) => (
     <path d="M12 8h.01" />
   </svg>
 );
-const Play = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <polygon points="5 3 19 12 5 21 5 3" />
-  </svg>
-);
-const Zap = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-  </svg>
-);
-const CircleSlash = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <line x1="9" x2="15" y1="15" y2="9" />
-    <circle cx="12" cy="12" r="10" />
-  </svg>
-);
-const CalendarDays = ({ className }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-    <line x1="16" x2="16" y1="2" y2="6" />
-    <line x1="8" x2="8" y1="2" y2="6" />
-    <line x1="3" x2="21" y1="10" y2="10" />
-    <path d="M8 14h.01" />
-    <path d="M12 14h.01" />
-    <path d="M16 14h.01" />
-    <path d="M8 18h.01" />
-    <path d="M12 18h.01" />
-    <path d="M16 18h.01" />
-  </svg>
-);
+// const Play = ({ className }) => (
+//   <svg
+//     className={className}
+//     xmlns="http://www.w3.org/2000/svg"
+//     viewBox="0 0 24 24"
+//     fill="none"
+//     stroke="currentColor"
+//     strokeWidth="2"
+//   >
+//     <polygon points="5 3 19 12 5 21 5 3" />
+//   </svg>
+// );
+// const Zap = ({ className }) => (
+//   <svg
+//     className={className}
+//     xmlns="http://www.w3.org/2000/svg"
+//     viewBox="0 0 24 24"
+//     fill="none"
+//     stroke="currentColor"
+//     strokeWidth="2"
+//   >
+//     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+//   </svg>
+// );
+// const CircleSlash = ({ className }) => (
+//   <svg
+//     className={className}
+//     xmlns="http://www.w3.org/2000/svg"
+//     viewBox="0 0 24 24"
+//     fill="none"
+//     stroke="currentColor"
+//     strokeWidth="2"
+//   >
+//     <line x1="9" x2="15" y1="15" y2="9" />
+//     <circle cx="12" cy="12" r="10" />
+//   </svg>
+// );
+// const CalendarDays = ({ className }) => (
+//   <svg
+//     className={className}
+//     xmlns="http://www.w3.org/2000/svg"
+//     viewBox="0 0 24 24"
+//     fill="none"
+//     stroke="currentColor"
+//     strokeWidth="2"
+//   >
+//     <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+//     <line x1="16" x2="16" y1="2" y2="6" />
+//     <line x1="8" x2="8" y1="2" y2="6" />
+//     <line x1="3" x2="21" y1="10" y2="10" />
+//     <path d="M8 14h.01" />
+//     <path d="M12 14h.01" />
+//     <path d="M16 14h.01" />
+//     <path d="M8 18h.01" />
+//     <path d="M12 18h.01" />
+//     <path d="M16 18h.01" />
+//   </svg>
+// );
 const ChevronDown = ({ className }) => (
   <svg
     className={className}
@@ -219,30 +221,6 @@ const XIcon = ({ className }) => (
     <path d="m6 6 12 12" />
   </svg>
 );
-
-/* ===========================
-   Small reusable UI pieces
-   (restyled to match Dark Steel theme)
-   =========================== */
-
-const CustomAlertModal = ({ message, onClose }) => {
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-      <div className="bg-slate-800 p-6 rounded-xl shadow-2xl max-w-sm w-full border border-slate-700">
-        <h3 className="text-lg font-semibold text-white mb-3">Information</h3>
-        <p className="text-slate-300 mb-6">{message}</p>
-        <div className="flex justify-end">
-          <button
-            onClick={onClose}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
-          >
-            OK
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 /* InputField - styled */
 const InputField = ({
@@ -304,63 +282,111 @@ const InputField = ({
 );
 
 /* SelectField - styled */
-const SelectField = ({
-  label,
-  name,
-  register,
-  error,
-  required,
-  tooltip,
-  options = [],
-}) => (
-  <div>
-    <label className="flex items-center text-xs font-semibold text-slate-400 tracking-wider mb-2">
-      {label} {required && <span className="text-red-500 ml-1">*</span>}
-      {tooltip && (
-        <Tooltip title={tooltip}>
-          <span className="ml-2 cursor-pointer">
-            <Info className="w-4 h-4 text-slate-500" />
-          </span>
-        </Tooltip>
-      )}
-    </label>
-    <div className="relative">
-      <select
-        className={`w-full appearance-none bg-slate-800 border rounded-lg py-2 px-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-          error ? "border-red-500" : "border-slate-700"
-        }`}
-        {...register(name, { required: required && `${label} is required.` })}
-      >
-        {options.map((opt, i) => (
-          <option key={i} value={opt}>
-            {opt}
-          </option>
-        ))}
-      </select>
-      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
-    </div>
-    {error && <p className="mt-1 text-xs text-red-400">{error.message}</p>}
-  </div>
-);
+// const SelectField = ({
+//   label,
+//   name,
+//   register,
+//   error,
+//   required,
+//   tooltip,
+//   options = [],
+// }) => (
+//   <div>
+//     <label
+//       className=" flex items-center text-xs font-semibold tracking-wider mb-2
+//         text-gray-700 dark:text-slate-300"
+//     >
+//       {label} {required && <span className="text-red-500 ml-1">*</span>}
+//       {tooltip && (
+//         <Tooltip title={tooltip}>
+//           <span className="ml-2 cursor-pointer">
+//             <Info className="w-4 h-4 text-gray-500 dark:text-slate-400" />
+//           </span>
+//         </Tooltip>
+//       )}
+//     </label>
+//     <div className="relative">
+//       <select
+//         className={`
+//           w-full appearance-none border rounded-lg py-2 px-4 text-sm
+//           focus:outline-none focus:ring-2 focus:ring-blue-500
+//           transition-colors duration-300
+
+//           bg-white dark:bg-slate-900
+//           text-gray-900 dark:text-white
+//           border-gray-300 dark:border-slate-700
+
+//           ${error ? "border-red-500 dark:border-red-500" : ""}
+//         `}
+//         {...register(name, { required: required && `${label} is required.` })}
+//       >
+//         {options.map((opt, i) => (
+//           <option key={i} value={opt}>
+//             {opt}
+//           </option>
+//         ))}
+//       </select>
+//       <ChevronDown
+//         className="
+//           absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 pointer-events-none
+//           text-gray-500 dark:text-slate-400
+//         "
+//       />
+//     </div>
+//     {error && (
+//       <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+//         {error.message}
+//       </p>
+//     )}
+//   </div>
+// );
 
 /* StatusButton - styled card button */
 const StatusButton = ({ label, Icon, isActive, onClick }) => (
   <button
     type="button"
     onClick={onClick}
-    className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 h-20 w-full cursor-pointer ${
-      isActive
-        ? "border-blue-500 bg-blue-500/10"
-        : "border-slate-700 bg-slate-800 hover:bg-slate-700/50"
-    }`}
+    className={`
+      w-full min-h-[64px] px-5 py-3 rounded-xl border
+      flex items-center gap-3
+      transition-all duration-300 cursor-pointer
+      hover:scale-[1.02]
+
+      ${
+        isActive
+          ? `
+            border-blue-500
+            ring-2 ring-blue-500/30
+            bg-blue-50 dark:bg-blue-500/10
+            shadow-lg shadow-blue-500/10
+          `
+          : `
+            border-gray-300 dark:border-slate-700
+            bg-white dark:bg-slate-900
+            hover:bg-gray-100 dark:hover:bg-slate-800
+            shadow-sm
+          `
+      }
+    `}
   >
     <Icon
-      className={`w-5 h-5 ${isActive ? "text-blue-400" : "text-slate-400"}`}
-    />
-    <span
-      className={`text-sm font-medium mt-2 ${
-        isActive ? "text-white" : "text-slate-300"
+      className={`w-5 h-5 shrink-0 ${
+        isActive
+          ? "text-blue-600 dark:text-blue-400"
+          : "text-gray-600 dark:text-slate-400"
       }`}
+    />
+
+    {/* LABEL */}
+    <span
+      className={`
+        text-sm font-semibold break-words
+        ${
+          isActive
+            ? "text-blue-700 dark:text-white"
+            : "text-gray-800 dark:text-slate-300"
+        }
+      `}
     >
       {label}
     </span>
@@ -389,14 +415,15 @@ const DashboardLayout = ({ children }) => (
    =========================== */
 
 export default function CampaignBuilder() {
+  const [trafficSource, setTrafficSource] = useState("");
   // Shared state across steps
   const [step, setStep] = useState(1);
   const [moneyPages, setMoneyPages] = useState([
     { description: "", url: "", weight: 100 },
   ]);
   const [dynamicVariables, setDynamicVariables] = useState([]);
-  const [appendUrl, setAppendUrl] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+  // const [appendUrl, setAppendUrl] = useState(false);
+  // const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [showInputs, setShowInputs] = useState({
     activateAfterX: false,
@@ -598,17 +625,16 @@ export default function CampaignBuilder() {
   const steps = [
     { id: 1, name: "Campaign info", icon: ListChecks },
     { id: 2, name: "Money Pages", icon: DollarSign },
-    { id: 3, name: "Safe Page", icon: ShieldCheck },
+    { id: 3, name: "White Page", icon: ShieldCheck },
     { id: 4, name: "Conditions", icon: GitMerge },
     { id: 5, name: "Campaign Filters", icon: Filter },
     { id: 6, name: "Automate", icon: Bot },
   ];
 
   const statusOptions = [
-    { name: "Active", icon: Play },
-    { name: "Allow", icon: Zap },
-    { name: "Block", icon: CircleSlash },
-    // { name: "Schedule", icon: CalendarDays },
+    { name: "Active", icon: CheckCircle },
+    { name: "Allow", icon: ShieldCheck },
+    { name: "Block", icon: Ban },
   ];
 
   /* ---------------------------
@@ -666,14 +692,14 @@ export default function CampaignBuilder() {
   /* ---------------------------
      helper handlers
      --------------------------- */
-  const showCustomAlert = (message) => {
-    setAlertMessage(message);
-    setShowAlert(true);
-  };
-  const hideCustomAlert = () => {
-    setShowAlert(false);
-    setAlertMessage("");
-  };
+  // const showCustomAlert = (message) => {
+  //   setAlertMessage(message);
+  //   setShowAlert(true);
+  // };
+  // const hideCustomAlert = () => {
+  //   setShowAlert(false);
+  //   setAlertMessage("");
+  // };
 
   const addMoneyPage = () => {
     setMoneyPages((p) => {
@@ -820,10 +846,6 @@ export default function CampaignBuilder() {
     }
   };
 
-  /* ===========================
-     Visual: stepper and card layout
-     =========================== */
-
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -850,35 +872,55 @@ export default function CampaignBuilder() {
         </div>
 
         {/* Stepper */}
-        {/* <nav aria-label="Progress" className="mb-8">
-          <ol role="list" className="flex items-center gap-4">
+        <nav
+          aria-label="Progress"
+          className="mb-8 transition-colors duration-300"
+        >
+          <ol role="list" className="flex items-center gap-6">
             {steps.map((s, idx) => {
               const active = idx + 1 <= step;
+
               return (
                 <li key={s.name} className="flex items-center">
-                  <div
-                    onClick={() => handleStepClick(idx + 1)}
-                    className={`flex items-center justify-center h-10 w-10 rounded-full
-    ${active ? "bg-blue-600" : "bg-slate-800"}
-    cursor-pointer`}
-                  >
-                    <s.icon
-                      className={`w-5 h-5 cursor-pointer ${
-                        active ? "text-white" : "text-slate-400"
+                  {/* STEP ITEM */}
+                  <div className="flex flex-col items-center">
+                    {/* CIRCLE WITH NUMBER */}
+                    <div
+                      onClick={() => handleStepClick(idx + 1)}
+                      className={`
+                flex items-center justify-center
+                h-10 w-10 rounded-full cursor-pointer
+                text-sm font-semibold
+                transition-colors duration-300
+                ${
+                  active
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-400"
+                }
+              `}
+                    >
+                      {idx + 1}
+                    </div>
+
+                    {/* STEP NAME BELOW */}
+                    <div
+                      className={`mt-2 text-sm transition-colors duration-300 ${
+                        active
+                          ? "text-gray-900 dark:text-white font-medium"
+                          : "text-gray-500 dark:text-slate-500"
                       }`}
-                    />
+                    >
+                      {s.name}
+                    </div>
                   </div>
-                  <div
-                    className={`ml-2 text-sm ${
-                      active ? "text-white font-medium" : "text-slate-500"
-                    }`}
-                  >
-                    {s.name}
-                  </div>
+
+                  {/* CONNECTOR LINE */}
                   {idx !== steps.length - 1 && (
                     <div
-                      className={`mx-4 h-[2px] w-14 ${
-                        idx + 1 < step ? "bg-blue-600" : "bg-slate-800"
+                      className={`mx-4 h-[2px] w-14 transition-colors duration-300 ${
+                        idx + 1 < step
+                          ? "bg-blue-600"
+                          : "bg-gray-300 dark:bg-slate-800"
                       }`}
                     />
                   )}
@@ -886,7 +928,7 @@ export default function CampaignBuilder() {
               );
             })}
           </ol>
-        </nav> */}
+        </nav>
 
         {/* Form container */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -901,7 +943,7 @@ export default function CampaignBuilder() {
     transition-colors duration-300
   "
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-[30%_70%] gap-8">
                 <div className="space-y-6">
                   <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Campaign Details
@@ -923,54 +965,12 @@ export default function CampaignBuilder() {
                     placeholder="Add a brief description"
                     tooltip="Comment for this campaign"
                   />
-                  <SelectField
-                    label="Traffic Source"
-                    name="trafficSource"
-                    register={register}
-                    error={errors.trafficSource}
-                    required
-                    tooltip="Traffic Source like Google Ads"
-                    options={adPlatforms}
-                  />
-                </div>
-                <div className="space-y-6">
-                  <h2 className="text-lg font-semibold text-white">
-                    Financials & Status
-                  </h2>
-                  <div className="grid grid-cols-2 gap-4">
-                    <InputField
-                      label="EPC (Earnings Per Click)"
-                      name="epc"
-                      register={register}
-                      error={errors.epc}
-                      placeholder="0.00"
-                      type="number"
-                      icon={<span className="text-sm">$</span>}
-                      tooltip="Earnings Per Click"
-                    />
-                    <InputField
-                      label="CPC (Cost Per Click)"
-                      name="cpc"
-                      register={(name) =>
-                        register(name, {
-                          min: { value: 0, message: "CPC cannot be negative" },
-                        })
-                      }
-                      error={errors.cpc}
-                      placeholder="0.00"
-                      type="number"
-                      icon={<span className="text-sm">$</span>}
-                      tooltip="Cost Per Click"
-                      step="0.1"
-                    />
-                  </div>
-
-                  <div className="bg-slate-800 p-3 rounded-lg border border-slate-700">
-                    <label className="flex items-center text-sm font-medium text-gray-300 mb-3">
+                  <div className="p-3 rounded-lg border transition-colors duration-300 bg-white dark:bg-slate-900 border-gray-300 dark:border-slate-700">
+                    <label className="flex items-center text-sm font-medium mb-2 text-gray-900 dark:text-gray-300">
                       Campaign Status{" "}
                       <span className="text-red-500 ml-1">*</span>
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                       {statusOptions.map((opt) => (
                         <StatusButton
                           key={opt.name}
@@ -983,6 +983,18 @@ export default function CampaignBuilder() {
                     </div>
                   </div>
                 </div>
+                <div className="space-y-6">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Choose a traffic source
+                  </h2>
+
+                  <TrafficSourceSelect
+                    label={"Traffic Source"}
+                    options={adPlatforms}
+                    value={trafficSource}
+                    onChange={setTrafficSource}
+                  />
+                </div>
               </div>
 
               <div className="flex justify-between mt-6">
@@ -990,11 +1002,6 @@ export default function CampaignBuilder() {
                 {location?.state?.mode === "edit" ? (
                   <button
                     type="button"
-                    // onClick={() => {
-                    //   showCustomAlert(
-                    //     "You can preview changes before creating campaign"
-                    //   );
-                    // }}
                     onClick={handleSubmit(onSubmit)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
                   >
@@ -1030,232 +1037,207 @@ export default function CampaignBuilder() {
 
           {/* Step 2: Money Pages */}
           {step === 2 && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-white">
-                    Where do we send legit visitors (money pages)?
+            <div
+              className="
+    relative overflow-hidden
+    bg-gradient-to-br from-gray-50 via-white to-gray-100
+    dark:from-slate-950 dark:via-slate-900 dark:to-slate-950
+    border border-gray-200 dark:border-slate-800
+    rounded-3xl p-8 shadow-xl
+    transition-all duration-300
+  "
+            >
+              {/* HEADER */}
+              <div className="mb-8 flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                    Money Pages Setup
                   </h2>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 text-slate-300">
-                      <span className="text-sm">Append URL</span>
-                      <input
-                        type="checkbox"
-                        className="h-4 w-4 rounded bg-slate-700"
-                        checked={appendUrl}
-                        onChange={() => setAppendUrl((v) => !v)}
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                {appendUrl && (
-                  <InputField
-                    label="APPEND URL VALUE"
-                    name="append_url"
-                    register={register}
-                    placeholder="Enter URL to append"
-                    tooltip="Add the parameters in moneypage URL"
-                  />
-                )}
-
-                <div className="space-y-4">
-                  {Array.isArray(moneyPages) && moneyPages.length > 0 ? (
-                    moneyPages.map((page, index) => (
-                      <div
-                        key={index}
-                        className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-slate-800 border border-slate-700 p-4 rounded-lg"
-                      >
-                        <InputField
-                          label="Description"
-                          name={`money_page.${index}.description`}
-                          register={register}
-                          placeholder="Enter description"
-                          defaultValue={page.description || ""}
-                          tooltip="Short name visible in reports"
-                        />
-
-                        <InputField
-                          label="Money Page Url"
-                          name={`money_page.${index}.url`}
-                          register={register}
-                          error={errors.money_page?.[index]?.url}
-                          required
-                          placeholder="https://www.example.com"
-                          pattern={{
-                            value: /^(https?:\/\/[^\s$.?#].[^\s]*)$/i,
-                            message: "Enter a valid URL",
-                          }}
-                          tooltip="Money page for legit visitors"
-                        />
-
-                        <InputField
-                          label="WEIGHT"
-                          name={`money_page.${index}.weight`}
-                          register={register}
-                          error={errors.money_page?.[index]?.weight}
-                          placeholder="100"
-                          type="number"
-                          tooltip="Priority weight for money pages"
-                        />
-
-                        <div className="flex items-center gap-2 justify-end">
-                          {moneyPages.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeMoneyPage(index)}
-                              className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-md transition"
-                            >
-                              <XIcon className="w-4 h-4" />
-                            </button>
-                          )}
-                          {index === moneyPages.length - 1 && (
-                            <button
-                              type="button"
-                              onClick={addMoneyPage}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md flex items-center gap-2 transition cursor-pointer"
-                            >
-                              <Plus className="w-4 h-4" /> Add
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <>
-                      <p className="text-gray-400 text-sm">
-                        No money pages added yet.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={addMoneyPage}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md flex items-center gap-2 transition cursor-pointer"
-                      >
-                        <Plus className="w-4 h-4" /> Add
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                  <h3 className="text-md font-semibold text-white mb-2 flex items-center gap-2">
-                    Dynamic variables
-                    <Tooltip title="Dynamic variables are used to track custom parameters of money page">
-                      <span className="text-slate-400">
-                        <Info className="w-4 h-4" />
-                      </span>
-                    </Tooltip>
-                  </h3>
-                  <p className="text-slate-400 text-sm mb-3">
-                    Define variables and use [[name]] in money pages.
+                  <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
+                    Configure where legit visitors should land
                   </p>
-
-                  {dynamicVariables.map((variable, idx) => (
-                    <div
-                      key={idx}
-                      className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 items-end"
-                    >
-                      <InputField
-                        label="VARIABLE NAME"
-                        name={`money_variable.${idx}.name`}
-                        register={register}
-                        placeholder="Enter variable name"
-                        defaultValue={variable.name}
-                      />
-                      <InputField
-                        label="VARIABLE VALUE"
-                        name={`money_variable.${idx}.value`}
-                        register={register}
-                        placeholder="Enter variable value"
-                        defaultValue={variable.value}
-                      />
-                      <div className="flex items-center justify-end">
-                        <button
-                          type="button"
-                          onClick={() => removeDynamicVariable(idx)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md cursor-pointer"
-                        >
-                          <XIcon className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-
-                  <button
-                    type="button"
-                    onClick={addDynamicVariable}
-                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md flex items-center gap-2 cursor-pointer"
-                  >
-                    <Plus className="w-4 h-4" /> Add variable
-                  </button>
                 </div>
 
-                <div className="flex justify-between mt-6">
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-md cursor-pointer"
-                  >
-                    ‹ Previous
-                  </button>
-                  {location?.state?.mode === "edit" ? (
-                    <button
-                      type="button"
-                      // onClick={() => {
-                      //   showCustomAlert(
-                      //     "You can preview changes before creating campaign"
-                      //   );
-                      // }}
-                      onClick={handleSubmit(onSubmit)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
-                    >
-                      <svg
-                        class="svg-inline--fa fa-floppy-disk me-2"
-                        aria-hidden="true"
-                        focusable="false"
-                        data-prefix="fas"
-                        data-icon="floppy-disk"
-                        role="img"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 448 512"
-                        data-fa-i2svg=""
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"
-                        ></path>
-                      </svg>
-                      <span>Save Changes</span>
-                    </button>
-                  ) : null}
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={handleNext}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md cursor-pointer"
-                    >
-                      Next ›
-                    </button>
-                  </div>
+                <div className="text-xs px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+                  Step 2
                 </div>
               </div>
-              {showAlert && (
-                <CustomAlertModal
-                  message={alertMessage}
-                  onClose={hideCustomAlert}
-                />
-              )}
+
+              {/* FORM AREA */}
+              <div className="space-y-5">
+                {Array.isArray(moneyPages) && moneyPages.length > 0 ? (
+                  moneyPages.map((page, index) => (
+                    <div
+                      key={index}
+                      className="
+              relative
+              grid grid-cols-1 md:grid-cols-3 gap-5
+              p-6 rounded-2xl
+
+              bg-white/70 dark:bg-slate-900/70
+              backdrop-blur-md
+
+              border border-gray-200 dark:border-slate-700
+              shadow-sm hover:shadow-md
+              transition-all duration-300
+            "
+                    >
+                      <InputField
+                        label="Description"
+                        name={`money_page.${index}.description`}
+                        register={register}
+                        placeholder="Enter description"
+                        defaultValue={page.description || ""}
+                        tooltip="Short name visible in reports"
+                      />
+
+                      <InputField
+                        label="Money Page Url"
+                        name={`money_page.${index}.url`}
+                        register={register}
+                        error={errors.money_page?.[index]?.url}
+                        required
+                        placeholder="https://www.example.com"
+                        pattern={{
+                          value: /^(https?:\/\/[^\s$.?#].[^\s]*)$/i,
+                          message: "Enter a valid URL",
+                        }}
+                        tooltip="Money page for legit visitors"
+                      />
+
+                      <InputField
+                        label="Weight"
+                        name={`money_page.${index}.weight`}
+                        register={register}
+                        error={errors.money_page?.[index]?.weight}
+                        placeholder="100"
+                        type="number"
+                        tooltip="Priority weight for money pages"
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div
+                    className="
+          text-center py-10 rounded-xl
+          border border-dashed border-gray-300 dark:border-slate-700
+          text-gray-400 dark:text-slate-500
+        "
+                  >
+                    No money pages added yet.
+                  </div>
+                )}
+              </div>
+
+              {/* BUTTON AREA */}
+              <div className="flex justify-between mt-10 items-center">
+                {/* Previous */}
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  className="
+        px-5 py-2.5 rounded-xl
+        bg-gray-200 hover:bg-gray-300
+        dark:bg-slate-800 dark:hover:bg-slate-700
+        text-gray-700 dark:text-white
+        transition-all
+      "
+                >
+                  ← Previous
+                </button>
+
+                <div className="flex gap-3">
+                  {/* Save */}
+                  {location?.state?.mode === "edit" && (
+                    <button
+                      type="button"
+                      onClick={handleSubmit(onSubmit)}
+                      className="
+            flex items-center gap-2
+            px-5 py-2.5 rounded-xl
+
+            bg-gradient-to-r from-blue-600 to-indigo-600
+            hover:from-blue-700 hover:to-indigo-700
+
+            text-white shadow-md hover:shadow-lg
+            transition-all
+          "
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        viewBox="0 0 448 512"
+                        fill="currentColor"
+                      >
+                        <path d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z" />
+                      </svg>
+                      Save Changes
+                    </button>
+                  )}
+
+                  {/* Next */}
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="
+          px-6 py-2.5 rounded-xl
+          bg-gradient-to-r from-blue-600 to-indigo-600
+          hover:from-blue-700 hover:to-indigo-700
+          text-white shadow-md hover:shadow-lg
+          transition-all
+        "
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
-          {/* Step 3: Safe Page */}
+          {/* Step 3: white Page */}
           {step === 3 && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
-              <div className="space-y-6">
-                <h2 className="text-lg font-semibold text-white">Safe Page</h2>
-                <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
+            <div
+              className="
+      relative overflow-hidden
+      bg-gradient-to-br from-gray-50 via-white to-gray-100
+      dark:from-slate-950 dark:via-slate-900 dark:to-slate-950
+
+      border border-gray-200 dark:border-slate-800
+      rounded-3xl p-8 shadow-xl
+      transition-all duration-300
+    "
+            >
+              <div className="space-y-8">
+                {/* HEADER */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                      White Page
+                    </h2>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
+                      Where should automated visitors (bots and crawlers) be
+                      sent?
+                    </p>
+                  </div>
+
+                  <div className="text-xs px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+                    Step 3
+                  </div>
+                </div>
+
+                {/* INPUT CARD */}
+                <div
+                  className="
+          bg-white/70 dark:bg-slate-900/70
+          backdrop-blur-md
+
+          p-6 rounded-2xl
+          border border-gray-200 dark:border-slate-700
+          shadow-sm hover:shadow-md
+          transition-all duration-300
+        "
+                >
                   <InputField
-                    label="Safe Page Url"
+                    label="White Page Url"
                     name="safe_page"
                     register={register}
                     error={errors.safe_page}
@@ -1266,108 +1248,68 @@ export default function CampaignBuilder() {
                       value: /^(https?:\/\/[^\s$.?#].[^\s]*)$/i,
                       message: "Enter a valid URL",
                     }}
-                    tooltip="Safe page where bots/reviewers go"
+                    tooltip="White page where bots/reviewers go"
                   />
                 </div>
 
-                <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
-                  <h3 className="text-md font-semibold text-white mb-2 flex items-center gap-2">
-                    Dynamic variables for Safe Page{" "}
-                    <Tooltip title="Dynamic variables are used to track custom parameters of safe page">
-                      <span className="text-slate-400">
-                        <Info className="w-4 h-4" />
-                      </span>
-                    </Tooltip>
-                  </h3>
-                  <p className="text-slate-400 text-sm mb-3">
-                    Define variables for safe page use.
-                  </p>
-
-                  {dynamicVariables.map((variable, idx) => (
-                    <div
-                      key={idx}
-                      className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 items-end"
-                    >
-                      <InputField
-                        label="VARIABLE NAME"
-                        name={`safe_page_variable.${idx}.name`}
-                        register={register}
-                        placeholder="Enter variable name"
-                        defaultValue={variable.name}
-                      />
-                      <InputField
-                        label="VARIABLE VALUE"
-                        name={`safe_page_variable.${idx}.value`}
-                        register={register}
-                        placeholder="Enter variable value"
-                        defaultValue={variable.value}
-                      />
-                      <div className="flex items-center justify-end">
-                        <button
-                          type="button"
-                          onClick={() => removeDynamicVariable(idx)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md cursor-pointer"
-                        >
-                          <XIcon className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-
-                  <button
-                    type="button"
-                    onClick={addDynamicVariable}
-                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md flex items-center gap-2 cursor-pointer"
-                  >
-                    <Plus className="w-4 h-4" /> Add variable
-                  </button>
-                </div>
-
-                <div className="flex justify-between mt-6">
+                {/* BUTTON AREA */}
+                <div className="flex justify-between mt-10 items-center">
+                  {/* Previous */}
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-md cursor-pointer"
+                    className="
+            px-5 py-2.5 rounded-xl
+            bg-gray-200 hover:bg-gray-300
+            dark:bg-slate-800 dark:hover:bg-slate-700
+            text-gray-700 dark:text-white
+            transition-all
+          "
                   >
-                    ‹ Previous
+                    ← Previous
                   </button>
-                  {location?.state?.mode === "edit" ? (
-                    <button
-                      type="button"
-                      // onClick={() => {
-                      //   showCustomAlert(
-                      //     "You can preview changes before creating campaign"
-                      //   );
-                      // }}
-                      onClick={handleSubmit(onSubmit)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
-                    >
-                      <svg
-                        class="svg-inline--fa fa-floppy-disk me-2"
-                        aria-hidden="true"
-                        focusable="false"
-                        data-prefix="fas"
-                        data-icon="floppy-disk"
-                        role="img"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 448 512"
-                        data-fa-i2svg=""
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z"
-                        ></path>
-                      </svg>
-                      <span>Save Changes</span>
-                    </button>
-                  ) : null}
+
                   <div className="flex gap-3">
+                    {/* Save */}
+                    {location?.state?.mode === "edit" ? (
+                      <button
+                        type="button"
+                        onClick={handleSubmit(onSubmit)}
+                        className="
+                flex items-center gap-2
+                px-5 py-2.5 rounded-xl
+
+                bg-gradient-to-r from-blue-600 to-indigo-600
+                hover:from-blue-700 hover:to-indigo-700
+
+                text-white shadow-md hover:shadow-lg
+                transition-all
+              "
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          viewBox="0 0 448 512"
+                          fill="currentColor"
+                        >
+                          <path d="M433.1 129.1l-83.9-83.9C342.3 38.32 327.1 32 316.1 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V163.9C448 152.9 441.7 137.7 433.1 129.1zM224 416c-35.34 0-64-28.66-64-64s28.66-64 64-64s64 28.66 64 64S259.3 416 224 416zM320 208C320 216.8 312.8 224 304 224h-224C71.16 224 64 216.8 64 208v-96C64 103.2 71.16 96 80 96h224C312.8 96 320 103.2 320 112V208z" />
+                        </svg>
+                        Save Changes
+                      </button>
+                    ) : null}
+
+                    {/* Next */}
                     <button
                       type="button"
                       onClick={handleNext}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md cursor-pointer"
+                      className="
+              px-6 py-2.5 rounded-xl
+              bg-gradient-to-r from-blue-600 to-indigo-600
+              hover:from-blue-700 hover:to-indigo-700
+              text-white shadow-md hover:shadow-lg
+              transition-all
+            "
                     >
-                      Next ›
+                      Next →
                     </button>
                   </div>
                 </div>
@@ -1377,10 +1319,34 @@ export default function CampaignBuilder() {
 
           {/* Step 4: Conditions */}
           {step === 4 && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
-              <div className="space-y-6">
-                {/* ADD CONDITION DROPDOWN */}
-                <div>
+            <div
+              className="
+      relative overflow-hidden
+      bg-gradient-to-br from-gray-50 via-white to-gray-100
+      dark:from-slate-950 dark:via-slate-900 dark:to-slate-950
+
+      border border-gray-200 dark:border-slate-800
+      rounded-3xl p-8 shadow-xl
+      transition-all duration-300
+    "
+            >
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+                      Traffic Conditions
+                    </h2>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
+                      Define rules for visitors based on country, browser, or
+                      device
+                    </p>
+                  </div>
+
+                  <div className="text-xs px-3 py-1 rounded-full bg-blue-200 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+                    Step 4
+                  </div>
+                </div>
+                {/* <div>
                   <select
                     onChange={(e) => {
                       if (e.target.value) {
@@ -1388,7 +1354,16 @@ export default function CampaignBuilder() {
                         e.target.value = "";
                       }
                     }}
-                    className="w-56 bg-slate-800 text-white text-sm px-3 py-2 rounded-md border border-slate-700"
+                    className="
+            w-60 text-sm px-4 py-2.5 rounded-xl
+
+            bg-white dark:bg-slate-900
+            text-gray-700 dark:text-white
+
+            border border-gray-300 dark:border-slate-700
+            shadow-sm hover:shadow-md
+            transition-all
+          "
                   >
                     <option value="">+ Add condition</option>
 
@@ -1402,12 +1377,10 @@ export default function CampaignBuilder() {
                   </select>
                 </div>
 
-                {/* CONDITIONS LIST */}
                 <div className="space-y-5">
                   {fields.map((fieldItem, idx) => {
                     const currentType = fieldItem.type;
 
-                    /** DATA SOURCE BASED ON TYPE */
                     let dataList = [];
                     if (currentType === "country") dataList = COUNTRY_LIST;
 
@@ -1423,39 +1396,46 @@ export default function CampaignBuilder() {
                     return (
                       <div
                         key={fieldItem.id}
-                        className="bg-slate-800 border border-slate-700 rounded-lg p-4"
+                        className="
+                p-6 rounded-2xl
+
+                bg-white/70 dark:bg-slate-900/70
+                backdrop-blur-md
+
+                border border-gray-200 dark:border-slate-700
+                shadow-sm hover:shadow-md
+                transition-all duration-300
+              "
                       >
-                        {/* HEADER */}
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="text-sm font-semibold text-white">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-sm font-semibold text-gray-800 dark:text-white">
                             {currentType.toUpperCase()}
                           </h4>
                           <button
                             type="button"
                             onClick={() => remove(idx)}
-                            className="text-sm text-slate-400 hover:text-red-500 cursor-pointer"
+                            className="text-sm text-gray-400 hover:text-red-500 cursor-pointer transition"
                           >
                             Remove
                           </button>
                         </div>
 
-                        {/* MODE BUTTONS */}
                         <Controller
                           control={control}
                           name={`conditions.${idx}.mode`}
                           render={({ field }) => (
-                            <div className="flex gap-2 mb-3">
+                            <div className="flex gap-2 mb-4">
                               {["allow", "block"].map((mode) => (
                                 <button
                                   key={mode}
                                   type="button"
                                   onClick={() => field.onChange(mode)}
-                                  className={`px-3 py-1.5 text-sm rounded-md border cursor-pointer ${
+                                  className={`px-4 py-2 text-sm rounded-xl border transition-all cursor-pointer ${
                                     field.value === mode
                                       ? mode === "allow"
                                         ? "bg-blue-600 text-white border-blue-600"
                                         : "bg-red-600 text-white border-red-600"
-                                      : "bg-slate-700 text-slate-300 border-slate-700 hover:bg-slate-700/50"
+                                      : "bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 border-gray-200 dark:border-slate-700 hover:bg-gray-200 dark:hover:bg-slate-700"
                                   }`}
                                 >
                                   {mode.charAt(0).toUpperCase() + mode.slice(1)}
@@ -1465,18 +1445,22 @@ export default function CampaignBuilder() {
                           )}
                         />
 
-                        {/* MULTI VALUES FIELD */}
                         <Controller
                           control={control}
                           name={`conditions.${idx}.values`}
                           render={({ field }) => (
                             <div>
-                              {/* CHIPS */}
                               <div className="flex flex-wrap gap-2 mb-3">
                                 {field.value?.map((val, i) => (
                                   <span
                                     key={i}
-                                    className="inline-flex items-center bg-slate-700 text-slate-100 px-2.5 py-1 text-xs rounded-full border border-slate-600"
+                                    className="
+                            inline-flex items-center
+                            bg-gray-200 dark:bg-slate-800
+                            text-gray-700 dark:text-slate-100
+                            px-3 py-1 text-xs rounded-full
+                            border border-gray-300 dark:border-slate-600
+                          "
                                   >
                                     {val}
                                     <button
@@ -1488,7 +1472,7 @@ export default function CampaignBuilder() {
                                           ),
                                         )
                                       }
-                                      className="ml-1 text-slate-400 hover:text-slate-200 cursor-pointer"
+                                      className="ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-white cursor-pointer"
                                     >
                                       ×
                                     </button>
@@ -1496,10 +1480,17 @@ export default function CampaignBuilder() {
                                 ))}
                               </div>
 
-                              {/* DROPDOWN OR TEXT INPUT */}
                               {isDropdown ? (
                                 <select
-                                  className="w-full bg-slate-800 text-white text-sm px-3 py-2 rounded-md border border-slate-700"
+                                  className="
+                          w-full text-sm px-4 py-2.5 rounded-xl
+
+                          bg-white dark:bg-slate-900
+                          text-gray-700 dark:text-white
+
+                          border border-gray-300 dark:border-slate-700
+                          shadow-sm
+                        "
                                   onChange={(e) => {
                                     const val = e.target.value;
                                     if (val && !field.value.includes(val)) {
@@ -1533,7 +1524,15 @@ export default function CampaignBuilder() {
                                 <input
                                   type="text"
                                   placeholder={`Enter ${currentType}...`}
-                                  className="w-full text-sm bg-slate-800 text-white px-3 py-2 rounded-md border border-slate-700"
+                                  className="
+                          w-full text-sm px-4 py-2.5 rounded-xl
+
+                          bg-white dark:bg-slate-900
+                          text-gray-700 dark:text-white
+
+                          border border-gray-300 dark:border-slate-700
+                          shadow-sm
+                        "
                                   onKeyDown={(e) => {
                                     if (
                                       e.key === "Enter" &&
@@ -1555,27 +1554,204 @@ export default function CampaignBuilder() {
                       </div>
                     );
                   })}
+                </div> */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {OPTIONS.map((option, idx) => {
+                    const currentType = option.value;
+
+                    let dataList = [];
+                    if (currentType === "country") dataList = COUNTRY_LIST;
+                    if (currentType === "browser") dataList = BROWSER_LIST;
+                    if (currentType === "Device") dataList = DEVICE_LIST;
+
+                    const isDropdown = [
+                      "country",
+                      "browser",
+                      "Device",
+                    ].includes(currentType);
+
+                    return (
+                      <div
+                        key={currentType}
+                        className="
+          p-6 rounded-2xl
+          bg-white dark:bg-slate-900
+          border border-gray-200 dark:border-slate-700
+          shadow-sm hover:shadow-md
+          transition-all
+        "
+                      >
+                        {/* TITLE */}
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+                          {option.label} Targeting
+                        </h3>
+
+                        {/* RULE TYPE */}
+                        <Controller
+                          control={control}
+                          name={`conditions.${idx}.mode`}
+                          defaultValue="allow"
+                          render={({ field }) => (
+                            <div className="flex gap-3 mb-4">
+                              {["allow", "block"].map((mode) => (
+                                <label
+                                  key={mode}
+                                  className="flex items-center gap-2 cursor-pointer"
+                                >
+                                  <input
+                                    type="radio"
+                                    value={mode}
+                                    checked={field.value === mode}
+                                    onChange={() => field.onChange(mode)}
+                                  />
+                                  <span className="text-sm text-gray-700 dark:text-slate-300">
+                                    {mode.charAt(0).toUpperCase() +
+                                      mode.slice(1)}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
+                          )}
+                        />
+
+                        {/* VALUE SELECT */}
+                        <Controller
+                          control={control}
+                          name={`conditions.${idx}.values`}
+                          defaultValue={[]}
+                          render={({ field }) => (
+                            <>
+                              {isDropdown ? (
+                                <select
+                                  className="
+                    w-full text-sm px-4 py-2.5 rounded-xl
+                    bg-white dark:bg-slate-800
+                    text-gray-700 dark:text-white
+                    border border-gray-300 dark:border-slate-700
+                  "
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val && !field.value.includes(val)) {
+                                      field.onChange([...field.value, val]);
+                                    }
+                                  }}
+                                >
+                                  <option value="">
+                                    Select {option.label.toLowerCase()}...
+                                  </option>
+
+                                  {dataList.map((item) => (
+                                    <option
+                                      key={item.id}
+                                      value={
+                                        item.country ||
+                                        item.state ||
+                                        item.name ||
+                                        item.browser ||
+                                        item.device
+                                      }
+                                    >
+                                      {item.country ||
+                                        item.state ||
+                                        item.name ||
+                                        item.browser ||
+                                        item.device}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="text"
+                                  placeholder={`Enter ${option.label}...`}
+                                  className="
+                    w-full text-sm px-4 py-2.5 rounded-xl
+                    bg-white dark:bg-slate-800
+                    text-gray-700 dark:text-white
+                    border border-gray-300 dark:border-slate-700
+                  "
+                                  onKeyDown={(e) => {
+                                    if (
+                                      e.key === "Enter" &&
+                                      e.target.value.trim()
+                                    ) {
+                                      e.preventDefault();
+                                      field.onChange([
+                                        ...field.value,
+                                        e.target.value.trim(),
+                                      ]);
+                                      e.target.value = "";
+                                    }
+                                  }}
+                                />
+                              )}
+
+                              {/* Selected Values */}
+                              <div className="flex flex-wrap gap-2 mt-3">
+                                {field.value?.map((val, i) => (
+                                  <span
+                                    key={i}
+                                    className="
+        flex items-center gap-2
+        px-3 py-1 text-xs rounded-full
+        bg-gray-200 dark:bg-slate-700
+        text-gray-700 dark:text-white
+      "
+                                  >
+                                    {val}
+
+                                    {/* REMOVE BUTTON */}
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        field.onChange(
+                                          field.value.filter(
+                                            (_, index) => index !== i,
+                                          ),
+                                        )
+                                      }
+                                      className="text-red-500 hover:text-red-600 font-bold"
+                                    >
+                                      ✕
+                                    </button>
+                                  </span>
+                                ))}
+                              </div>
+                            </>
+                          )}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
 
-                {/* STEP BUTTONS */}
-                <div className="flex justify-between pt-4">
+                <div className="flex justify-between pt-6 items-center">
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-md cursor-pointer"
+                    className="
+            px-5 py-2.5 rounded-xl
+            bg-gray-200 hover:bg-gray-300
+            dark:bg-slate-800 dark:hover:bg-slate-700
+            text-gray-700 dark:text-white
+            transition-all
+          "
                   >
-                    ‹ Previous
+                    ← Previous
                   </button>
                   {location?.state?.mode === "edit" ? (
                     <button
                       type="button"
-                      // onClick={() => {
-                      //   showCustomAlert(
-                      //     "You can preview changes before creating campaign"
-                      //   );
-                      // }}
                       onClick={handleSubmit(onSubmit)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md cursor-pointer"
+                      className="
+                flex items-center gap-2
+                px-5 py-2.5 rounded-xl
+
+                bg-gradient-to-r from-blue-600 to-indigo-600
+                hover:from-blue-700 hover:to-indigo-700
+
+                text-white shadow-md hover:shadow-lg
+                transition-all
+              "
                     >
                       <svg
                         class="svg-inline--fa fa-floppy-disk me-2"
@@ -1597,13 +1773,21 @@ export default function CampaignBuilder() {
                     </button>
                   ) : null}
                   <div className="flex gap-3">
-                    {fields.length > 0 && (
+                    {watch("conditions")?.some(
+                      (c) => c?.values?.length > 0,
+                    ) && (
                       <button
                         type="button"
                         onClick={nextStep}
-                        className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+                        className="
+                px-6 py-2.5 rounded-xl
+                bg-gradient-to-r from-blue-600 to-indigo-600
+                hover:from-blue-700 hover:to-indigo-700
+                text-white shadow-md hover:shadow-lg
+                transition-all
+              "
                       >
-                        Next ›
+                        Next →
                       </button>
                     )}
                   </div>
@@ -1613,7 +1797,7 @@ export default function CampaignBuilder() {
           )}
 
           {/* Step 5: Filters */}
-          {step === 5 && (
+          {/* {step === 5 && (
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl w-full">
               <div className="space-y-4">
                 <div className="flex justify-center">
@@ -1688,7 +1872,6 @@ export default function CampaignBuilder() {
 
                       return (
                         <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-10">
-                          {/* LEFT COLUMN */}
                           <div
                             style={{
                               display: "flex",
@@ -1708,7 +1891,7 @@ export default function CampaignBuilder() {
                                 border: "2px solid #272d3e",
                                 borderRadius: "6px",
                                 padding: "4px",
-                                background: "#0f172a", // optional dark background
+                                background: "#0f172a",
                                 color: "white",
                               }}
                               value={selectedLeft}
@@ -1733,26 +1916,25 @@ export default function CampaignBuilder() {
                             </select>
                           </div>
 
-                          {/* CENTER BUTTONS */}
                           <div
                             className="
-    flex flex-row md:flex-col 
-    items-center justify-center 
-    gap-3 
-    mt-4 md:mt-10
-  "
+              flex flex-row md:flex-col
+              items-center justify-center
+              gap-3
+              mt-4 md:mt-10
+            "
                           >
                             <button
                               type="button"
                               onClick={moveRight}
                               className="
-      w-7     h-7 flex items-center justify-center text-lg
-      rounded-md border border-slate-600 
-      bg-slate-800 hover:bg-slate-700 
-      hover:border-slate-500 hover:scale-105 
-      active:scale-95 transition-all duration-200
-      text-slate-200  cursor-pointer
-    "
+                w-7     h-7 flex items-center justify-center text-lg
+                rounded-md border border-slate-600
+                bg-slate-800 hover:bg-slate-700
+                hover:border-slate-500 hover:scale-105
+                active:scale-95 transition-all duration-200
+                text-slate-200  cursor-pointer
+              "
                               title="Move selected to right"
                             >
                               ›
@@ -1762,13 +1944,13 @@ export default function CampaignBuilder() {
                               type="button"
                               onClick={moveLeft}
                               className="
-      w-7 h-7 flex items-center justify-center text-lg
-      rounded-md border border-slate-600 
-      bg-slate-800 hover:bg-slate-700 
-      hover:border-slate-500 hover:scale-105 
-      active:scale-95 transition-all duration-200
-      text-slate-200  cursor-pointer
-    "
+                w-7 h-7 flex items-center justify-center text-lg
+                rounded-md border border-slate-600
+                bg-slate-800 hover:bg-slate-700
+                hover:border-slate-500 hover:scale-105
+                active:scale-95 transition-all duration-200
+                text-slate-200  cursor-pointer
+              "
                               title="Move selected to left"
                             >
                               ‹
@@ -1778,13 +1960,13 @@ export default function CampaignBuilder() {
                               type="button"
                               onClick={moveAllRight}
                               className="
-      w-7 h-7 flex items-center justify-center text-lg
-      rounded-md border border-slate-600 
-      bg-slate-800 hover:bg-slate-700 
-      hover:border-slate-500 hover:scale-105 
-      active:scale-95 transition-all duration-200
-      text-slate-200  cursor-pointer
-    "
+                w-7 h-7 flex items-center justify-center text-lg
+                rounded-md border border-slate-600
+                bg-slate-800 hover:bg-slate-700
+                hover:border-slate-500 hover:scale-105
+                active:scale-95 transition-all duration-200
+                text-slate-200  cursor-pointer
+              "
                               title="Move all right"
                             >
                               »
@@ -1794,20 +1976,19 @@ export default function CampaignBuilder() {
                               type="button"
                               onClick={moveAllLeft}
                               className="
-      w-7 h-7 flex items-center justify-center text-lg
-      rounded-md border border-slate-600 
-      bg-slate-800 hover:bg-slate-700 
-      hover:border-slate-500 hover:scale-105 
-      active:scale-95 transition-all duration-200
-      text-slate-200  cursor-pointer
-    "
+                w-7 h-7 flex items-center justify-center text-lg
+                rounded-md border border-slate-600
+                bg-slate-800 hover:bg-slate-700
+                hover:border-slate-500 hover:scale-105
+                active:scale-95 transition-all duration-200
+                text-slate-200  cursor-pointer
+              "
                               title="Move all left"
                             >
                               «
                             </button>
                           </div>
 
-                          {/* RIGHT COLUMN */}
                           <div
                             style={{
                               display: "flex",
@@ -1856,7 +2037,7 @@ export default function CampaignBuilder() {
                     }}
                   />
                 </div>
-                {/* =========BUTTONS LOWER */}
+
                 <div className="flex justify-between mt-6">
                   <button
                     type="button"
@@ -1868,11 +2049,6 @@ export default function CampaignBuilder() {
                   {location?.state?.mode === "edit" ? (
                     <button
                       type="button"
-                      // onClick={() => {
-                      //   showCustomAlert(
-                      //     "You can preview changes before creating campaign"
-                      //   );
-                      // }}
                       onClick={handleSubmit(onSubmit)}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md  cursor-pointer"
                     >
@@ -1905,6 +2081,159 @@ export default function CampaignBuilder() {
                     </button>
                   </div>
                 </div>
+              </div>
+            </div>
+          )} */}
+
+          {step === 5 && (
+            <div
+              className="w-full rounded-2xl p-6 border shadow-xl
+  bg-white border-gray-200
+  dark:bg-slate-900 dark:border-slate-800"
+            >
+              <Controller
+                name="filters"
+                control={control}
+                defaultValue={[]}
+                render={({ field }) => {
+                  const selected = field.value || [];
+
+                  const toggleFilter = (item) => {
+                    const exists = selected.some((f) => f.id === item.id);
+
+                    if (exists) {
+                      field.onChange(selected.filter((f) => f.id !== item.id));
+                    } else {
+                      field.onChange([...selected, item]);
+                    }
+                  };
+
+                  const removeFilter = (id) => {
+                    field.onChange(selected.filter((f) => f.id !== id));
+                  };
+
+                  return (
+                    <div className="grid md:grid-cols-2 gap-8">
+                      {/* AVAILABLE FILTERS */}
+                      <div>
+                        <h3
+                          className="font-semibold mb-3
+              text-gray-700 dark:text-white"
+                        >
+                          Available Filters
+                        </h3>
+
+                        <div
+                          className="
+              max-h-[300px] overflow-y-auto
+              rounded-xl border p-3 space-y-2
+              bg-gray-50 border-gray-200
+              dark:bg-slate-800 dark:border-slate-700"
+                        >
+                          {fixedOptions.map((item) => {
+                            const isSelected = selected.some(
+                              (f) => f.id === item.id,
+                            );
+
+                            return (
+                              <button
+                                key={item.id}
+                                type="button"
+                                onClick={() => toggleFilter(item)}
+                                className={`
+                      w-full flex justify-between items-center
+                      px-3 py-2 rounded-lg text-sm transition
+
+                      ${
+                        isSelected
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-200"
+                      }
+                      `}
+                              >
+                                {item.label}
+                                {isSelected && "✓"}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* ENABLED FILTERS */}
+                      <div>
+                        <h3
+                          className="font-semibold mb-3
+              text-gray-700 dark:text-white"
+                        >
+                          Enabled Filters
+                        </h3>
+
+                        <div
+                          className="
+              min-h-[150px]
+              rounded-xl border p-3
+              bg-gray-50 border-gray-200
+              dark:bg-slate-800 dark:border-slate-700"
+                        >
+                          {selected.length === 0 && (
+                            <p className="text-sm text-gray-400">
+                              No filters enabled
+                            </p>
+                          )}
+
+                          <div className="flex flex-wrap gap-2">
+                            {selected.map((item) => (
+                              <div
+                                key={item.id}
+                                className="
+                      flex items-center gap-2
+                      px-3 py-1 rounded-full text-sm
+
+                      bg-blue-100 text-blue-700
+                      dark:bg-blue-900 dark:text-blue-200
+                      "
+                              >
+                                {item.label}
+
+                                <button
+                                  type="button"
+                                  onClick={() => removeFilter(item.id)}
+                                  className="text-xs hover:opacity-70"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+
+              {/* NAV BUTTONS */}
+              <div className="flex justify-between mt-8">
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  className="
+        px-4 py-2 rounded-md
+        bg-gray-200 hover:bg-gray-300 text-gray-700
+        dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
+                >
+                  ← Previous
+                </button>
+
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  className="
+        px-4 py-2 rounded-md
+        bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Next →
+                </button>
               </div>
             </div>
           )}
@@ -2121,9 +2450,9 @@ export default function CampaignBuilder() {
           conditions before creating.
         </div>
 
-        {showAlert && (
+        {/* {showAlert && (
           <CustomAlertModal message={alertMessage} onClose={hideCustomAlert} />
-        )}
+        )} */}
       </div>
     </DashboardLayout>
   );
