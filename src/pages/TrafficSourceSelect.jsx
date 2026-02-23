@@ -4,6 +4,7 @@ import { ChevronDown, Search, Check } from "lucide-react";
 /* --- LOGO MAPPING --- */
 const platformLogos = {
   "Google Adwords": "https://cdn.simpleicons.org/googleads",
+  "Bing Ads": "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/bing.svg",
   "Facebook Adverts": "https://cdn.simpleicons.org/facebook",
   "TikTok Ads": "https://cdn.simpleicons.org/tiktok",
   Instagram: "https://cdn.simpleicons.org/instagram",
@@ -13,10 +14,37 @@ const platformLogos = {
   Yandex: "https://cdn.simpleicons.org/yandex",
   "Snapchat Ads": "https://cdn.simpleicons.org/snapchat",
   "Pinterest Ads": "https://cdn.simpleicons.org/pinterest",
+  "YouTube Ads": "https://cdn.simpleicons.org/youtube",
+  "Microsoft Ads": "https://cdn.simpleicons.org/microsoft",
+  "Reddit Ads": "https://cdn.simpleicons.org/reddit",
+  "Quora Ads": "https://cdn.simpleicons.org/quora",
+  Taboola: "https://cdn.simpleicons.org/taboola",
+  Outbrain: "https://cdn.simpleicons.org/outbrain",
+  "Spotify Ads": "https://cdn.simpleicons.org/spotify",
+  "Telegram Ads": "https://cdn.simpleicons.org/telegram",
+  "Discord Ads": "https://cdn.simpleicons.org/discord",
+  "Twitch Ads": "https://cdn.simpleicons.org/twitch",
+  "Shopify Ads": "https://cdn.simpleicons.org/shopify",
+  "eBay Ads": "https://cdn.simpleicons.org/ebay",
+  "Alibaba Ads": "https://cdn.simpleicons.org/alibaba",
+  "VK Ads": "https://cdn.simpleicons.org/vk",
+  "Line Ads": "https://cdn.simpleicons.org/line",
+  "WeChat Ads": "https://cdn.simpleicons.org/wechat",
 };
 
-const getLogo = (name) =>
-  platformLogos[name] || "https://cdn.simpleicons.org/google";
+const getLogo = (name) => {
+  const trimmed = name?.trim();
+
+  // 1️⃣ If exists in mapping → return it
+  if (platformLogos[trimmed]) {
+    return platformLogos[trimmed];
+  }
+
+  // 2️⃣ Otherwise generate dynamic avatar logo
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    trimmed,
+  )}&background=0D8ABC&color=fff&bold=true`;
+};
 
 const TrafficSourceSelect = ({ label, options = [], value, onChange }) => {
   const [open, setOpen] = useState(false);
@@ -110,7 +138,16 @@ const TrafficSourceSelect = ({ label, options = [], value, onChange }) => {
         hover:bg-gray-100 dark:hover:bg-slate-800
       "
               >
-                <img src={getLogo(opt)} className="w-5 h-5" />
+                <img
+                  src={getLogo(opt)}
+                  alt={opt}
+                  className="w-8 h-8 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      opt,
+                    )}&background=6B7280&color=fff&bold=true`;
+                  }}
+                />
                 <span className="text-gray-900 dark:text-white">{opt}</span>
               </div>
             ))

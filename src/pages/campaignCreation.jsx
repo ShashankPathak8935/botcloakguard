@@ -490,7 +490,7 @@ export default function CampaignBuilder() {
   // options copied from parts
   const adPlatforms = [
     "Google Adwords",
-    "Binge Ads",
+    "Bing Ads",
     "Yahoo Gemini",
     "Taboola",
     "Facebook Adverts",
@@ -636,6 +636,8 @@ export default function CampaignBuilder() {
     { name: "Allow", icon: ShieldCheck },
     { name: "Block", icon: Ban },
   ];
+
+  const notRecommended = [1, 2, 3];
 
   /* ---------------------------
      Form (react-hook-form)
@@ -2097,6 +2099,7 @@ export default function CampaignBuilder() {
                 defaultValue={[]}
                 render={({ field }) => {
                   const selected = field.value || [];
+                  // const notRecommended = ["business", "government", "wireless"];
 
                   const toggleFilter = (item) => {
                     const exists = selected.some((f) => f.id === item.id);
@@ -2134,6 +2137,9 @@ export default function CampaignBuilder() {
                             const isSelected = selected.some(
                               (f) => f.id === item.id,
                             );
+                            const isNotRecommended = notRecommended.includes(
+                              item.id,
+                            );
 
                             return (
                               <button
@@ -2151,7 +2157,24 @@ export default function CampaignBuilder() {
                       }
                       `}
                               >
-                                {item.label}
+                                <div className="flex items-center gap-6">
+                                  <span>{item.label}</span>
+
+                                  {isNotRecommended && (
+                                    <span
+                                      className={`
+                           text-[10px] font-medium px-2.5 py-[3px] rounded-full tracking-wide
+                         ${
+                           isSelected
+                             ? "border border-white text-white"
+                             : "bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800"
+                         }
+      `}
+                                    >
+                                      Not Recommended
+                                    </span>
+                                  )}
+                                </div>
                                 {isSelected && "✓"}
                               </button>
                             );
@@ -2240,11 +2263,26 @@ export default function CampaignBuilder() {
 
           {/* Step 6: Automate */}
           {step === 6 && (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-slate-800 p-4 rounded border border-slate-700">
-                    <label className="flex items-center gap-2">
+            <div
+              className="
+      w-full rounded-2xl p-6 shadow-xl border
+      bg-white border-gray-200
+      dark:bg-slate-900 dark:border-slate-800
+      transition-all
+    "
+            >
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div
+                    className="
+            p-5 rounded-xl border shadow-sm
+            bg-gray-50 border-gray-200
+            hover:shadow-md transition-all
+
+            dark:bg-slate-800 dark:border-slate-700
+          "
+                  >
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={showInputs.afterX > 0 ? true : false}
@@ -2255,24 +2293,26 @@ export default function CampaignBuilder() {
                           }))
                         }
                       />
-                      <span className="text-white">
+                      <span className="text-gray-800 dark:text-white font-medium">
                         Activate after X unique real visitors
                       </span>
                     </label>
 
                     {showInputs.afterX && (
-                      <InputField
-                        label="Enter value"
-                        name="afterX"
-                        register={register}
-                        type="number"
-                        placeholder="Enter number of visitors"
-                      />
+                      <div className="mt-3">
+                        <InputField
+                          label="Enter value"
+                          name="afterX"
+                          register={register}
+                          type="number"
+                          placeholder="Enter number of visitors"
+                        />
+                      </div>
                     )}
                   </div>
 
-                  <div className="bg-slate-800 p-4 rounded border border-slate-700">
-                    <label className="flex items-center gap-2">
+                  <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 hover:shadow-md transition-all dark:bg-slate-800 dark:border-slate-700">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={showInputs.frequencyCap}
@@ -2283,21 +2323,25 @@ export default function CampaignBuilder() {
                           }))
                         }
                       />
-                      <span className="text-white">Frequency Cap</span>
+                      <span className="text-gray-800 dark:text-white font-medium">
+                        Frequency Cap
+                      </span>
                     </label>
                     {showInputs.frequencyCap && (
-                      <InputField
-                        label="Enter value"
-                        name="automate.frequencyCap.value"
-                        register={register}
-                        type="number"
-                        placeholder="Enter frequency value"
-                      />
+                      <div className="mt-3">
+                        <InputField
+                          label="Enter value"
+                          name="automate.frequencyCap.value"
+                          register={register}
+                          type="number"
+                          placeholder="Enter frequency value"
+                        />
+                      </div>
                     )}
                   </div>
 
-                  <div className="bg-slate-800 p-4 rounded border border-slate-700">
-                    <label className="flex items-center gap-2">
+                  <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 hover:shadow-md transition-all dark:bg-slate-800 dark:border-slate-700">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={showInputs.zeroRedirect}
@@ -2308,11 +2352,13 @@ export default function CampaignBuilder() {
                           }))
                         }
                       />
-                      <span className="text-white">Zero Redirect Cloaking</span>
+                      <span className="text-gray-800 dark:text-white font-medium">
+                        Zero Redirect Cloaking
+                      </span>
                     </label>
                     {showInputs.zeroRedirect && (
-                      <div className="flex gap-4 mt-2">
-                        <label className="flex items-center gap-2 text-slate-300">
+                      <div className="flex gap-6 mt-3">
+                        <label className="flex items-center gap-2 text-gray-600 dark:text-slate-300">
                           <input
                             type="checkbox"
                             checked={watch("automate.zeroRedirect.curl")}
@@ -2327,7 +2373,7 @@ export default function CampaignBuilder() {
                           />{" "}
                           CURL
                         </label>
-                        <label className="flex items-center gap-2 text-slate-300">
+                        <label className="flex items-center gap-2 text-gray-600 dark:text-slate-300">
                           <input
                             type="checkbox"
                             checked={watch("automate.zeroRedirect.iframe")}
@@ -2346,24 +2392,26 @@ export default function CampaignBuilder() {
                     )}
                   </div>
 
-                  <div className="bg-slate-800 p-4 rounded border border-slate-700">
-                    <label className="flex items-center gap-2">
+                  <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 hover:shadow-md transition-all dark:bg-slate-800 dark:border-slate-700">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" {...register("automate.gclid")} />
-                      <span className="text-white">
+                      <span className="text-gray-800 dark:text-white font-medium">
                         GCLID (Google Click ID)
                       </span>
                     </label>
                   </div>
 
-                  <div className="bg-slate-800 p-4 rounded border border-slate-700">
-                    <label className="flex items-center gap-2">
+                  <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 hover:shadow-md transition-all dark:bg-slate-800 dark:border-slate-700">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" {...register("automate.ipCap")} />
-                      <span className="text-white">IP Cap</span>
+                      <span className="text-gray-800 dark:text-white font-medium">
+                        IP Cap
+                      </span>
                     </label>
                   </div>
 
-                  <div className="bg-slate-800 p-4 rounded border border-slate-700">
-                    <label className="flex items-center gap-2">
+                  <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 hover:shadow-md transition-all dark:bg-slate-800 dark:border-slate-700">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={showInputs.pageGuard}
@@ -2374,10 +2422,12 @@ export default function CampaignBuilder() {
                           }))
                         }
                       />
-                      <span className="text-white">Page Guard Key</span>
+                      <span className="text-gray-800 dark:text-white font-medium">
+                        Page Guard Key
+                      </span>
                     </label>
                     {showInputs.pageGuard && (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
                         <InputField
                           label="Key"
                           name="page_guard.key"
@@ -2406,34 +2456,51 @@ export default function CampaignBuilder() {
                   </div>
                 </div>
 
-                <div className="bg-slate-800 p-4 rounded border border-slate-700">
-                  <label className="flex items-center gap-4">
-                    <input
-                      type="radio"
-                      value="301"
-                      {...register("http_code")}
-                    />
-                    <span className="text-white">301</span>
-                    <input
-                      type="radio"
-                      value="302"
-                      {...register("http_code")}
-                    />
-                    <span className="text-white">302</span>
+                <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 dark:bg-slate-800 dark:border-slate-700">
+                  <label className="flex items-center gap-6">
+                    <label className="flex items-center gap-2 text-gray-800 dark:text-white font-medium">
+                      <input
+                        type="radio"
+                        value="301"
+                        {...register("http_code")}
+                      />
+                      301
+                    </label>
+
+                    <label className="flex items-center gap-2 text-gray-800 dark:text-white font-medium">
+                      <input
+                        type="radio"
+                        value="302"
+                        {...register("http_code")}
+                      />
+                      302
+                    </label>
                   </label>
                 </div>
 
-                <div className="flex justify-between mt-6">
+                <div className="flex justify-between pt-4">
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-md cursor-pointer"
+                    className="
+            px-5 py-2.5 rounded-xl
+            bg-gray-200 hover:bg-gray-300 text-gray-700
+            dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white
+            transition-all
+          "
                   >
                     ‹ Previous
                   </button>
+
                   <button
                     type="submit"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-md shadow cursor-pointer"
+                    className="
+            px-6 py-2.5 rounded-xl
+            bg-gradient-to-r from-emerald-500 to-teal-500
+            hover:from-emerald-600 hover:to-teal-600
+            text-white shadow-md hover:shadow-lg
+            transition-all
+          "
                   >
                     {location?.state?.mode === "edit" ? "Update" : "Create"}{" "}
                     Campaign

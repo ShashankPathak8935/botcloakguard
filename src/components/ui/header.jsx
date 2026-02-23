@@ -156,7 +156,7 @@ const Header = ({ onMenuClick }) => {
       {/* RIGHT SECTION */}
       <div className="flex items-center gap-3">
         {/* Clicks Box */}
-        <div className="flex items-center gap-2 px-3 h-[36px] rounded-md bg-sky-100 text-sky-700 text-sm font-medium">
+        <div className="flex items-center gap-2 px-3 h-[30px] rounded-md bg-sky-100 text-sky-700 text-sm font-medium">
           <MousePointerClick className="w-4 h-4" />
           Clicks:{" "}
           <span className="font-semibold text-sky-900 dark:text-sky-300">
@@ -167,20 +167,22 @@ const Header = ({ onMenuClick }) => {
         {/* Market Place */}
         <div
           className="
-        flex items-center gap-2 px-3 h-[36px] rounded-md cursor-pointer
-        bg-red-50 dark:bg-[#2a1f25]
-        text-red-600 dark:text-red-400
-        text-sm font-medium
-      "
+    flex items-center gap-2 px-3 h-[30px] rounded-md
+    bg-slate-100 dark:bg-slate-800
+    text-slate-700 dark:text-slate-200
+    border border-slate-200 dark:border-slate-700
+    text-sm font-medium
+    transition-colors
+  "
         >
-          <Trash2 className="w-4 h-4" />
-          Market Place
+          <span className="text-xs opacity-70">Plan:</span>
+          <span className="font-semibold">{planName}</span>
         </div>
 
         {/* Upgrade */}
         <div
           className="
-        px-4 h-[36px] rounded-md cursor-pointer flex items-center
+        px-4 h-[30px] rounded-md cursor-pointer flex items-center
         bg-blue-600 hover:bg-blue-700
         text-white text-sm font-semibold
       "
