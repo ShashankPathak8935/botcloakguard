@@ -7,7 +7,21 @@ import { apiFunction } from "../api/ApiFunction";
 import { createCampaignApi } from "../api/Apis";
 import { BROWSER_LIST, COUNTRY_LIST, DEVICE_LIST } from "../data/dataList";
 import { showErrorToast, showSuccessToast } from "../components/toast/toast";
-import { CheckCircle, Ban } from "lucide-react";
+import {
+  CheckCircle,
+  Ban,
+  Briefcase,
+  Building2,
+  Wifi,
+  Shield,
+  Database,
+  Server,
+  Users,
+  Globe,
+  Clock,
+  Network,
+  Layers,
+} from "lucide-react";
 import TrafficSourceSelect from "./TrafficSourceSelect";
 
 /* ===========================
@@ -491,7 +505,7 @@ export default function CampaignBuilder() {
   const adPlatforms = [
     "Google Adwords",
     "Bing Ads",
-    "Yahoo Gemini",
+    "Yahoo Advertising",
     "Taboola",
     "Facebook Adverts",
     "TikTok Ads",
@@ -608,6 +622,22 @@ export default function CampaignBuilder() {
     { id: 12, label: "TIME ZONE" },
     { id: 13, label: "TSIF" },
   ];
+
+  const filterIcons = {
+    BUSINESS: Briefcase,
+    GOVERNMENT: Building2,
+    Wireless: Wifi,
+    "ASN TS": Network,
+    BIPS: Layers,
+    BOT: Bot,
+    "DATA CENTER": Server,
+    HRIP: Users,
+    "ISP TS": Globe,
+    LRIP: Shield,
+    "PROXY/VPN": Shield,
+    "TIME ZONE": Clock,
+    TSIF: Database,
+  };
 
   const OPTIONS = [
     { value: "country", label: "Country" },
@@ -1138,7 +1168,7 @@ export default function CampaignBuilder() {
                   type="button"
                   onClick={prevStep}
                   className="
-        px-5 py-2.5 rounded-xl
+        px-5 py-2.5 rounded-xl cursor-pointer
         bg-gray-200 hover:bg-gray-300
         dark:bg-slate-800 dark:hover:bg-slate-700
         text-gray-700 dark:text-white
@@ -1156,7 +1186,7 @@ export default function CampaignBuilder() {
                       onClick={handleSubmit(onSubmit)}
                       className="
             flex items-center gap-2
-            px-5 py-2.5 rounded-xl
+            px-5 py-2.5 rounded-xl cursor-pointer
 
             bg-gradient-to-r from-blue-600 to-indigo-600
             hover:from-blue-700 hover:to-indigo-700
@@ -1181,7 +1211,7 @@ export default function CampaignBuilder() {
                     type="button"
                     onClick={handleNext}
                     className="
-          px-6 py-2.5 rounded-xl
+          px-6 py-2.5 rounded-xl cursor-pointer
           bg-gradient-to-r from-blue-600 to-indigo-600
           hover:from-blue-700 hover:to-indigo-700
           text-white shadow-md hover:shadow-lg
@@ -1261,7 +1291,7 @@ export default function CampaignBuilder() {
                     type="button"
                     onClick={prevStep}
                     className="
-            px-5 py-2.5 rounded-xl
+            px-5 py-2.5 rounded-xl cursor-pointer
             bg-gray-200 hover:bg-gray-300
             dark:bg-slate-800 dark:hover:bg-slate-700
             text-gray-700 dark:text-white
@@ -1279,7 +1309,7 @@ export default function CampaignBuilder() {
                         onClick={handleSubmit(onSubmit)}
                         className="
                 flex items-center gap-2
-                px-5 py-2.5 rounded-xl
+                px-5 py-2.5 rounded-xl cursor-pointer
 
                 bg-gradient-to-r from-blue-600 to-indigo-600
                 hover:from-blue-700 hover:to-indigo-700
@@ -1304,7 +1334,7 @@ export default function CampaignBuilder() {
                       type="button"
                       onClick={handleNext}
                       className="
-              px-6 py-2.5 rounded-xl
+              px-6 py-2.5 rounded-xl cursor-pointer
               bg-gradient-to-r from-blue-600 to-indigo-600
               hover:from-blue-700 hover:to-indigo-700
               text-white shadow-md hover:shadow-lg
@@ -1605,6 +1635,7 @@ export default function CampaignBuilder() {
                                     value={mode}
                                     checked={field.value === mode}
                                     onChange={() => field.onChange(mode)}
+                                    className="cursor-pointer"
                                   />
                                   <span className="text-sm text-gray-700 dark:text-slate-300">
                                     {mode.charAt(0).toUpperCase() +
@@ -1626,7 +1657,7 @@ export default function CampaignBuilder() {
                               {isDropdown ? (
                                 <select
                                   className="
-                    w-full text-sm px-4 py-2.5 rounded-xl
+                    w-full text-sm px-4 py-2.5 rounded-xl cursor-pointer
                     bg-white dark:bg-slate-800
                     text-gray-700 dark:text-white
                     border border-gray-300 dark:border-slate-700
@@ -1693,10 +1724,10 @@ export default function CampaignBuilder() {
                                   <span
                                     key={i}
                                     className="
-        flex items-center gap-2
-        px-3 py-1 text-xs rounded-full
-        bg-gray-200 dark:bg-slate-700
-        text-gray-700 dark:text-white
+                              flex items-center gap-2 
+                              px-3 py-1 text-xs rounded-full
+                          bg-gray-200 dark:bg-slate-700
+                            text-gray-700 dark:text-white
       "
                                   >
                                     {val}
@@ -1711,7 +1742,7 @@ export default function CampaignBuilder() {
                                           ),
                                         )
                                       }
-                                      className="text-red-500 hover:text-red-600 font-bold"
+                                      className="text-red-500 hover:text-red-600 font-bold cursor-pointer"
                                     >
                                       ✕
                                     </button>
@@ -1731,7 +1762,7 @@ export default function CampaignBuilder() {
                     type="button"
                     onClick={prevStep}
                     className="
-            px-5 py-2.5 rounded-xl
+            px-5 py-2.5 rounded-xl cursor-pointer
             bg-gray-200 hover:bg-gray-300
             dark:bg-slate-800 dark:hover:bg-slate-700
             text-gray-700 dark:text-white
@@ -1746,7 +1777,7 @@ export default function CampaignBuilder() {
                       onClick={handleSubmit(onSubmit)}
                       className="
                 flex items-center gap-2
-                px-5 py-2.5 rounded-xl
+                px-5 py-2.5 rounded-xl cursor-pointer
 
                 bg-gradient-to-r from-blue-600 to-indigo-600
                 hover:from-blue-700 hover:to-indigo-700
@@ -1782,7 +1813,7 @@ export default function CampaignBuilder() {
                         type="button"
                         onClick={nextStep}
                         className="
-                px-6 py-2.5 rounded-xl
+                px-6 py-2.5 rounded-xl cursor-pointer
                 bg-gradient-to-r from-blue-600 to-indigo-600
                 hover:from-blue-700 hover:to-indigo-700
                 text-white shadow-md hover:shadow-lg
@@ -2099,7 +2130,6 @@ export default function CampaignBuilder() {
                 defaultValue={[]}
                 render={({ field }) => {
                   const selected = field.value || [];
-                  // const notRecommended = ["business", "government", "wireless"];
 
                   const toggleFilter = (item) => {
                     const exists = selected.some((f) => f.id === item.id);
@@ -2147,7 +2177,7 @@ export default function CampaignBuilder() {
                                 type="button"
                                 onClick={() => toggleFilter(item)}
                                 className={`
-                      w-full flex justify-between items-center
+                      w-full flex justify-between items-center cursor-pointer
                       px-3 py-2 rounded-lg text-sm transition
 
                       ${
@@ -2158,6 +2188,16 @@ export default function CampaignBuilder() {
                       `}
                               >
                                 <div className="flex items-center gap-6">
+                                  {filterIcons[item.label] &&
+                                    React.createElement(
+                                      filterIcons[item.label],
+                                      {
+                                        className: `
+                                     w-4 h-4
+                                    ${isSelected ? "text-white" : "text-gray-500 dark:text-slate-400"}
+                                     `,
+                                      },
+                                    )}
                                   <span>{item.label}</span>
 
                                   {isNotRecommended && (
@@ -2216,12 +2256,16 @@ export default function CampaignBuilder() {
                       dark:bg-blue-900 dark:text-blue-200
                       "
                               >
+                                {filterIcons[item.label] &&
+                                  React.createElement(filterIcons[item.label], {
+                                    className: "w-3.5 h-3.5",
+                                  })}
                                 {item.label}
 
                                 <button
                                   type="button"
                                   onClick={() => removeFilter(item.id)}
-                                  className="text-xs hover:opacity-70"
+                                  className="text-xs hover:opacity-70 cursor-pointer"
                                 >
                                   ✕
                                 </button>
@@ -2241,7 +2285,7 @@ export default function CampaignBuilder() {
                   type="button"
                   onClick={prevStep}
                   className="
-        px-4 py-2 rounded-md
+        px-4 py-2 rounded-md cursor-pointer
         bg-gray-200 hover:bg-gray-300 text-gray-700
         dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
                 >
@@ -2252,7 +2296,7 @@ export default function CampaignBuilder() {
                   type="button"
                   onClick={nextStep}
                   className="
-        px-4 py-2 rounded-md
+        px-4 py-2 rounded-md cursor-pointer
         bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   Next →
@@ -2286,6 +2330,7 @@ export default function CampaignBuilder() {
                       <input
                         type="checkbox"
                         checked={showInputs.afterX > 0 ? true : false}
+                        className="cursor-pointer"
                         onChange={() =>
                           setShowInputs((p) => ({
                             ...p,
@@ -2305,7 +2350,7 @@ export default function CampaignBuilder() {
                           name="afterX"
                           register={register}
                           type="number"
-                          placeholder="Enter number of visitors"
+                          placeholder="number of visitors"
                         />
                       </div>
                     )}
@@ -2316,6 +2361,7 @@ export default function CampaignBuilder() {
                       <input
                         type="checkbox"
                         checked={showInputs.frequencyCap}
+                        className="cursor-pointer"
                         onChange={() =>
                           setShowInputs((p) => ({
                             ...p,
@@ -2334,7 +2380,7 @@ export default function CampaignBuilder() {
                           name="automate.frequencyCap.value"
                           register={register}
                           type="number"
-                          placeholder="Enter frequency value"
+                          placeholder="frequency value"
                         />
                       </div>
                     )}
@@ -2345,6 +2391,7 @@ export default function CampaignBuilder() {
                       <input
                         type="checkbox"
                         checked={showInputs.zeroRedirect}
+                        className="cursor-pointer"
                         onChange={() =>
                           setShowInputs((p) => ({
                             ...p,
@@ -2362,6 +2409,7 @@ export default function CampaignBuilder() {
                           <input
                             type="checkbox"
                             checked={watch("automate.zeroRedirect.curl")}
+                            className="cursor-pointer"
                             onChange={(e) => {
                               setValue(
                                 "automate.zeroRedirect.curl",
@@ -2373,9 +2421,10 @@ export default function CampaignBuilder() {
                           />{" "}
                           CURL
                         </label>
-                        <label className="flex items-center gap-2 text-gray-600 dark:text-slate-300">
+                        <label className="flex items-center gap-2 text-gray-600 dark:text-slate-300 cursor-pointer">
                           <input
                             type="checkbox"
+                            className="cursor-pointer"
                             checked={watch("automate.zeroRedirect.iframe")}
                             onChange={(e) => {
                               setValue(
@@ -2392,9 +2441,13 @@ export default function CampaignBuilder() {
                     )}
                   </div>
 
-                  <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 hover:shadow-md transition-all dark:bg-slate-800 dark:border-slate-700">
+                  <div className="p-5 rounded-xl border cursor-pointer shadow-sm bg-gray-50 border-gray-200 hover:shadow-md transition-all dark:bg-slate-800 dark:border-slate-700">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" {...register("automate.gclid")} />
+                      <input
+                        type="checkbox"
+                        {...register("automate.gclid")}
+                        className="cursor-pointer"
+                      />
                       <span className="text-gray-800 dark:text-white font-medium">
                         GCLID (Google Click ID)
                       </span>
@@ -2403,7 +2456,11 @@ export default function CampaignBuilder() {
 
                   <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 hover:shadow-md transition-all dark:bg-slate-800 dark:border-slate-700">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" {...register("automate.ipCap")} />
+                      <input
+                        className="cursor-pointer"
+                        type="checkbox"
+                        {...register("automate.ipCap")}
+                      />
                       <span className="text-gray-800 dark:text-white font-medium">
                         IP Cap
                       </span>
@@ -2415,6 +2472,7 @@ export default function CampaignBuilder() {
                       <input
                         type="checkbox"
                         checked={showInputs.pageGuard}
+                        className="cursor-pointer"
                         onChange={() =>
                           setShowInputs((p) => ({
                             ...p,
@@ -2458,20 +2516,22 @@ export default function CampaignBuilder() {
 
                 <div className="p-5 rounded-xl border shadow-sm bg-gray-50 border-gray-200 dark:bg-slate-800 dark:border-slate-700">
                   <label className="flex items-center gap-6">
-                    <label className="flex items-center gap-2 text-gray-800 dark:text-white font-medium">
+                    <label className="flex items-center gap-2 text-gray-800 dark:text-white font-medium cursor-pointer">
                       <input
                         type="radio"
                         value="301"
                         {...register("http_code")}
+                        className="cursor-pointer"
                       />
                       301
                     </label>
 
-                    <label className="flex items-center gap-2 text-gray-800 dark:text-white font-medium">
+                    <label className="flex items-center cursor-pointer gap-2 text-gray-800 dark:text-white font-medium">
                       <input
                         type="radio"
                         value="302"
                         {...register("http_code")}
+                        className="cursor-pointer"
                       />
                       302
                     </label>
@@ -2483,7 +2543,7 @@ export default function CampaignBuilder() {
                     type="button"
                     onClick={prevStep}
                     className="
-            px-5 py-2.5 rounded-xl
+            px-5 py-2.5 rounded-xl cursor-pointer
             bg-gray-200 hover:bg-gray-300 text-gray-700
             dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white
             transition-all
@@ -2495,7 +2555,7 @@ export default function CampaignBuilder() {
                   <button
                     type="submit"
                     className="
-            px-6 py-2.5 rounded-xl
+            px-6 py-2.5 rounded-xl cursor-pointer
             bg-gradient-to-r from-emerald-500 to-teal-500
             hover:from-emerald-600 hover:to-teal-600
             text-white shadow-md hover:shadow-lg

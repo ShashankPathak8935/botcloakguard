@@ -18,6 +18,7 @@ const Dashboard = lazy(() => import("../pages/dashboard"));
 const Campaign = lazy(() => import("../pages/campaignCreation"));
 const CloakingIntegration = lazy(() => import("../pages/CampaignIntegration"));
 const IpListings = lazy(() => import("../pages/IpListings"));
+const WhitelistIps = lazy(()=> import("../pages/WhitelistIps"))
 const Analytics = lazy(() => import("../pages/Analytics"));
 const SignupPage = lazy(() => import("../auth/SignUpForm"));
 const LoginPage = lazy(() => import("../auth/SignInForm"));
@@ -36,7 +37,8 @@ const RealtimeAnalytics = lazy(() => import("../pages/RealtimeAnalytics"));
 const Socket = lazy(() => import("../pages/socket"));
 const PaypalIntegration = lazy(() => import("../pages/paypalIntegration"));
 const Billing = lazy(() => import("../pages/Billing"));
-const Verifyotp = lazy(()=> import("../auth/VerifyOtp"));
+const Verifyotp = lazy(() => import("../auth/VerifyOtp"));
+
 
 const Layout = () => (
   <div className="w-[100vw] h-[100vh] bg-[#0b0d14]">
@@ -129,6 +131,7 @@ export default function Routess() {
                 element={<CloakingIntegration />}
               />
               <Route path="ipListings" element={<IpListings />} />
+              <Route path="whitelistedip" element={<WhitelistIps/>}/>
               <Route path="analytics" element={<Analytics />} />
               <Route path="test" element={<Test />} />
               {/* <Route path="clickLogs" element={<ClickLogs />} /> */}

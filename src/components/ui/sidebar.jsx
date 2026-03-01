@@ -35,6 +35,7 @@ import {
   faTools,
   faGear,
   faLink,
+  faNetworkWired,
 } from "@fortawesome/free-solid-svg-icons";
 import { CreditCard, Layers, Wallet } from "lucide-react";
 import { Layer } from "recharts";
@@ -59,7 +60,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Campaign",
       icon: <FontAwesomeIcon icon={faBullhorn} size="lg" />,
-      // route: "/Dashboard/allCampaign",
+      route: "/Dashboard/allCampaign",
     },
     {
       label: "Custom filter",
@@ -79,17 +80,22 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Tools",
       icon: <FontAwesomeIcon icon={faGear} size="lg" />,
-      route: "/Dashboard/analytics",
+      // route: "/Dashboard/tools",
     },
     {
       label: "Url Shortner",
       icon: <FontAwesomeIcon icon={faLink} size="lg" />,
-      route: "/Dashboard/analytics",
+      // route: "/Dashboard/url-shortner",
     },
     {
       label: "Blacklisted IP",
       icon: <FontAwesomeIcon icon={faShieldHalved} size="lg" />,
       route: "/Dashboard/IpListings",
+    },
+    {
+      label: "Whitelisted IPs",
+      icon: <FontAwesomeIcon icon={faNetworkWired} size="lg" />,
+      route: "/Dashboard/whitelistedip",
     },
     {
       label: "Pricing",

@@ -20,7 +20,7 @@ const CloakingIntegration = () => {
   const camp = location?.state?.data;
   const navigate = useNavigate();
   const [showIntegrationTable, setShowIntegrationTable] = useState(
-    !camp?.integration
+    !camp?.integration,
   );
 
   const tabs = [
@@ -284,35 +284,73 @@ if ($data && isset($data['action'])) {
   return (
     // Outer padding and dark background for the main content area
     showIntegrationTable ? (
-      <div className="p-4 md:p-8 bg-gray-900 min-h-full">
+      <div
+        className="p-4 md:p-8 min-h-full transition-colors duration-300
+    bg-gray-50 text-gray-900
+    dark:bg-slate-950 dark:text-slate-100"
+      >
         {/* Max width container for clean layout */}
-        <div className="max-w-7xl mx-auto">
+        <div
+          className="
+    max-w-7xl mx-auto rounded-2xl p-6 border shadow-xl
+    bg-white border-gray-200
+    dark:bg-slate-900 dark:border-slate-800
+  "
+        >
           {/* === 1. Component Header (Unchanged) === */}
           <header className="flex justify-between items-center mb-6">
             <div className="flex flex-col">
               <div className="flex flex-row items-center">
-                <h1 className="text-2xl font-semibold text-white">
+                <h1
+                  className="
+          text-2xl font-semibold
+          text-gray-900
+          dark:text-white
+        "
+                >
                   Cloaking Intergration
                 </h1>
-                <p className="text-sm text-green-500 pl-2">[ID:{camp?.cid}]</p>
+                <p
+                  className="
+          text-sm pl-2 font-medium
+          text-green-600
+          dark:text-green-400
+        "
+                >
+                  [ID:{camp?.cid}]
+                </p>
               </div>
-              <p className="text-sm text-left text-gray-500 mt-1">
+              <p
+                className="
+        text-sm mt-1
+        text-gray-500
+        dark:text-slate-400
+      "
+              >
                 Create/Edit/Delete Campaigns
               </p>
             </div>
             <button
               onClick={() => {
-               
-                
                 navigate("/Dashboard/create-campaign", {
                   state: {
                     mode: "edit",
-                        id:camp.uid,
+                    id: camp.uid,
                     data: camp, // campaign data from db
                   },
                 });
               }}
-              className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition duration-150 cursor-pointer"
+              className="
+      px-4 py-2 text-sm font-medium rounded-lg
+      transition duration-200
+
+      bg-indigo-600 text-white
+      hover:bg-indigo-700
+
+      dark:bg-indigo-500 dark:hover:bg-indigo-600
+      shadow-sm hover:shadow-md
+      hover:scale-[1.02] active:scale-[0.98]
+    "
             >
               Edit Campaign
             </button>
@@ -322,7 +360,18 @@ if ($data && isset($data['action'])) {
           <hr className="border-gray-700 mb-8" />
 
           {/* === 2. Integration Method Tabs (Unchanged) === */}
-          <div className="flex space-x-2 p-1 bg-gray-800 rounded-xl mb-6">
+          <div
+            className="
+    flex space-x-2 p-1 mb-6 rounded-xl
+    transition-colors duration-300
+
+    bg-gray-100
+    dark:bg-slate-800
+
+    border border-gray-200
+    dark:border-slate-700
+  "
+          >
             {tabs?.map((t) => {
               return <Tab t={t} tab={tab} setTab={(id) => setTab(id)} />;
             })}
@@ -334,8 +383,18 @@ if ($data && isset($data['action'])) {
         </div>
       </div>
     ) : (
-      <div className="bg-gray-900 min-h-full">
-        <IntegrationTable camp={camp} setShowIntegrationTable={setShowIntegrationTable}/>
+      <div
+        className="
+    min-h-full transition-colors duration-300
+
+    bg-gray-50 text-gray-900
+    dark:bg-slate-950 dark:text-slate-100
+  "
+      >
+        <IntegrationTable
+          camp={camp}
+          setShowIntegrationTable={setShowIntegrationTable}
+        />
       </div>
     )
   );
@@ -344,17 +403,15 @@ if ($data && isset($data['action'])) {
 // Simplified Tab Component
 const Tab = ({ t, tab, setTab }) => (
   <button
-    className={`
-          flex-1 text-sm font-medium py-2 px-3 rounded-lg flex items-center justify-center transition duration-200 cursor-pointer
-          ${
-            tab === t.id
-              ? "bg-blue-600 text-white shadow-md" // Adjusted active color for better consistency
-              : "text-gray-400 hover:bg-gray-700/50"
-          }
-        `}
     onClick={() => {
       setTab(t.id);
     }}
+    className={`
+          flex-1 text-sm font-medium py-2 px-3 rounded-lg
+      flex items-center justify-center gap-2
+      transition-all duration-200 cursor-pointer
+          ${tab === t.id ? "bg-blue-600 shadow-md  dark:bg-blue-500" : "text-gray-600 hover:bg-gray-200 dark:text-slate-300 dark:hover:bg-slate-700"}
+        `}
   >
     {t.svg}
     {t.label}
@@ -398,8 +455,7 @@ const generatePhpZip = async (phpCode) => {
   saveAs(zipBlob, "index.zip");
 };
 
-const javascriptIntegration = async (camp, url,setShowIntegrationTable) => {
- 
+const javascriptIntegration = async (camp, url, setShowIntegrationTable) => {
   const data = {
     url: url, // client site URL
     campId: camp?.cid, // expected camp id
@@ -408,11 +464,8 @@ const javascriptIntegration = async (camp, url,setShowIntegrationTable) => {
     "post",
     javascriptIntegrationCheckApi,
     null,
-    data
+    data,
   );
- 
-  
-
 
   if (res.data.success) {
     const data = {
@@ -424,7 +477,7 @@ const javascriptIntegration = async (camp, url,setShowIntegrationTable) => {
       "patch",
       createCampaignApi,
       camp?.uid,
-      data
+      data,
     );
     showSuccessToast("✅ Integration Successful");
     setShowIntegrationTable(false);
@@ -438,7 +491,6 @@ async function checkIntegration(camp, url, setShowIntegrationTable) {
   const res = await fetch(`${URL}/?TS-BHDNR-84848=1`);
 
   const text = await res.text();
-
 
   let status = "failed";
   if (text.trim() != camp?.cid) {
@@ -459,30 +511,59 @@ async function checkIntegration(camp, url, setShowIntegrationTable) {
     "patch",
     createCampaignApi,
     camp?.uid,
-    data
+    data,
   );
   if (integrate.status === 200) {
     showSuccessToast("Integration Status: " + status);
-      setShowIntegrationTable(false);
+    setShowIntegrationTable(false);
     return;
   }
   setShowIntegrationTable(true);
   showErrorToast("Integration fail Error try again" + status);
 }
 
-const Phpupload = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTable }) => (
+const Phpupload = ({
+  camp,
+  phpCode,
+  pastedUrl,
+  setPastedUrl,
+  setShowIntegrationTable,
+}) => (
   <div>
-    <div className="flex items-start p-4 bg-blue-900/40 border border-blue-800 rounded-lg mb-6">
-      <p className="text-blue-200 text-sm">
-        <span className="font-semibold">Important:{setShowIntegrationTable}</span> Use the PHP upload
-        method when your safe page, money page, and cloaked URL are all distinct
-        and separate.
+    <div
+      className="
+    flex items-start p-4 rounded-lg mb-6 border
+    transition-colors duration-300
+
+    bg-blue-50 border-blue-200
+    dark:bg-blue-900/30 dark:border-blue-800
+  "
+    >
+      <p
+        className="
+      text-sm
+      text-blue-800
+      dark:text-blue-200
+    "
+      >
+        <span className="font-semibold">
+          Important:{setShowIntegrationTable}
+        </span>{" "}
+        Use the PHP upload method when your safe page, money page, and cloaked
+        URL are all distinct and separate.
       </p>
     </div>
 
     {/* === 4. Code Snippet Instructions & Block === */}
     <div className="mb-4">
-      <p className="text-sm text-gray-400 mb-2">
+      <p
+        className="
+      text-sm mb-2
+      text-gray-600
+      dark:text-slate-400
+      transition-colors duration-300
+    "
+      >
         Download the archive file, extract and upload the whole folder to any
         domain, except the money page domain. You’ll submit the URL of this
         folder to the ad network:
@@ -494,7 +575,22 @@ const Phpupload = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTa
       onClick={() => {
         generatePhpZip(phpCode);
       }}
-      className="flex items-center cursor-pointer justify-center px-6 py-2 bg-blue-600 text-white text-base font-medium rounded-lg hover:bg-blue-700 transition duration-150 shadow-lg mb-8"
+      className="
+    flex items-center justify-center gap-2
+    px-6 py-2 mb-8
+    text-base font-medium rounded-lg
+    cursor-pointer
+
+    transition-all duration-200
+    shadow-md hover:shadow-lg
+
+    bg-blue-600 text-white
+    hover:bg-blue-700
+
+    dark:bg-blue-500 dark:hover:bg-blue-600
+
+    focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500
+  "
     >
       <svg
         class="svg-inline--fa fa-angle-down me-2"
@@ -515,22 +611,40 @@ const Phpupload = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTa
       Download PHP Script
     </button>
 
-    <hr className="border-gray-700 mb-8" />
+    <hr
+      className="
+    mb-5
+    border-t
+    border-gray-200
+    dark:border-slate-700
+    transition-colors duration-300
+  "
+    />
 
     {/* === 6. URL Input and Test Section (New Section) === */}
     <div className="w-full">
       {/* Input Label */}
       <label
         htmlFor="pastedUrl"
-        className="block text-base text-left font-medium text-white mb-2"
+        className="
+    block text-base text-left font-medium
+    text-gray-900
+    dark:text-white
+  "
       >
         Enter the URL of the pasted PHP file:
       </label>
-         {!pastedUrl && (
-  <p className="text-sm text-red-400 mb-2 text-left">
-    Please enter a valid URL to enable testing
-  </p>
-)}
+      {!pastedUrl && (
+        <p
+          className="
+      text-sm mb-2 text-left
+      text-red-600
+      dark:text-red-400
+    "
+        >
+          Please enter a valid URL to enable testing
+        </p>
+      )}
 
       {/* URL Input Field */}
       <input
@@ -539,75 +653,144 @@ const Phpupload = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTa
         value={pastedUrl}
         onChange={(e) => setPastedUrl(e.target.value)}
         placeholder="Please put URL of your pasted script here, for example https://domain.com/scriptname.php"
-        className="w-full px-4 py-3 mb-6 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
+        className="
+    w-full px-4 py-3 mb-6 rounded-lg
+    outline-none transition-all duration-200
 
-   
+    bg-white text-gray-900
+    border border-gray-300
+    placeholder-gray-400
+
+    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+
+    dark:bg-slate-900 dark:text-slate-100
+    dark:border-slate-700
+    dark:placeholder-slate-500
+    dark:focus:ring-blue-500 dark:focus:border-blue-500
+  "
+      />
 
       {/* Redirection Guidance */}
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-left text-white mb-1">
+        <h3
+          className="
+      text-lg font-medium text-left mb-1
+      text-gray-900
+      dark:text-white"
+        >
           Redirecting from the root domain
         </h3>
-        <p className="text-sm text-gray-400">
+        <p
+          className="
+      text-sm
+      text-gray-600
+      dark:text-slate-400
+    "
+        >
           If you want to redirect from the root domain, for example,{" "}
-          <code className="bg-gray-700/50 p-1 rounded">domain.com</code> instead
-          of{" "}
-          <code className="bg-gray-700/50 p-1 rounded">domain.com/folder</code>,
-          you should paste code on top of the{" "}
-          <code className="bg-gray-700/50 p-1 rounded">index.php</code> to the
-          root of your domain.
+          <code
+            className="
+        px-1 py-0.5 rounded text-sm
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            domain.com
+          </code>{" "}
+          instead of{" "}
+          <code
+            className="
+        px-1 py-0.5 rounded text-sm
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            domain.com/folder
+          </code>
+          , you should paste code on top of the{" "}
+          <code
+            className="
+        px-1 py-0.5 rounded text-sm
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            index.php
+          </code>{" "}
+          to the root of your domain.
         </p>
       </div>
 
       {/* Test URL Button */}
-     <button
-  disabled={!pastedUrl.trim()}
-  onClick={() => checkIntegration(camp, pastedUrl, setShowIntegrationTable)}
-  className={`flex items-center  px-6 py-3 text-base font-semibold rounded-lg transition duration-150 shadow-md
+      <button
+        disabled={!pastedUrl.trim()}
+        onClick={() =>
+          checkIntegration(camp, pastedUrl, setShowIntegrationTable)
+        }
+        className={`flex items-center justify-center gap-2
+    px-6 py-3 text-base font-semibold rounded-lg
+    transition-all duration-200 shadow-md
     ${
       pastedUrl.trim()
-        ? "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-        : "bg-gray-600 text-gray-300 cursor-not-allowed"
+        ? "bg-green-600 hover:bg-green-700 hover:shadow-lg dark:bg-green-500 dark:hover:bg-green-600 cursor-pointer"
+        : "bg-gray-200 text-gray-500 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed"
     }
   `}
->
-  <svg
-    className="h-5 w-5 mr-2"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polygon points="5 3 19 12 5 21 5 3" />
-  </svg>
-  TEST URL
-</button>
-
-
-
-
-
-
+      >
+        <svg
+          className="h-5 w-5 mr-2"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polygon points="5 3 19 12 5 21 5 3" />
+        </svg>
+        TEST URL
+      </button>
     </div>
   </div>
 );
 
-const PhpPaste = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTable }) => (
+const PhpPaste = ({
+  camp,
+  phpCode,
+  pastedUrl,
+  setPastedUrl,
+  setShowIntegrationTable,
+}) => (
   <div>
     {/* === 3. Guidance/Warning Banner (Unchanged) === */}
-    <div className="flex items-start p-4 bg-blue-900/40 border border-blue-800 rounded-lg mb-6">
+    <div
+      className="
+    flex items-start p-4 mb-6 rounded-lg border
+    transition-colors duration-300
+
+    bg-blue-50 border-blue-200
+    dark:bg-blue-900/30 dark:border-blue-800
+  "
+    >
       <svg
-        /* ... (Icon) */ className="h-6 w-6 text-blue-400 mr-3 mt-0.5 flex-shrink-0"
+        /* ... (Icon) */ className="
+      h-6 w-6 mr-3 mt-0.5 flex-shrink-0
+      text-blue-600
+      dark:text-blue-400
+    "
         /* ... */ viewBox="0 0 24 24"
       >
         <circle cx="12" cy="12" r="10" />
         <line x1="12" y1="16" x2="12" y2="12" />
         <line x1="12" y1="8" x2="12.01" y2="8" />
       </svg>
-      <p className="text-blue-200 text-sm">
+      <p
+        className="
+      text-sm
+      text-blue-800
+      dark:text-blue-200
+    "
+      >
         <span className="font-semibold">Important:</span> Use the PHP paste
         method when the safe page and cloaked URL are the same.
       </p>
@@ -615,15 +798,36 @@ const PhpPaste = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTab
 
     {/* === 4. Code Snippet Instructions & Block === */}
     <div className="mb-4">
-      <p className="text-sm text-gray-400 mb-2">
+      <p
+        className="
+      text-sm mb-2
+      text-gray-600
+      dark:text-slate-400
+    "
+      >
         Copy and paste the PHP code on top of your safe page, above everything
         else, strictly at the start of the index.php. Make sure there is no
         whitespace before php.
       </p>
 
       {/* Code Block Container */}
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 font-mono text-sm overflow-auto max-h-96 relative">
-        <pre className="text-green-400 whitespace-pre-wrap text-left">
+      <div
+        className="
+      rounded-lg p-4 font-mono text-sm overflow-auto max-h-96 relative
+      transition-colors duration-300
+
+      bg-gray-100 border border-gray-300
+      dark:bg-slate-900 dark:border-slate-700
+    "
+      >
+        <pre
+          className="
+        whitespace-pre-wrap text-left
+
+        text-green-700
+        dark:text-green-400
+      "
+        >
           {/* PHP Code Snippet */}
           {phpCode}
         </pre>
@@ -633,10 +837,26 @@ const PhpPaste = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTab
     {/* === 5. Copy to Clipboard Button (Placed right after the code block) === */}
     <button
       onClick={() => handleCopy(phpCode)}
-      className="flex items-center cursor-pointer justify-center px-6 py-2 bg-blue-600 text-white text-base font-medium rounded-lg hover:bg-blue-700 transition duration-150 shadow-lg mb-8"
+      className="
+    flex items-center justify-center gap-2
+    px-6 py-2 mb-8
+    text-base font-medium rounded-lg
+    cursor-pointer
+
+    transition-all duration-200
+    shadow-md hover:shadow-lg
+
+    bg-blue-600 text-white
+    hover:bg-blue-700
+
+    dark:bg-blue-500 dark:hover:bg-blue-600
+
+    focus:outline-none focus:ring-2 focus:ring-blue-400
+    dark:focus:ring-blue-500
+  "
     >
       <svg
-        /* ... (Copy Icon) */ className="h-5 w-5 mr-2"
+        /* ... (Copy Icon) */ className="h-5 w-5"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -657,15 +877,25 @@ const PhpPaste = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTab
       {/* Input Label */}
       <label
         htmlFor="pastedUrl"
-        className="block text-base text-left font-medium text-white mb-2"
+        className="
+    block text-base text-left font-medium mb-2
+    text-gray-900
+    dark:text-white
+  "
       >
         Enter the URL of the pasted PHP file:
       </label>
-       {!pastedUrl && (
-  <p className="text-sm text-red-400 mb-2 text-left">
-    Please enter a valid URL to enable testing
-  </p>
-)}
+      {!pastedUrl && (
+        <p
+          className="
+      text-sm mb-2 text-left
+      text-red-600
+      dark:text-red-400
+    "
+        >
+          Please enter a valid URL to enable testing
+        </p>
+      )}
 
       {/* URL Input Field */}
       <input
@@ -674,74 +904,143 @@ const PhpPaste = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTab
         value={pastedUrl}
         onChange={(e) => setPastedUrl(e.target.value)}
         placeholder="Please put URL of your pasted script here, for example https://domain.com/scriptname.php"
-        className="w-full px-4 py-3 mb-6 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 outline-none"
+        className="
+    w-full px-4 py-3 mb-6 rounded-lg
+    outline-none transition-all duration-200
+
+    bg-white text-gray-900
+    border border-gray-300
+    placeholder-gray-400
+
+    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+
+    dark:bg-slate-900 dark:text-slate-100
+    dark:border-slate-700
+    dark:placeholder-slate-500
+    dark:focus:ring-blue-500 dark:focus:border-blue-500
+  "
       />
 
       {/* Redirection Guidance */}
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-left text-white mb-1">
+        <h3
+          className="
+      text-lg font-medium text-left mb-1
+      text-gray-900
+      dark:text-white
+    "
+        >
           Redirecting from the root domain
         </h3>
-        <p className="text-sm text-gray-400">
+        <p
+          className="
+      text-sm
+      text-gray-600
+      dark:text-slate-400
+    "
+        >
           If you want to redirect from the root domain, for example,{" "}
-          <code className="bg-gray-700/50 p-1 rounded">domain.com</code> instead
-          of{" "}
-          <code className="bg-gray-700/50 p-1 rounded">domain.com/folder</code>,
-          you should paste code on top of the{" "}
-          <code className="bg-gray-700/50 p-1 rounded">index.php</code> to the
-          root of your domain.
+          <code
+            className="
+        px-1.5 py-0.5 rounded text-xs font-mono
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            domain.com
+          </code>{" "}
+          instead of{" "}
+          <code
+            className="
+        px-1.5 py-0.5 rounded text-xs font-mono
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            domain.com/folder
+          </code>
+          , you should paste code on top of the{" "}
+          <code
+            className="
+        px-1.5 py-0.5 rounded text-xs font-mono
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            index.php
+          </code>{" "}
+          to the root of your domain.
         </p>
       </div>
 
       {/* Test URL Button */}
       <button
-  disabled={!pastedUrl.trim()}
-  onClick={() => checkIntegration(camp, pastedUrl, setShowIntegrationTable)}
-  className={`flex items-center px-6 py-3 text-base font-semibold rounded-lg transition duration-150 shadow-md
+        disabled={!pastedUrl.trim()}
+        onClick={() =>
+          checkIntegration(camp, pastedUrl, setShowIntegrationTable)
+        }
+        className={`flex items-center px-6 py-3 text-base font-semibold rounded-lg
+    transition-all duration-200 shadow-md
     ${
       pastedUrl.trim()
-        ? "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-        : "bg-gray-600 text-gray-300 cursor-not-allowed"
+        ? "bg-green-600 hover:bg-green-700 text-white bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+        : "bg-gray-200 text-gray-400 bg-gray-200 text-gray-400 cursor-not-allowed"
     }
   `}
->
-  <svg
-    className="h-5 w-5 mr-2"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polygon points="5 3 19 12 5 21 5 3" />
-  </svg>
-  TEST URL
-</button>
-
+      >
+        <svg
+          className="h-5 w-5 mr-2"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polygon points="5 3 19 12 5 21 5 3" />
+        </svg>
+        TEST URL
+      </button>
     </div>
   </div>
 );
 
-const Wordpress = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTable }) => (
+const Wordpress = ({
+  camp,
+  phpCode,
+  pastedUrl,
+  setPastedUrl,
+  setShowIntegrationTable,
+}) => (
   <div>
-    {/* <div className="flex items-start p-4 bg-blue-900/40 border border-blue-800 rounded-lg mb-6">
-      <p className="text-blue-200 text-sm">
-        <span className="font-semibold">Important:</span> Use the PHP upload
-        method when your safe page, money page, and cloaked URL are all distinct
-        and separate.
-      </p>
-    </div> */}
-
     {/* === 4. Code Snippet Instructions & Block === */}
     <div className="mb-4">
-      <p className="text-sm text-left text-gray-400 mb-2">
+      <p
+        className="
+    text-sm text-left mb-2
+    text-gray-600
+    dark:text-slate-400
+  "
+      >
         First download the wordpress plugin and install in wordpress.
       </p>
 
       <button
         onClick={generateZip}
-        className="flex items-center cursor-pointer justify-center px-6 py-2 bg-blue-600 text-white text-base font-medium rounded-lg hover:bg-blue-700 transition duration-150 shadow-lg mb-8"
+        className="
+    flex items-center justify-center
+    px-6 py-2 mb-8
+    text-base font-medium rounded-lg
+    transition-all duration-200 shadow-md
+
+    bg-blue-600 hover:bg-blue-700
+    text-white
+
+    dark:bg-blue-500 dark:hover:bg-blue-600
+
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+    dark:focus:ring-offset-slate-900
+  "
       >
         <svg
           class="svg-inline--fa fa-angle-down me-2"
@@ -762,16 +1061,43 @@ const Wordpress = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTa
         Download wordpress Plugin
       </button>
 
-      <p className="text-sm text-left text-gray-400 mb-1">
+      <p
+        className="
+    text-sm text-left mb-1
+    text-gray-600
+    dark:text-slate-400
+  "
+      >
         Copy the PHP code and paste it your wordpress website page or post.
-        <span className="text-red-500">
+        <span
+          className="
+      font-medium
+      text-red-600
+      dark:text-red-400
+    "
+        >
           Note: Disable cache plugin in this method.
         </span>
       </p>
 
       {/* Code Block Container */}
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 font-mono text-sm overflow-auto max-h-96 relative">
-        <pre className="text-green-400 whitespace-pre-wrap text-left">
+      <div
+        className="
+    rounded-lg p-4 max-h-96 overflow-auto relative
+    font-mono text-sm
+
+    bg-gray-50 border border-gray-200
+    dark:bg-slate-900 dark:border-slate-700
+  "
+      >
+        <pre
+          className="
+      whitespace-pre-wrap text-left
+
+      text-green-600
+      dark:text-green-400
+    "
+        >
           {/* PHP Code Snippet */}
           {phpCode}
         </pre>
@@ -781,7 +1107,20 @@ const Wordpress = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTa
     {/* === 5. Copy to Clipboard Button (Placed right after the code block) === */}
     <button
       onClick={() => handleCopy(phpCode)}
-      className="flex items-center cursor-pointer justify-center px-6 py-2 bg-blue-600 text-white text-base font-medium rounded-lg hover:bg-blue-700 transition duration-150 shadow-lg mb-8"
+      className="
+    flex items-center justify-center
+    px-6 py-2 mb-8
+    text-base font-medium rounded-lg
+    transition-all duration-200 shadow-md
+
+    bg-blue-600 hover:bg-blue-700
+    text-white
+
+    dark:bg-blue-500 dark:hover:bg-blue-600
+
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+    dark:focus:ring-offset-slate-900
+  "
     >
       <svg
         /* ... (Copy Icon) */ className="h-5 w-5 mr-2"
@@ -805,15 +1144,25 @@ const Wordpress = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTa
       {/* Input Label */}
       <label
         htmlFor="pastedUrl"
-        className="block text-base text-left font-medium text-white mb-2"
+        className="
+    block text-base text-left font-medium mb-2
+    text-gray-900
+    dark:text-slate-100
+  "
       >
         Enter the URL of the pasted PHP file:
       </label>
-       {!pastedUrl && (
-  <p className="text-sm text-red-400 mb-2 text-left">
-    Please enter a valid URL to enable testing
-  </p>
-)}
+      {!pastedUrl && (
+        <p
+          className="
+      text-sm text-left mb-2
+      text-red-600
+      dark:text-red-400
+    "
+        >
+          Please enter a valid URL to enable testing
+        </p>
+      )}
 
       {/* URL Input Field */}
       <input
@@ -822,70 +1171,161 @@ const Wordpress = ({ camp, phpCode, pastedUrl, setPastedUrl,setShowIntegrationTa
         value={pastedUrl}
         onChange={(e) => setPastedUrl(e.target.value)}
         placeholder="Please put URL of your pasted script here, for example https://domain.com/scriptname.php"
-        className="w-full px-4 py-3 mb-6 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 outline-none"
+        className="
+    w-full px-4 py-3 mb-6 rounded-lg
+    outline-none transition-all duration-200
+
+    bg-white text-gray-900
+    border border-gray-300
+    placeholder-gray-400
+
+    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+
+    dark:bg-slate-900 dark:text-slate-100
+    dark:border-slate-700
+    dark:placeholder-slate-500
+    dark:focus:ring-blue-500 dark:focus:border-blue-500
+  "
       />
 
       {/* Redirection Guidance */}
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-left text-white mb-1">
+        <h3
+          className="
+      text-lg font-medium text-left mb-1
+      text-gray-900
+      dark:text-slate-100
+    "
+        >
           Redirecting from the root domain
         </h3>
-        <p className="text-sm text-gray-400">
+        <p
+          className="
+      text-sm
+      text-gray-600
+      dark:text-slate-400
+    "
+        >
           If you want to redirect from the root domain, for example,{" "}
-          <code className="bg-gray-700/50 p-1 rounded">domain.com</code> instead
-          of{" "}
-          <code className="bg-gray-700/50 p-1 rounded">domain.com/folder</code>,
-          you should paste code on top of the{" "}
-          <code className="bg-gray-700/50 p-1 rounded">index.php</code> to the
-          root of your domain.
+          <code
+            className="
+        px-1.5 py-0.5 rounded text-xs font-mono
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            domain.com
+          </code>{" "}
+          instead of{" "}
+          <code
+            className="
+        px-1.5 py-0.5 rounded text-xs font-mono
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            domain.com/folder
+          </code>
+          , you should paste code on top of the{" "}
+          <code
+            className="
+        px-1.5 py-0.5 rounded text-xs font-mono
+        bg-gray-100 text-gray-800
+        dark:bg-slate-800 dark:text-slate-200
+      "
+          >
+            index.php
+          </code>{" "}
+          to the root of your domain.
         </p>
       </div>
 
       {/* Test URL Button */}
       <button
-  disabled={!pastedUrl.trim()}
-  onClick={() => checkIntegration(camp, pastedUrl, setShowIntegrationTable)}
-  className={`flex items-center px-6 py-3 text-base font-semibold rounded-lg transition duration-150 shadow-md
+        disabled={!pastedUrl.trim()}
+        onClick={() =>
+          checkIntegration(camp, pastedUrl, setShowIntegrationTable)
+        }
+        className={`flex items-center px-6 py-3 text-base font-semibold rounded-lg
+    transition-all duration-200 shadow-md
+
+    focus:outline-none focus:ring-2 focus:ring-offset-2
+    dark:focus:ring-offset-slate-900
     ${
       pastedUrl.trim()
-        ? "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-        : "bg-gray-600 text-gray-300 cursor-not-allowed"
+        ? "bg-green-600 hover:bg-green-700 text-white  dark:bg-green-500 dark:hover:bg-green-600 focus:ring-green-500 cursor-pointer"
+        : "bg-gray-200 text-gray-400 dark:bg-slate-700 dark:text-slate-500 cursor-not-allowed"
     }
   `}
->
-  <svg
-    className="h-5 w-5 mr-2"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polygon points="5 3 19 12 5 21 5 3" />
-  </svg>
-  TEST URL
-</button>
-
+      >
+        <svg
+          className="h-5 w-5 mr-2"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polygon points="5 3 19 12 5 21 5 3" />
+        </svg>
+        TEST URL
+      </button>
     </div>
   </div>
 );
 
-const Javascript = ({ camp, pastedUrl, setPastedUrl,setShowIntegrationTable }) => (
+const Javascript = ({
+  camp,
+  pastedUrl,
+  setPastedUrl,
+  setShowIntegrationTable,
+}) => (
   <div>
     <div className="mb-4">
-      <p className="text-sm text-left text-white-400 mb-2">
+      <p
+        className="
+    text-sm text-left mb-2
+    text-gray-700
+    dark:text-slate-300
+  "
+      >
         You'll add this JavaScript snippet to your safe page. If a visitor is
         considered safe, a JavaScript redirect to your money page occurs. If
         not, the visitor remains on your safe page.
       </p>
-      <p className="text-sm text-left text-gray-400 mb-2">
+      <p
+        className="
+    text-sm text-left mb-2
+    text-gray-600
+    dark:text-slate-400
+  "
+      >
         Copy the JavaScript snippet and paste it between the{" "}
-        <code>&lt;head&gt;&lt;/head&gt;</code> tags of your safe page's HTML
-        source:
-        {`<script src="${import.meta.env.VITE_SERVER_URL}/v2/js_code/${
+        <code
+          className="
+      px-1.5 py-0.5 rounded text-xs font-mono
+      bg-gray-100 text-gray-800
+      dark:bg-slate-800 dark:text-slate-200
+    "
+        >
+          &lt;head&gt;&lt;/head&gt;
+        </code>{" "}
+        tags of your safe page's HTML source:
+        <code
+          className="
+      ml-1 px-1.5 py-0.5 rounded text-xs font-mono
+      bg-gray-100 text-blue-700
+      dark:bg-slate-800 dark:text-blue-400
+    "
+        >
+          {`<script src="${import.meta.env.VITE_SERVER_URL}/v2/js_code/${
+            camp?.cid
+          }.js"></script>`}
+        </code>
+        {/* {`<script src="${import.meta.env.VITE_SERVER_URL}/v2/js_code/${
           camp?.cid
-        }.js"></script>`}
+        }.js"></script>`} */}
       </p>
     </div>
 
@@ -899,7 +1339,19 @@ const Javascript = ({ camp, pastedUrl, setPastedUrl,setShowIntegrationTable }) =
       }.js"></script>`}
       // onChange={(e) => setPastedUrl(e.target.value)}
       placeholder="Please put URL of your pasted script here, for example https://domain.com/scriptname.php"
-      className="w-full px-4 py-3 mb-6 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 outline-none"
+      className="
+    w-full px-4 py-3 mb-6 rounded-lg
+    font-mono text-sm
+    outline-none transition-all duration-200
+
+    bg-gray-100 text-gray-700 border border-gray-200
+    cursor-not-allowed
+
+    dark:bg-slate-800 dark:text-slate-300
+    dark:border-slate-700
+
+    disabled:opacity-100
+  "
     />
 
     {/* === 5. Copy to Clipboard Button (Placed right after the code block) === */}
@@ -908,10 +1360,25 @@ const Javascript = ({ camp, pastedUrl, setPastedUrl,setShowIntegrationTable }) =
         handleCopy(
           `<script src="${import.meta.env.VITE_SERVER_URL}/cdn/${
             camp?.cid
-          }.js"></script>`
+          }.js"></script>`,
         )
       }
-      className="flex  items-center justify-center cursor-pointer px-6 py-2 bg-blue-600 text-white text-base font-medium rounded-lg hover:bg-blue-700 transition duration-150 shadow-lg mb-8"
+      className="
+    flex items-center justify-center
+    px-6 py-2 mb-8
+    text-base font-medium rounded-lg
+    transition-all duration-200 shadow-md
+
+    bg-blue-600 hover:bg-blue-700
+    text-white
+
+    dark:bg-blue-500 dark:hover:bg-blue-600
+
+    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+    dark:focus:ring-offset-slate-900
+
+    cursor-pointer
+  "
     >
       {" "}
       <svg
@@ -936,15 +1403,25 @@ const Javascript = ({ camp, pastedUrl, setPastedUrl,setShowIntegrationTable }) =
       {/* Input Label */}
       <label
         htmlFor="pastedUrl"
-        className="block text-base text-left font-medium text-white mb-2"
+        className="
+    block text-base text-left font-medium mb-2
+    text-gray-900
+    dark:text-slate-100
+  "
       >
         Enter the URL:
       </label>
       {!pastedUrl && (
-  <p className="text-sm text-red-400 mb-2 text-left">
-    Please enter a valid URL to enable testing
-  </p>
-)}
+        <p
+          className="
+      text-sm text-left mb-2
+      text-red-600
+      dark:text-red-400
+    "
+        >
+          Please enter a valid URL to enable testing
+        </p>
+      )}
 
       {/* URL Input Field */}
       <input
@@ -953,45 +1430,80 @@ const Javascript = ({ camp, pastedUrl, setPastedUrl,setShowIntegrationTable }) =
         value={pastedUrl}
         onChange={(e) => setPastedUrl(e.target.value)}
         placeholder="Please put URL of your pasted js cdn link, for example https://domain.com/scriptname.php"
-        className="w-full px-4 py-3 mb-6 bg-gray-800 border border-gray-700 rounded-lg text-gray-300 placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 outline-none"
+        className="
+    w-full px-4 py-3 mb-6 rounded-lg
+    outline-none transition-all duration-200
+
+    bg-white text-gray-900
+    border border-gray-300
+    placeholder-gray-400
+
+    focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+
+    dark:bg-slate-900 dark:text-slate-100
+    dark:border-slate-700
+    dark:placeholder-slate-500
+    dark:focus:ring-blue-500 dark:focus:border-blue-500
+  "
       />
 
       {/* Redirection Guidance */}
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-left text-white mb-1">
+        <h3
+          className="
+    text-lg font-medium text-left mb-1
+    text-gray-900
+    dark:text-slate-100
+  "
+        >
           Redirecting from the root domain
         </h3>
       </div>
 
       {/* Test URL Button */}
       <button
-  disabled={!pastedUrl.trim()}
-  onClick={() => javascriptIntegration(camp, pastedUrl,setShowIntegrationTable)}
-  className={`flex items-center px-6 py-3 text-base font-semibold rounded-lg transition duration-150 shadow-md
+        disabled={!pastedUrl.trim()}
+        onClick={() =>
+          javascriptIntegration(camp, pastedUrl, setShowIntegrationTable)
+        }
+        className={`
+    flex items-center px-6 py-3 text-base font-semibold rounded-lg
+    transition-all duration-200 shadow-md
+
+    focus:outline-none focus:ring-2 focus:ring-offset-2
+    dark:focus:ring-offset-slate-900
+
     ${
       pastedUrl.trim()
-        ? "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
-        : "bg-gray-600 text-gray-300 cursor-not-allowed"
+        ? `
+          bg-green-600 hover:bg-green-700 text-white
+          dark:bg-green-500 dark:hover:bg-green-600
+          focus:ring-green-500
+          cursor-pointer
+        `
+        : `
+          bg-gray-200 text-gray-400
+          dark:bg-slate-700 dark:text-slate-500
+          cursor-not-allowed
+        `
     }
   `}
->
-  <svg
-    className="h-5 w-5 mr-2"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polygon points="5 3 19 12 5 21 5 3" />
-  </svg>
-  TEST URL
-</button>
-
+      >
+        <svg
+          className="h-5 w-5 mr-2"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polygon points="5 3 19 12 5 21 5 3" />
+        </svg>
+        TEST URL
+      </button>
     </div>
   </div>
 );
-
 
 export default CloakingIntegration;
