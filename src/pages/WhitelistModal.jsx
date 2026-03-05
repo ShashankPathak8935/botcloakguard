@@ -1,4 +1,5 @@
-import { X } from "lucide-react";
+import { X, Network, Monitor } from "lucide-react";
+import { useState } from "react";
 
 /* =========================
    REUSABLE INPUT (LOCAL)
@@ -13,7 +14,7 @@ const Input = ({ label, placeholder, ...props }) => (
       placeholder={placeholder}
       {...props}
       className="
-        w-full px-3 py-2 rounded-md outline-none
+        w-full px-3 py-1.5 text-sm rounded-md outline-none
         bg-white dark:bg-[#020617]
         border border-gray-300 dark:border-gray-700
         text-gray-800 dark:text-gray-200
@@ -29,18 +30,26 @@ const Input = ({ label, placeholder, ...props }) => (
    MODAL COMPONENT
 ========================= */
 export const WhitelistModal = ({ close }) => {
+  const [type, setType] = useState("ip");
+  const [isActive, setIsActive] = useState(true);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      {/* MODAL */}
       <div
         className="
-        w-full max-w-2xl rounded-xl
-        bg-white dark:bg-[#0B1220]
-        border border-gray-200 dark:border-gray-800
-        shadow-2xl
-      "
+          w-full max-w-xl
+          max-h-[90vh]
+          flex flex-col
+          rounded-xl
+          bg-white dark:bg-[#0B1220]
+          border border-gray-200 dark:border-gray-800
+          shadow-2xl
+          overflow-hidden
+        "
       >
         {/* HEADER */}
-        <div className="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-800">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800">
           <div>
             <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
               Create New Whitelist
@@ -56,63 +65,147 @@ export const WhitelistModal = ({ close }) => {
           </button>
         </div>
 
-        {/* BODY */}
-        <div className="p-5 space-y-4">
+        {/* BODY (SCROLLABLE) */}
+        <div className="p-5 space-y-4 overflow-y-auto">
           {/* ROW */}
           <div className="grid grid-cols-2 gap-4">
-            <Input label="Name *" placeholder="Allowed IPs" />
+            <Input
+              label="Name *"
+              placeholder="e.g., Allowed Ips, Bot User Agents"
+            />
 
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
                 Type *
               </label>
 
-              <select className="input-style">
-                <option>IP Addresses</option>
-                <option>User Agents</option>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="
+                  w-full px-3 py-1.5 text-sm rounded-md outline-none
+                  bg-white dark:bg-[#020617]
+                  border border-gray-300 dark:border-gray-700
+                  text-gray-800 dark:text-gray-200
+                  focus:ring-2 focus:ring-green-500
+                  transition
+                "
+              >
+                <option value="ip">IP Addresses</option>
+                <option value="ua">User Agents</option>
               </select>
             </div>
           </div>
 
-          <Input label="Description" placeholder="Optional description..." />
+          <Input
+            label="Description"
+            placeholder="Optional: Describe what this whitelist is for"
+          />
 
           {/* TEXTAREA */}
           <div>
-            <label className="text-sm font-medium text-gray-600 dark:text-gray-400">
-              IP Addresses *
+            {/* Dynamic Label */}
+            <label className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+              {type === "ip" ? <Network size={16} /> : <Monitor size={16} />}
+              {type === "ip" ? "IP Addresses *" : "User Agents *"}
             </label>
 
             <textarea
-              rows={5}
+              rows={4}
               className="
-                w-full mt-1 px-3 py-2 rounded-md font-mono outline-none
+                w-full mt-1 px-3 py-1.5 text-sm font-mono rounded-md outline-none
                 bg-white dark:bg-[#020617]
                 border border-gray-300 dark:border-gray-700
                 text-gray-800 dark:text-gray-200
                 focus:ring-2 focus:ring-green-500
               "
-              placeholder={`192.168.1.1
-1.1.1.0/24
-2001:e60::/32`}
+              placeholder={
+                type === "ip"
+                  ? `one per line: single IP or CIDR range
+192.168.1.6
+2.1.3.44
+2025:e88::99`
+                  : `Enter User Agents (one per line):
+Mozilla/5.0 (compatible; Googlebot/2.1)
+Mozilla/5.0 (compatible; Bingbot/2.0)
+AdsBot-Google-Mobile`
+              }
             />
+
+            {/* FORMAT BOX */}
+            <div className="mt-3 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+              <p className="text-sm font-semibold text-green-700 dark:text-green-400">
+                Format:
+              </p>
+
+              <p className="text-sm text-green-700/80 dark:text-green-400/80 mt-1">
+                {type === "ip"
+                  ? "Enter one item per line. Single IP or CIDR range (IPv4 and IPv6). Examples: 192.168.1.1, 1.1.1.0/24, 2001:e60::/32"
+                  : "Enter one item per line. User agents will be matched exactly."}
+              </p>
+            </div>
           </div>
 
           {/* STATUS */}
-          <div className="flex items-center justify-between p-4 rounded-lg bg-gray-100 dark:bg-[#020617] border border-gray-200 dark:border-gray-800">
-            <span className="text-gray-700 dark:text-gray-300">
-              Active Status
-            </span>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-[#0f172a] border border-gray-200 dark:border-gray-800">
+            {/* LEFT */}
+            <div className="flex items-start gap-3">
+              <div
+                className={`p-2 rounded-lg ${
+                  isActive
+                    ? "bg-green-100 dark:bg-green-900/30"
+                    : "bg-gray-200 dark:bg-gray-700"
+                }`}
+              >
+                <svg
+                  className={`w-5 h-5 ${
+                    isActive ? "text-green-600" : "text-gray-500"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M9 12l2 2 4-4" />
+                  <circle cx="12" cy="12" r="9" />
+                </svg>
+              </div>
 
-            <input type="checkbox" defaultChecked />
+              <div>
+                <p className="font-medium text-gray-800 dark:text-white">
+                  Active Status
+                </p>
+
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {isActive
+                    ? "This whitelist is active and will bypass all filters"
+                    : "This whitelist is inactive and will not bypass filters"}
+                </p>
+              </div>
+            </div>
+
+            {/* RIGHT */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={() => setIsActive(!isActive)}
+                className="w-5 h-5 accent-green-600 cursor-pointer"
+              />
+
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {isActive ? "Active" : "Inactive"}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* FOOTER */}
-        <div className="flex justify-end gap-3 p-5 border-t border-gray-200 dark:border-gray-800">
+        <div className="flex justify-end gap-3 p-4 border-t border-gray-200 dark:border-gray-800">
           <button
             onClick={close}
             className="
-              px-4 py-2 rounded-md
+              px-4 py-2 text-sm rounded-md
               bg-gray-200 dark:bg-gray-700
               text-gray-700 dark:text-gray-200
               hover:bg-gray-300 dark:hover:bg-gray-600
@@ -122,7 +215,7 @@ export const WhitelistModal = ({ close }) => {
             Cancel
           </button>
 
-          <button className="px-4 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white transition">
+          <button className="px-4 py-2 text-sm rounded-md bg-green-600 hover:bg-green-700 text-white transition">
             Create Whitelist
           </button>
         </div>

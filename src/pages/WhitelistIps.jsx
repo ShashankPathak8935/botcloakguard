@@ -11,8 +11,8 @@ export default function WhitelistIps() {
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-green-100 dark:bg-green-900/30">
-            <ShieldCheck className="w-6 h-6 text-green-600 dark:text-green-400" />
+          <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/30">
+            <ShieldCheck className="w-6 h-6 text-blue-600 dark:text-blue-400" />
           </div>
 
           <div>
@@ -28,7 +28,7 @@ export default function WhitelistIps() {
         <button
           onClick={() => setOpenModal(true)}
           className="flex items-center gap-2 px-4 py-2 rounded-lg
-          bg-green-600 hover:bg-green-700 text-white shadow-md transition"
+          bg-blue-600 hover:bg-blue-700 text-white shadow-md transition"
         >
           <Plus size={18} />
           Create Whitelist
@@ -41,21 +41,21 @@ export default function WhitelistIps() {
           title="Total Whitelists"
           value="0"
           icon={<ShieldCheck />}
-          color="green"
+          color="blue"
         />
 
         <WhitelistCards
           title="Active Whitelists"
           value="0"
           icon={<CheckCircle />}
-          color="emerald"
+          color="blue"
         />
 
         <WhitelistCards
           title="Total Items"
           value="0"
           icon={<AlertTriangle />}
-          color="purple"
+          color="blue"
         />
       </div>
 
@@ -78,7 +78,7 @@ export default function WhitelistIps() {
         <button
           onClick={() => setOpenModal(true)}
           className="mt-6 flex items-center gap-2 px-5 py-2 rounded-lg
-          bg-green-600 hover:bg-green-700 text-white transition"
+          bg-blue-600 hover:bg-blue-700 text-white transition"
         >
           <Plus size={18} />
           Create Whitelist

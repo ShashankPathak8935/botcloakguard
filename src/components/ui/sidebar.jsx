@@ -117,7 +117,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
   const databaseSubItems = [
     {
       label: "Click Logs",
-      // route: "/Dashboard/reports",
+      route: "/Dashboard/reports",
     },
     // {
     //   label: "Stats Overview",

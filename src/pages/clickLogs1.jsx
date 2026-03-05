@@ -85,27 +85,32 @@ const Clicklogs = () => {
   const [campId, setCampId] = useState(null);
   const [isResetting, setIsResetting] = useState(false);
   const campaignControllerRef = useRef(null);
-const tableControllerRef = useRef(null);
-
+  const tableControllerRef = useRef(null);
 
   useEffect(() => {
     campaignControllerRef.current = new AbortController();
 
     const fetchCampaigns = async () => {
       try {
-        const res = await apiFunction("get", getAllCampNames, null, null,campaignControllerRef.current.signal );
+        const res = await apiFunction(
+          "get",
+          getAllCampNames,
+          null,
+          null,
+          campaignControllerRef.current.signal,
+        );
         setCampaigns(res?.data?.data || []); // store campaigns
       } catch (err) {
-          if (err.name !== "CanceledError") {
-        // console.error("Error fetching campaigns:", err);
-      }
+        if (err.name !== "CanceledError") {
+          // console.error("Error fetching campaigns:", err);
+        }
       }
     };
 
     fetchCampaigns();
-     return () => {
-    campaignControllerRef.current.abort(); // 🔥 unmount par cancel
-  };
+    return () => {
+      campaignControllerRef.current.abort(); // 🔥 unmount par cancel
+    };
   }, []);
 
   //   FETCHING TABLE CONTENT
@@ -124,10 +129,10 @@ const tableControllerRef = useRef(null);
     }
 
     if (tableControllerRef.current) {
-    tableControllerRef.current.abort();
-  }
+      tableControllerRef.current.abort();
+    }
 
-  tableControllerRef.current = new AbortController();
+    tableControllerRef.current = new AbortController();
 
     const startDate = start.toISOString().split("T")[0];
     const endDate = end.toISOString().split("T")[0];
@@ -146,26 +151,26 @@ const tableControllerRef = useRef(null);
         `${clicksbycampaign}?startdate=${startDate}&enddate=${endDate}&campId=${campId}`,
         null,
         null,
-        tableControllerRef.current.signal
+        tableControllerRef.current.signal,
       );
 
       setTableData(res?.data?.data || []);
     } catch (err) {
-       if (err.name !== "CanceledError") {
-      // console.error("Error fetching data:", err);
-    }
+      if (err.name !== "CanceledError") {
+        // console.error("Error fetching data:", err);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-  return () => {
-    if (tableControllerRef.current) {
-      tableControllerRef.current.abort();
-    }
-  };
-}, []);
+    return () => {
+      if (tableControllerRef.current) {
+        tableControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   const handleReset = () => {
     setIsResetting(true);
@@ -181,13 +186,20 @@ const tableControllerRef = useRef(null);
 
   return (
     <>
-      <div className="bg-[ ] min-h-screen">
-        <header className="flex items-center justify-between pt-5 mb-6  ml-4 mr-4">
+      <div
+        className="
+    min-h-screen
+    bg-gray-50 text-gray-900
+    dark:bg-[#020617] dark:text-gray-100
+    transition-colors duration-300
+  "
+      >
+        <header className="flex items-center justify-between pt-5 mb-6 mx-4">
           <div>
             <h1 className="text-2xl font-semibold flex items-center">
               Click Logs
             </h1>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Campaign click logs and details
             </p>
           </div>
@@ -197,18 +209,23 @@ const tableControllerRef = useRef(null);
             <button
               onClick={handleReset}
               disabled={isResetting}
-              className={`px-3 py-2 text-sm flex items-center justify-center gap-2
-    text-gray-300 border border-gray-700 rounded-md
-    transition-all duration-200 cursor-pointer
-    ${
-      isResetting
-        ? "bg-gray-700 cursor-not-allowed"
-        : "bg-gray-800 hover:bg-gray-700"
-    }
-  `}
+              className={`
+        px-3 py-2 text-sm flex items-center gap-2 rounded-md
+        border transition-all duration-200
+        ${
+          isResetting
+            ? "bg-gray-200 dark:bg-gray-700 cursor-not-allowed"
+            : `
+              bg-white hover:bg-gray-100
+              dark:bg-[#0f172a] dark:hover:bg-[#1e293b]
+            `
+        }
+        border-gray-300 dark:border-gray-700
+        text-gray-700 dark:text-gray-200
+      `}
             >
               {isResetting && (
-                <span className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
               )}
               Reset
             </button>
@@ -230,9 +247,9 @@ const tableControllerRef = useRef(null);
                     headers
                       .map(
                         (h) =>
-                          `"${(row[h] || "").toString().replace(/"/g, '""')}"`
+                          `"${(row[h] || "").toString().replace(/"/g, '""')}"`,
                       )
-                      .join(",")
+                      .join(","),
                   );
                 });
 
@@ -247,12 +264,14 @@ const tableControllerRef = useRef(null);
                 window.URL.revokeObjectURL(url);
               }}
               disabled={!tableData || tableData.length === 0}
-              className={`px-3 py-2 text-sm rounded-md shadow-sm 
-    ${
-      tableData && tableData.length > 0
-        ? "bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
-        : "bg-gray-700 text-gray-500 cursor-not-allowed"
-    }`}
+              className={`
+        px-3 py-2 text-sm rounded-md shadow-sm transition
+        ${
+          tableData && tableData.length > 0
+            ? "bg-blue-600 hover:bg-blue-700 text-white"
+            : "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+        }
+      `}
             >
               Export CSV
             </button>
@@ -289,53 +308,77 @@ const tableControllerRef = useRef(null);
                 {/* Scrollable Table Body Container */}
                 <div className="overflow-y-auto" style={{ maxHeight: "400px" }}>
                   <table className="min-w-full divide-y divide-gray-700 table-fixed">
-                    <thead className="bg-gray-800 sticky top-0">
+                    <thead
+                      className="
+    sticky top-0 z-10
+    bg-gray-100 text-gray-700
+    dark:bg-slate-900 dark:text-gray-300
+    border-b border-gray-200 dark:border-gray-700
+  "
+                    >
                       <tr>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-16">
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider w-16">
                           S No. <span className="text-red-500">*</span>
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-100">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider w-100">
                           Date&Time
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                           Result
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-35">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider w-35">
                           Log
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider w-24">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider w-24">
                           City
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                           IP
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider min-w-30">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider min-w-30">
                           IP Score
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                           PROXY
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider ">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                           ISP
                         </th>
-                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-400 uppercase tracking-wider ">
+
+                        <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                           ASN
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider min-w-48">
+
+                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider min-w-48">
                           REFERRER
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider min-w-48">
+
+                        <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider min-w-48">
                           USER-AGENT
                         </th>
                       </tr>
                     </thead>
 
-                    <tbody className="bg-gray-900 divide-y divide-gray-800">
+                    <tbody
+                      className="
+    bg-white divide-y divide-gray-200
+    dark:bg-slate-950 dark:divide-slate-800
+    transition-colors
+  "
+                    >
                       {loading ? (
                         <tr>
                           <td
                             colSpan="12"
-                            className="py-8 text-center text-gray-400"
+                            className="py-8 text-center text-gray-600 dark:text-gray-400"
                           >
                             Loading...
                           </td>
@@ -344,7 +387,7 @@ const tableControllerRef = useRef(null);
                         <tr>
                           <td
                             colSpan="12"
-                            className="py-8 text-center text-gray-400"
+                            className="py-8 text-center text-gray-600 dark:text-gray-400"
                           >
                             No data found
                           </td>
@@ -353,32 +396,62 @@ const tableControllerRef = useRef(null);
                         tableData.map((item, index) => (
                           <tr key={item.tid}>
                             {/* S.No */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300 w-16">
+                            <td
+                              className="
+                             px-6 py-4 whitespace-nowrap text-sm w-16
+                           text-gray-700 dark:text-gray-300
+                           group-hover:text-gray-900 dark:group-hover:text-white
+                             transition-colors"
+                            >
                               {index + 1}
                             </td>
 
                             {/* Date & Time */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300 min-w-40">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap text-sm min-w-40
+    text-gray-700 dark:text-gray-300
+    transition-colors
+  "
+                            >
                               {item.created_at ? (
                                 new Date(item.created_at).toLocaleString()
                               ) : (
-                                <span className="text-gray-500">Unknown</span>
+                                <span className="text-gray-500 dark:text-gray-400">
+                                  Unknown
+                                </span>
                               )}
                             </td>
 
                             {/* Result Icon – if missing show Unknown */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-300">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap text-sm text-center
+    text-gray-700 dark:text-gray-300
+    transition-colors
+  "
+                            >
                               {item.status ? (
-                                <span className="text-gray-500">
+                                <span className="text-gray-600 dark:text-gray-400">
                                   Money Page
                                 </span>
                               ) : (
-                                <span className="text-gray-500">Save Page</span>
+                                <span className="text-gray-600 dark:text-gray-400">
+                                  Save Page
+                                </span>
                               )}
                             </td>
 
                             {/* Country + Browser + OS + Device icons */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300 w-32 flex items-center gap-2">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap w-32
+    flex items-center gap-2
+    text-sm
+    text-gray-700 dark:text-gray-300
+    transition-colors
+  "
+                            >
                               {/* COUNTRY FLAG */}
                               {item?.isocode ? (
                                 <img
@@ -444,10 +517,12 @@ const tableControllerRef = useRef(null);
                               )}
 
                               {/* DEVICE ICON */}
-                              {/* DEVICE ICON */}
                               {item?.device ? (
                                 <div
-                                  className="w-6 h-6 " // parent controls size
+                                  className="
+        w-6 h-6 flex items-center justify-center
+        text-gray-700 dark:text-gray-300
+      "
                                   data-tooltip-id={`tooltip-${item.device}`}
                                   data-tooltip-content={item.device}
                                 >
@@ -467,62 +542,126 @@ const tableControllerRef = useRef(null);
                             </td>
 
                             {/* City */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap
+    text-sm
+    text-gray-700 dark:text-gray-300
+  "
+                            >
                               {item.city || (
-                                <span className="text-gray-500">N/A</span>
+                                <span className="text-gray-400 dark:text-gray-500">
+                                  N/A
+                                </span>
                               )}
                             </td>
 
                             {/* IP */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap
+    text-sm
+    text-gray-700 dark:text-gray-300
+  "
+                            >
                               {item.ip || (
-                                <span className="text-gray-500">Unknown</span>
+                                <span className="text-gray-400 dark:text-gray-500">
+                                  Unknown
+                                </span>
                               )}
                             </td>
 
                             {/* IP Score */}
-                            <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-300">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap text-center
+    text-sm
+    text-gray-700 dark:text-gray-300
+  "
+                            >
                               {item.risk !== undefined && item.risk !== null ? (
                                 item.risk
                               ) : (
-                                <span className="text-gray-500">N/A</span>
+                                <span className="text-gray-400 dark:text-gray-500">
+                                  N/A
+                                </span>
                               )}
                             </td>
 
                             {/* Proxy */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap text-center
+    text-sm
+    text-gray-700 dark:text-gray-300
+  "
+                            >
                               {item.proxy || (
-                                <span className="text-gray-500">N/A</span>
+                                <span className="text-gray-400 dark:text-gray-500">
+                                  N/A
+                                </span>
                               )}
                             </td>
 
                             {/* ISP */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap text-center
+    text-sm
+    text-gray-700 dark:text-gray-300
+  "
+                            >
                               {item.isp || (
-                                <span className="text-gray-500">Unknown</span>
+                                <span className="text-gray-400 dark:text-gray-500">
+                                  Unknown
+                                </span>
                               )}
                             </td>
 
                             {/* ASN */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap text-center
+    text-sm
+    text-gray-700 dark:text-gray-300
+  "
+                            >
                               {item.asn || (
-                                <span className="text-gray-500">Unknown</span>
+                                <span className="text-gray-400 dark:text-gray-500">
+                                  Unknown
+                                </span>
                               )}
                             </td>
 
                             {/* REFERRER */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-left text-gray-300 min-w-48">
-                              {item.referrer || (
-                                <span className="text-gray-500">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap
+    text-sm text-left
+    min-w-48
+    text-gray-700 dark:text-gray-300
+  "
+                            >
+                              {item.referrer ? (
+                                item.referrer
+                              ) : (
+                                <span className="text-gray-400 dark:text-gray-500">
                                   No Referrer
                                 </span>
                               )}
                             </td>
 
                             {/* USER AGENT */}
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-left text-gray-300 min-w-48">
+                            <td
+                              className="
+    px-6 py-4 whitespace-nowrap
+    text-sm text-left
+    min-w-48
+    text-gray-700 dark:text-gray-300
+  "
+                            >
                               {item.user_agent || (
-                                <span className="text-gray-500">
+                                <span className="text-gray-400 dark:text-gray-500">
                                   No User Agent
                                 </span>
                               )}
@@ -536,17 +675,53 @@ const tableControllerRef = useRef(null);
               </div>
 
               {/* Pagination (Unchanged) */}
-              <div className="flex items-center justify-center pt-4 pb-4 bg-gray-800 rounded-b-lg">
-                <button className="h-8 w-8 text-gray-600 hover:text-white">
+              <div
+                className="
+    flex items-center justify-center
+    pt-4 pb-4
+    bg-gray-100 dark:bg-gray-800
+    rounded-b-lg
+    border-t border-gray-200 dark:border-gray-700
+  "
+              >
+                <button
+                  className="
+      h-8 w-8 flex items-center justify-center
+      text-gray-500 dark:text-gray-400
+      hover:text-gray-800 dark:hover:text-white
+      transition
+    "
+                >
                   &lt;
                 </button>
-                <button className="h-8 w-8 mx-1 bg-blue-600 text-white rounded-full text-sm">
+                <button
+                  className="
+      h-8 w-8 mx-1 rounded-full text-sm
+      bg-blue-600 text-white
+      shadow-sm
+    "
+                >
                   1
                 </button>
-                <button className="h-8 w-8 mx-1 text-gray-400 hover:text-white text-sm">
+                <button
+                  className="
+      h-8 w-8 mx-1 rounded-full text-sm
+      text-gray-600 dark:text-gray-400
+      hover:bg-gray-200 dark:hover:bg-gray-700
+      hover:text-gray-900 dark:hover:text-white
+      transition
+    "
+                >
                   2
                 </button>
-                <button className="h-8 w-8 text-gray-600 hover:text-white">
+                <button
+                  className="
+      h-8 w-8 flex items-center justify-center
+      text-gray-500 dark:text-gray-400
+      hover:text-gray-800 dark:hover:text-white
+      transition
+    "
+                >
                   &gt;
                 </button>
               </div>
