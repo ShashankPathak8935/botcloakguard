@@ -30,6 +30,8 @@ const AllStats = lazy(() => import("../pages/AllStats"));
 const Pricing = lazy(() => import("../pages/Pricing"));
 const MyProfile = lazy(() => import("../pages/MyProfile"));
 const Clicklog = lazy(() => import("../pages/clickLogs1"));
+const ViewStats = lazy(() => import("../pages/ViewStats"));
+const ServerStatusCard = lazy(() => import("../pages/ServerStatusCard"));
 const CheckoutFlow = lazy(() => import("../components/ui/checkOutFlow"));
 const ResetPassword = lazy(() => import("../auth/ResetPassword"));
 // const UpdatePassword = lazy(() => import("../auth/updatePassword"));
@@ -137,12 +139,14 @@ export default function Routess() {
               {/* <Route path="clickLogs" element={<ClickLogs />} /> */}
 
               <Route path="reports" element={<Clicklog />} />
+              <Route path="view-stats" element={<ViewStats />} />
               <Route
                 path="real-time-analytics/:id"
                 element={<RealtimeAnalytics />}
               />
               <Route path="pricing" element={<Pricing />} />
               <Route path="billing" element={<Billing />} />
+              <Route path="server" element={<ServerStatusCard />} />
            
           </Route>
 

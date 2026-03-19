@@ -1,38 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  Building,
   Database,
-  Notebook,
-  UserSearch,
-  Save,
-  Unlock,
   X,
-  ChevronDown,
-  ChevronUp,
   Power,
-  HandCoins,
-  NotepadText,
   FileText,
-  LayoutDashboard,
-  HardDrive,
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faList,
-  faBan,
-  faChartPie,
-  faChartSimple,
-  faDollarSign,
   faBorderAll,
   faBullhorn,
-  faCircleXmark,
   faShieldHalved,
-  faChartColumn,
   faSliders,
   faChartLine,
-  faWrench,
-  faTools,
   faGear,
   faLink,
   faNetworkWired,
@@ -100,17 +80,17 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Pricing",
       icon: <Wallet size={24} />,
-      // route: "/Dashboard/pricing",
+      route: "/Dashboard/pricing",
     },
     {
       label: "Billing",
       icon: <Layers size={24} />,
-      // route: "/Dashboard/billing",
+      route: "/Dashboard/billing",
     },
     {
       label: "Server",
       icon: <Database size={24} />,
-      // route: "/Dashboard/billing",
+      route: "/Dashboard/server",
     },
   ];
 
@@ -119,10 +99,10 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       label: "Click Logs",
       route: "/Dashboard/reports",
     },
-    // {
-    //   label: "Stats Overview",
-    //   route: "/Dashboard/clicklogs",
-    // },
+    {
+      label: "View Stats",
+      route: "/Dashboard/view-stats",
+    },
     // {
     //   label: "Tracking",
     //   route: "/employerHome/UnlockedCandidates",

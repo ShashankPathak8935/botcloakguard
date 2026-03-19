@@ -23,6 +23,10 @@ export const getAllCampNames = `${base_url}/api/v2/campaign/campnames`;
 
 export const clicksbycampaign = `${base_url}/api/v2/campaign/clicksbycamp`;
 
+export const getClickLogs = `${base_url}/api/v2/viewstats/getclicklogs`;
+
+export const getClickIp = `${base_url}/api/v2/viewstats/getclickip`;
+
 export const signOutApi = `${base_url}/auth/signout`;  
 
 export const ipClicks = `${base_url}/api/v2/analytics/ipclicks`;

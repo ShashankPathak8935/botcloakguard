@@ -167,7 +167,7 @@ const Header = ({ onMenuClick }) => {
         {/* Market Place */}
         <div
           className="
-    flex items-center gap-2 px-3 h-[30px] rounded-md
+    flex items-center gap-1 px-3 h-[30px] rounded-md
     bg-slate-100 dark:bg-slate-800
     text-slate-700 dark:text-slate-200
     border border-slate-200 dark:border-slate-700
@@ -205,7 +205,7 @@ const Header = ({ onMenuClick }) => {
         {/* Profile */}
         <div
           className="ml-2 flex items-center gap-2 cursor-pointer"
-          // onClick={() => setShowProfileModal(!showProfileModal)}
+          onClick={() => setShowProfileModal(!showProfileModal)}
         >
           {user?.image ? (
             <img

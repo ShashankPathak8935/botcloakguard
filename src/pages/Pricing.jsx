@@ -124,21 +124,22 @@ export default function Pricing() {
   /* ===================== UI ===================== */
 
   return (
-    <div className="min-h-screen bg-[#0b0d14] text-gray-100 px-6 py-14">
+    <div className="min-h-screen bg-gray-300 dark:bg-[#0b0d14] text-gray-900 dark:text-gray-100 px-6 py-14 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* HEADER */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-gray-400 mt-3">
+
+          <p className="text-gray-800 dark:text-gray-400 mt-3">
             Choose the plan that fits your business needs
           </p>
         </div>
 
         {/* BILLING TOGGLE */}
-        <div className="flex justify-center mb-14">
-          <div className="bg-[#1E293B] p-1 rounded-xl flex gap-1">
+        <div className="flex justify-center mb-10">
+          <div className="bg-gray-200 dark:bg-[#1E293B] p-1 rounded-xl flex gap-1 transition-colors">
             {["Monthly", "quarterly", "Yearly"].map((type) => {
               const discount =
                 type === "quarterly"
@@ -154,12 +155,11 @@ export default function Pricing() {
                   className={`relative px-6 py-2 rounded-lg text-sm font-medium transition cursor-pointer ${
                     billing === type
                       ? "bg-blue-600 text-white"
-                      : "text-gray-300 hover:bg-gray-700"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
                   }`}
                 >
                   {type}
 
-                  {/* DISCOUNT BADGE */}
                   {discount && (
                     <span className="absolute -top-2 -right-2 bg-green-500 text-black text-[10px] font-bold px-2 py-[2px] rounded-full">
                       {discount}
@@ -173,63 +173,114 @@ export default function Pricing() {
 
         {/* PLANS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {filteredPlans.map((plan) => (
-            <div
-              key={plan.id}
-              className={`relative bg-[#1E293B] border rounded-2xl p-8 ${
-                plan.name.includes("Pro")
-                  ? "border-blue-500 ring-1 ring-blue-500"
-                  : "border-gray-700"
-              }`}
-            >
-              {plan.name.includes("Pro") && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs px-4 py-1 rounded-full">
-                  Most Popular
-                </span>
-              )}
+          {filteredPlans.map((plan) => {
+            const savedPlan = JSON.parse(localStorage.getItem("plan"));
 
-              <h3 className="text-xl font-semibold">{plan.name}</h3>
+            const isCurrentPlan = savedPlan && savedPlan?.Plan?.id === plan.id && savedPlan?.isActive;
 
-              <div className="mt-4">
-                <span className="text-4xl font-bold">${plan.price}</span>
-                <span className="text-gray-400 ml-2">/ {billing}</span>
-              </div>
+            let buttonText = "Choose Plan";
+            if(savedPlan){
+              if(isCurrentPlan){
+                buttonText = "Current Plan";
+              }else{
+                buttonText = "Upgrade Plan";
+              }
+            }
 
-              <p className="mt-3 text-gray-400 text-sm">
-                {plan.maxCampaigns} Campaigns •{" "}
-                {plan.clicksPerCampaign === -1
-                  ? "Unlimited Clicks"
-                  : `${plan.clicksPerCampaign} Clicks/Campaign`}
-              </p>
-
-              <ul className="mt-6 space-y-2 text-sm">
-                {parseFeatures(plan.features).map((f, idx) => (
-                  <li key={idx} className="flex gap-2">
-                    <span className="text-green-400">✔</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={() => {
-                  setSelectedPlan(plan);
-                  setModalStep(1);
-                }}
-                className={`mt-8 w-full py-3 rounded-xl cursor-pointer ${
-                  plan.name.includes("Pro")
-                    ? "bg-blue-600 hover:bg-blue-700"
-                    : "bg-gray-700 hover:bg-gray-600"
-                }`}
+            return (
+              <div
+                key={plan.id}
+                className={`relative
+            bg-white dark:bg-[#1E293B]
+            border rounded-2xl p-8 transition-all duration-300
+            ${
+              plan.name.includes("Pro")
+                ? "border-blue-500 ring-1 ring-blue-500"
+                : "border-gray-200 dark:border-gray-700"
+            }
+          `}
               >
-                Choose Plan
-              </button>
-            </div>
-          ))}
+                {plan.name.includes("Pro") && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs px-4 py-1 rounded-full">
+                    Most Popular
+                  </span>
+                )}
+
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  {plan.name}
+                </h3>
+
+                <div className="mt-1">
+                  <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                    ${plan.price}
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400 ml-2">
+                    / {billing}
+                  </span>
+                </div>
+
+                <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                  {plan.maxCampaigns} Campaigns •{" "}
+                  {plan.clicksPerCampaign === -1
+                    ? "Unlimited Clicks"
+                    : `${plan.clicksPerCampaign} Clicks/Campaign`}
+                </p>
+
+                <ul className="mt-2 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  {parseFeatures(plan.features).map((f, idx) => (
+                    <li key={idx} className="flex gap-2">
+                      <span className="text-green-500">✔</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={() => {
+                    if (isCurrentPlan) return;
+                    setSelectedPlan(plan);
+                    setModalStep(1);
+                  }}
+                  disabled={isCurrentPlan}
+                  className={`
+    mt-4 w-full py-3 rounded-xl
+    font-medium text-sm
+    transition-all duration-200
+    focus:outline-none focus:ring-2 focus:ring-offset-2
+    dark:focus:ring-offset-[#0b0d14]
+    ${
+      isCurrentPlan
+        ? `
+          bg-green-600 text-white
+          cursor-not-allowed opacity-80
+        `
+        : plan.name.includes("Pro")
+          ? `
+          bg-blue-600 hover:bg-blue-700
+          active:scale-[0.98]
+          text-white
+          focus:ring-blue-500 cursor-pointer
+        `
+          : `
+          bg-gray-200 dark:bg-gray-700 cursor-pointer
+          hover:bg-gray-300 dark:hover:bg-gray-600
+          active:scale-[0.98]
+          text-gray-900 dark:text-white
+          focus:ring-gray-400 dark:focus:ring-gray-500
+        `
+    }
+  `}
+                >
+                  {buttonText}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* ===================== MODAL ===================== */}
+      {/*======================Modal Start==================*/}
+
       {modalStep > 0 && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
           <div
@@ -246,7 +297,8 @@ export default function Pricing() {
               className={`absolute top-3 right-4 cursor-pointer
                 ${
                   modalStep === 2 && paymentMethod === "card"
-                  ? "text-gray-400 hover:text-gray-800":" text-gray-400 hover:text-white"
+                    ? "text-gray-400 hover:text-gray-800"
+                    : " text-gray-400 hover:text-white"
                 } `}
             >
               ✕
@@ -285,7 +337,7 @@ export default function Pricing() {
                     onClick={() => {
                       setModalStep(2);
                       console.log(paymentMethod);
-                      
+
                       if (paymentMethod === "card") {
                         const { start_date, end_date } =
                           calculateStartEndDates(billing);

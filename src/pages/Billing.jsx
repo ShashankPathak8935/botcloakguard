@@ -294,26 +294,41 @@ const handleDownloadInvoice = async (item) => {
   return (
     <div
       style={{ fontFamily: "Outfit, sans-serif" }}
-      className="min-h-screen bg-[#0b0d14] text-gray-100 p-4 md:p-8"
+      className="
+        min-h-screen p-4 md:p-8
+        bg-[#F1F3F4] text-gray-900
+        dark:bg-[#0b0d14] dark:text-gray-100
+      "
     >
       <div className="max-w-7xl mx-auto">
-        {/* HEADER */}
+        {/* ================= HEADER ================= */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white tracking-tight">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             Billing
           </h1>
-          <p className="text-sm text-gray-400 mt-2">
+
+          <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">
             View your subscriptions and payment history
           </p>
         </div>
 
-        {/* TABLE CONTAINER */}
-        <div className="bg-[#111827] rounded-2xl shadow-2xl border border-gray-800 overflow-hidden">
+        {/* ================= TABLE CONTAINER ================= */}
+        <div
+          className="
+            rounded-2xl shadow-2xl overflow-hidden border
+            bg-white border-gray-200
+            dark:bg-[#111827] dark:border-gray-800
+          "
+        >
           <div className="overflow-x-auto">
             <div className="min-w-[1000px]">
-              {/* TABLE HEADER */}
+              {/* ================= TABLE HEADER ================= */}
               <div
-                className={`${gridLayout} px-6 py-4 bg-[#1e293b] text-gray-400 text-[11px] font-bold uppercase tracking-widest border-b border-gray-700`}
+                className={`${gridLayout}
+                  px-6 py-4 text-[11px] font-bold uppercase tracking-widest border-b
+                  bg-gray-100 text-gray-500 border-gray-200
+                  dark:bg-[#1e293b] dark:text-gray-400 dark:border-gray-700
+                `}
               >
                 <div>Plan Name</div>
                 <div>Method</div>
@@ -325,53 +340,69 @@ const handleDownloadInvoice = async (item) => {
                 <div className="text-center">Invoice</div>
               </div>
 
-              {/* TABLE BODY */}
-              <div className="max-h-[450px] overflow-y-auto divide-y divide-gray-800 custom-scrollbar">
+              {/* ================= TABLE BODY ================= */}
+              <div className="max-h-[450px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-800 custom-scrollbar">
                 {loading ? (
-                  <div className="px-6 py-12 text-center text-gray-500">
+                  <div className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                     Loading records...
                   </div>
                 ) : billingList.length === 0 ? (
-                  <div className="px-6 py-12 text-center text-gray-500 italic">
+                  <div className="px-6 py-12 text-center text-gray-500 dark:text-gray-400 italic">
                     No billing history found
                   </div>
                 ) : (
                   billingList.map((item, index) => (
                     <div
                       key={item.id || index}
-                      className={`${gridLayout} px-6 py-4 text-sm text-gray-300 hover:bg-[#1e293b]/50 transition-colors group`}
+                      className={`${gridLayout}
+                        px-6 py-4 text-sm transition-colors group
+                        text-gray-700 hover:bg-gray-100
+                        dark:text-gray-300 dark:hover:bg-[#1e293b]/50
+                      `}
                     >
-                      {/* Plan - N/A Check */}
+                      {/* PLAN NAME */}
                       <div
-                        className="font-semibold text-white truncate"
+                        className="font-semibold truncate text-gray-900 dark:text-white"
                         title={item.plan_name || "N/A"}
                       >
                         {item.plan_name || "N/A"}
                       </div>
 
-                      {/* Method - N/A Check */}
-                      <div className="text-gray-400">
+                      {/* METHOD */}
+                      <div className="text-gray-600 dark:text-gray-400">
                         {item.method || "N/A"}
                       </div>
 
-                      {/* Amount - N/A Check */}
-                      <div className="font-mono font-bold text-emerald-400">
+                      {/* AMOUNT */}
+                      <div className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
                         {item.amount ? `$${item.amount}` : "N/A"}
                       </div>
 
-                      {/* Payment ID - Truncation with Hover Tooltip */}
+                      {/* PAYMENT ID */}
                       <div className="relative group/id max-w-[180px]">
                         <div
-                          className="font-mono text-xs text-gray-500 truncate cursor-help hover:text-blue-400 transition-colors"
+                          className="
+                            font-mono text-xs truncate cursor-help
+                            text-gray-500 hover:text-blue-500
+                            dark:text-gray-400 dark:hover:text-blue-400
+                          "
                           title={item.payment_id || "N/A"}
                         >
                           {item.payment_id || "N/A"}
                         </div>
 
-                        {/* Tooltip Fix: Using top-full to show it below the row, avoiding header collision */}
                         {item.payment_id && (
-                          <div className="absolute top-full left-0 mt-2 hidden group-hover/id:block bg-gray-900 text-white text-[10px] p-3 rounded-lg shadow-2xl border border-gray-700 z-[100] break-all w-64 backdrop-blur-md">
-                            <p className="text-gray-400 mb-1 border-b border-gray-700 pb-1 uppercase text-[9px] font-bold tracking-widest">
+                          <div
+                            className="
+                              absolute top-full left-0 mt-2 hidden
+                              group-hover/id:block
+                              text-[10px] p-3 rounded-lg shadow-2xl border
+                              z-[100] break-all w-64 backdrop-blur-md
+                              bg-white text-gray-900 border-gray-200
+                              dark:bg-gray-900 dark:text-white dark:border-gray-700
+                            "
+                          >
+                            <p className="text-gray-400 mb-1 border-b border-gray-300 dark:border-gray-700 pb-1 uppercase text-[9px] font-bold tracking-widest">
                               Full Payment ID
                             </p>
                             {item.payment_id}
@@ -379,44 +410,51 @@ const handleDownloadInvoice = async (item) => {
                         )}
                       </div>
 
-                      {/* Status */}
+                      {/* STATUS */}
                       <div>
                         <span
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter border
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border
                           ${
                             item.status === "Paid"
-                              ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                              ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400"
                               : item.status === "Rejected"
-                              ? "bg-red-500/10 text-red-500 border-red-500/20"
-                              : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                                ? "bg-red-500/10 text-red-600 border-red-500/20 dark:text-red-400"
+                                : "bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
                           }`}
                         >
                           {item.status || "N/A"}
                         </span>
                       </div>
 
-                      {/* Dates - N/A Check */}
-                      <div className="text-gray-400">
+                      {/* START DATE */}
+                      <div className="text-gray-600 dark:text-gray-400">
                         {item.start_date
                           ? new Date(item.start_date).toLocaleDateString(
-                              "en-IN"
+                              "en-IN",
                             )
                           : "N/A"}
                       </div>
-                      <div className="text-gray-400">
+
+                      {/* END DATE */}
+                      <div className="text-gray-600 dark:text-gray-400">
                         {item.end_date
                           ? new Date(item.end_date).toLocaleDateString("en-IN")
                           : "N/A"}
                       </div>
 
-                      {/* Action - Invoice Download Icon */}
+                      {/* DOWNLOAD BUTTON */}
                       <div className="flex justify-center">
                         <button
                           onClick={() => handleDownloadInvoice(item)}
-                          className="p-2 rounded-lg cursor-pointer bg-gray-800 hover:bg-blue-600 text-gray-400 hover:text-white transition-all"
                           title="Download Invoice"
+                          className="
+                            p-2 rounded-lg transition-all
+                            bg-gray-200 text-gray-600 hover:bg-blue-500 hover:text-white
+                            dark:bg-gray-800 dark:text-gray-400
+                            dark:hover:bg-blue-600 dark:hover:text-white
+                          "
                         >
-                         <Download size={18}/>
+                          <Download size={18} />
                         </button>
                       </div>
                     </div>
@@ -427,7 +465,13 @@ const handleDownloadInvoice = async (item) => {
           </div>
         </div>
 
-        <p className="mt-6 text-center text-gray-600 text-[10px] tracking-widest uppercase font-bold opacity-50">
+        {/* FOOTER */}
+        <p
+          className="
+            mt-6 text-center text-[10px] tracking-widest uppercase font-bold opacity-60
+            text-gray-500 dark:text-gray-600
+          "
+        >
           Secure Billing Dashboard • Powered by CryptoPay
         </p>
       </div>
