@@ -60,7 +60,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Tools",
       icon: <FontAwesomeIcon icon={faGear} size="lg" />,
-      // route: "/Dashboard/tools",
+      route: "/Dashboard/tools",
     },
     {
       label: "Url Shortner",

@@ -20,6 +20,7 @@ const CloakingIntegration = lazy(() => import("../pages/CampaignIntegration"));
 const IpListings = lazy(() => import("../pages/IpListings"));
 const WhitelistIps = lazy(()=> import("../pages/WhitelistIps"))
 const Analytics = lazy(() => import("../pages/Analytics"));
+const Toos = lazy(() => import("../pages/Tools"));
 const SignupPage = lazy(() => import("../auth/SignUpForm"));
 const LoginPage = lazy(() => import("../auth/SignInForm"));
 const Impersonate = lazy(() => import("../auth/ImpersonateRoute"));
@@ -135,6 +136,7 @@ export default function Routess() {
               <Route path="ipListings" element={<IpListings />} />
               <Route path="whitelistedip" element={<WhitelistIps/>}/>
               <Route path="analytics" element={<Analytics />} />
+              <Route path="tools" element={<Toos />} />
               <Route path="test" element={<Test />} />
               {/* <Route path="clickLogs" element={<ClickLogs />} /> */}
 
