@@ -47,7 +47,6 @@ const Header = ({ onMenuClick }) => {
       // console.log(err);
     }
   };
-  console.log("plan name", planName)
 
   // ✅ Close dropdown on outside click
 useEffect(() => {
@@ -171,14 +170,12 @@ useEffect(() => {
       <div className="flex items-center gap-3">
         {/* Clicks Box */}
         <div className="flex items-center gap-2 px-3 h-[30px] rounded-md bg-sky-100 text-sky-700 text-sm font-medium">
-        <MousePointerClick className="w-4 h-4" />
-        Clicks:
-       <span className="font-semibold text-sky-900 dark:text-sky-300">
-        {planName === "Starter Monthly"
-         ? "10000"
-         : "Unlimited"}
-      </span>
-      </div>
+          <MousePointerClick className="w-4 h-4" />
+          Clicks:
+          <span className="font-semibold text-sky-900 dark:text-sky-300">
+            {planName === "Starter Monthly" ? "10000" : "Unlimited"}
+          </span>
+        </div>
 
         {/* Market Place */}
         <div
@@ -197,7 +194,7 @@ useEffect(() => {
 
         {/* Upgrade */}
         <div
-          onClick={()=> navigate("/Dashboard/pricing")}
+          onClick={() => navigate("/Dashboard/pricing")}
           className="
         px-4 h-[30px] rounded-md cursor-pointer flex items-center
         bg-blue-600 hover:bg-blue-700
@@ -213,8 +210,8 @@ useEffect(() => {
         {/* Profile */}
         <div className="relative ml-auto">
           <div
-          ref={profileButtonRef}
-            onClick={() => setShowProfileModal(prev => !prev)}
+            ref={profileButtonRef}
+            onClick={() => setShowProfileModal((prev) => !prev)}
             className="
       group flex items-center gap-3 cursor-pointer
       px-3 py-1.5 rounded-full
@@ -345,7 +342,8 @@ useEffect(() => {
         text-[11px] font-medium px-2.5 py-0.5 rounded-full
         bg-green-100 text-green-800
         dark:bg-green-500/10 dark:text-green-400
-      ">
+      "
+              >
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
                 Online
               </span>
@@ -354,7 +352,7 @@ useEffect(() => {
             {/* ===== Menu ===== */}
             <div className="py-1.5 bg-white dark:bg-[#111827]">
               <button
-                // onClick={() => navigate("/myProfile")}
+                onClick={() => navigate("/myProfile")}
                 className="
           flex items-center w-full px-4 py-2.5 text-[13px] gap-3
           text-gray-700 dark:text-gray-300
@@ -369,7 +367,7 @@ useEffect(() => {
               </button>
 
               <button
-                // onClick={() => navigate("/Dashboard/pricing")}
+                onClick={() => navigate("/Dashboard/pricing")}
                 className="
           flex items-center w-full px-4 py-2.5 text-[13px] gap-3
           text-gray-700 dark:text-gray-300
@@ -384,7 +382,7 @@ useEffect(() => {
               </button>
 
               <button
-                // onClick={() => navigate("/help")}
+                onClick={() => navigate("/myProfile")}
                 className="
           flex items-center w-full px-4 py-2.5 text-[13px] gap-3
           text-gray-700 dark:text-gray-300

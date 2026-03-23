@@ -45,7 +45,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Custom filter",
       icon: <FontAwesomeIcon icon={faSliders} size="lg" />,
-      // route: "/Dashboard/allCampaign",
+      route: "/Dashboard/campaign-custom-filter",
     },
 
     {

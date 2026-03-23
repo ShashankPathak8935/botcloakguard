@@ -1,4 +1,25 @@
 import React, { useState } from "react";
+import { FaHeadset, FaBolt, FaClock, FaCheckCircle } from "react-icons/fa";
+
+
+  const labelClass =
+    "block mb-2 text-sm font-medium text-gray-700 dark:text-slate-300";
+
+  const inputClass = `
+  w-full
+  px-4 py-2.5
+  rounded-xl
+  text-sm
+  border
+  border-gray-300 dark:border-slate-600
+  bg-white dark:bg-slate-900
+  text-gray-900 dark:text-white
+  placeholder-gray-400 dark:placeholder-gray-500
+  outline-none
+  focus:border-orange-500
+  focus:ring-2 focus:ring-orange-500/30
+  transition-all duration-200
+`;
 
 export function SupportTicketsView() {
   const [form, setForm] = useState({
@@ -33,8 +54,8 @@ export function SupportTicketsView() {
         }),
       });
 
-      // ✅ SUCCESS
       setSuccess(true);
+
       setForm({
         name: "",
         email: "",
@@ -46,124 +67,236 @@ export function SupportTicketsView() {
 
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
-      alert("Failed to submit ticket. Please try again.");
+      alert("Failed to submit ticket.");
     } finally {
       setLoading(false);
     }
   };
 
+
+
   return (
-    <div className="bg-slate-900 min-h-screen text-white w-full">
+    <div
+      className="
+    w-full min-h-screen
+    px-6 py-10
 
-      {/* HEADER */}
-   
+    bg-gray-50 dark:bg-slate-900
 
-      {/* SUCCESS NOTIFICATION */}
+    border
+    border-gray-200 dark:border-slate-700
+
+    rounded-2xl
+    shadow-sm dark:shadow-none
+
+    transition-all duration-300
+  "
+    >
+      {/* PAGE HEADER */}
+      <div className="mb-10">
+        <h1
+          className="
+    text-3xl font-semibold
+    text-gray-900 dark:text-white
+    flex items-center justify-center gap-3
+    text-center
+  "
+        >
+          <FaHeadset className="text-orange-500" />
+          Support Center
+        </h1>
+        <p className="text-gray-500 dark:text-slate-400 mt-2">
+          Need help? Submit a ticket and our team will respond quickly.
+        </p>
+      </div>
+
+      {/* SUCCESS MESSAGE */}
       {success && (
-        <div className="mb-6 bg-green-600/20 border border-green-500 text-green-400 p-4 rounded-lg">
-          ✅ Ticket submitted successfully. Our support team will contact you soon.
+        <div className="mb-6 rounded-xl border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 p-4">
+          ✅ Ticket submitted successfully. Our support team will contact you
+          soon.
         </div>
       )}
 
-      {/* FORM */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-slate-800 border border-slate-700 rounded-xl p-6 space-y-6 w-full"
-      >
-        {/* NAME */}
-        <div>
-          <label className="block mb-1 text-sm">Full Name</label>
-          <input
-            type="text"
-            name="name"
-            required
-            value={form.name}
-            onChange={handleChange}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2"
+      {/* MAIN GRID */}
+      <div className="grid lg:grid-cols-12 gap-8">
+        {/* LEFT INFO PANEL */}
+        <div
+          className="
+          lg:col-span-4
+          rounded-2xl
+          p-7
+          bg-gradient-to-br
+          from-orange-500 via-pink-500 to-red-500
+          text-white
+          shadow-xl
+        "
+        >
+          <h2 className="text-xl font-semibold mb-6">Why contact support?</h2>
+
+          <InfoItem
+            icon={<FaBolt />}
+            title="Fast Response"
+            desc="Average response time under 24 hours."
+          />
+
+          <InfoItem
+            icon={<FaClock />}
+            title="24/7 Monitoring"
+            desc="We monitor issues around the clock."
+          />
+
+          <InfoItem
+            icon={<FaCheckCircle />}
+            title="Expert Assistance"
+            desc="Our engineers help resolve problems quickly."
           />
         </div>
 
-        {/* EMAIL */}
-        <div>
-          <label className="block mb-1 text-sm">Email Address</label>
-          <input
-            type="email"
-            name="email"
-            required
-            value={form.email}
-            onChange={handleChange}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2"
-          />
-        </div>
+        {/* RIGHT FORM */}
+        <form
+          onSubmit={handleSubmit}
+          className="
+            lg:col-span-8
+            rounded-2xl
+            border border-gray-200 dark:border-slate-700
+            bg-white dark:bg-slate-800
+            p-8
+            shadow-sm
+            space-y-6
+          "
+        >
+          {/* GRID INPUTS */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <Input
+              label="Full Name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+            />
+            <Input
+              label="Email Address"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+            />
+          </div>
 
-        {/* SUBJECT */}
-        <div>
-          <label className="block mb-1 text-sm">Subject</label>
-          <input
-            type="text"
+          <Input
+            label="Subject"
             name="subject"
-            required
             value={form.subject}
             onChange={handleChange}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2"
           />
-        </div>
 
-        {/* CATEGORY */}
-        <div>
-          <label className="block mb-1 text-sm">Category</label>
-          <select
-            name="category"
-            required
-            value={form.category}
-            onChange={handleChange}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2"
+          {/* CATEGORY + PRIORITY */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <Select
+              label="Category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              options={[
+                "Billing",
+                "Subscription",
+                "Technical Issue",
+                "Account",
+                "Other",
+              ]}
+            />
+
+            <Select
+              label="Priority"
+              name="priority"
+              value={form.priority}
+              onChange={handleChange}
+              options={["Low", "Medium", "High"]}
+            />
+          </div>
+
+          {/* MESSAGE */}
+          <div>
+            <label className={labelClass}>Message</label>
+
+            <textarea
+              rows={5}
+              name="message"
+              required
+              value={form.message}
+              onChange={handleChange}
+              className={`${inputClass} resize-none`}
+            />
+          </div>
+
+          {/* SUBMIT */}
+          <button
+            disabled={loading}
+            className="
+              w-full md:w-auto
+              px-8 py-3
+              rounded-xl
+              font-semibold
+              text-white
+              bg-gradient-to-r from-orange-500 to-red-500
+              hover:scale-[1.02]
+              active:scale-[0.98]
+              transition
+              disabled:opacity-50
+            "
           >
-            <option value="">Select category</option>
-            <option>Billing</option>
-            <option>Subscription</option>
-            <option>Technical Issue</option>
-            <option>Account</option>
-            <option>Other</option>
-          </select>
-        </div>
-
-        {/* PRIORITY */}
-        <div>
-          <label className="block mb-1 text-sm">Priority</label>
-          <select
-            name="priority"
-            value={form.priority}
-            onChange={handleChange}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2"
-          >
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-          </select>
-        </div>
-
-        {/* MESSAGE */}
-        <div>
-          <label className="block mb-1 text-sm">Message</label>
-          <textarea
-            name="message"
-            required
-            rows={5}
-            value={form.message}
-            onChange={handleChange}
-            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 resize-none"
-          />
-        </div>
-
-        {/* SUBMIT */}
-        <button
-          disabled={loading}
-          className="bg-orange-600 px-6 py-2 rounded-lg font-medium hover:bg-orange-700 transition cursor-pointer disabled:opacity-50"
-        >
-          {loading ? "Submitting..." : "Submit Ticket"}
-        </button>
-      </form>
+            {loading ? "Submitting..." : "Submit Ticket"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
+
+/* ---------- SMALL COMPONENTS ---------- */
+
+const Input = ({ label, name, value, onChange, type = "text" }) => (
+  <div>
+    <label className={labelClass}>{label}</label>
+
+    <input
+      type={type}
+      name={name}
+      required
+      value={value}
+      onChange={onChange}
+      className={inputClass}
+    />
+  </div>
+);
+
+const Select = ({ label, name, value, onChange, options }) => (
+  <div>
+    <label className={labelClass}>{label}</label>
+
+    <select
+      name={name}
+      value={value}
+      onChange={onChange}
+      required
+      className={`${inputClass} cursor-pointer`}
+    >
+      <option value="">Select</option>
+
+      {options.map((o) => (
+        <option key={o}>{o}</option>
+      ))}
+    </select>
+  </div>
+);
+
+const InfoItem = ({ icon, title, desc }) => (
+  <div className="flex gap-4 mb-6 items-start">
+    <div className="text-xl mt-1 opacity-90">{icon}</div>
+
+    <div>
+      <p className="font-semibold text-left text-white">{title}</p>
+      <p className="text-sm text-white/80">{desc}</p>
+    </div>
+  </div>
+);
