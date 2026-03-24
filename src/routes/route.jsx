@@ -20,6 +20,7 @@ const CloakingIntegration = lazy(() => import("../pages/CampaignIntegration"));
 const IpListings = lazy(() => import("../pages/IpListings"));
 const WhitelistIps = lazy(()=> import("../pages/WhitelistIps"));
 const CustomFilter = lazy(() => import("../pages/CustomFilter"));
+const CreateCustomFilter = lazy(() => import("../pages/CreateCustomFilter"));
 const Analytics = lazy(() => import("../pages/Analytics"));
 const Toos = lazy(() => import("../pages/Tools"));
 const SignupPage = lazy(() => import("../auth/SignUpForm"));
@@ -138,6 +139,7 @@ export default function Routess() {
                 path="campaign-custom-filter"
                 element={<CustomFilter />}
               />
+              <Route path="create-custom-filter"element={<CreateCustomFilter />}/>
               <Route path="ipListings" element={<IpListings />} />
               <Route path="whitelistedip" element={<WhitelistIps/>}/>
               <Route path="analytics" element={<Analytics />} />

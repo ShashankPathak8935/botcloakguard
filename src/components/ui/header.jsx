@@ -13,6 +13,7 @@ import {
   Minus,
   Sun,
   Moon,
+  Zap,
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useEffect, useRef, useState } from "react";
@@ -89,40 +90,23 @@ useEffect(() => {
   return (
     <header
       className="
-    w-full h-[64px] flex items-center px-6 shadow-sm
-    bg-[#F1F3F4] dark:bg-[#141824]
+    w-full h-[65px] flex items-center px-6 shadow-sm
+    bg-[#F1F3F4] dark:bg-[#141824] z-[99]
     text-gray-800 dark:text-gray-100
     border-b border-gray-200 dark:border-[#1f2433]
   "
     >
       {/* LEFT SECTION */}
-      <div className="flex items-center gap-4">
-        {/* Sidebar Toggle */}
-        <Menu
-          // onClick={onMenuClick}
-          className="
-        w-6 h-6 cursor-pointer
-        text-gray-700 dark:text-gray-300
-        hover:text-gray-900 dark:hover:text-white
-      "
-        />
-
+      <div className="flex items-center gap-4 mb-2 mt-1">
         {/* Logo */}
         <img
-          src="/Botcloakguradlogo.png"
+          src="/applogo.png"
           alt="Logo"
-          className="w-9 h-9 cursor-pointer"
+          className="w-15 h-15 cursor-pointer"
         />
 
-        {/* Brand Text */}
-        <div className="flex flex-col leading-tight">
-          <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-            BotcloakGuard
-          </span>
-          <span className="text-[11px] text-gray-500 dark:text-gray-400">
-            Advance Ad Traffic Protection
-          </span>
-        </div>
+        
+        
 
         {/* Search */}
         <div className="relative ml-6">
@@ -131,9 +115,9 @@ useEffect(() => {
             type="text"
             placeholder="Search..."
             className="
-          w-[280px] h-[38px] pl-10 pr-14 rounded-md text-sm
+          w-[280px] h-[38px] pl-10 pr-14 rounded-xl text-sm
           bg-white dark:bg-[#1c2130]
-          text-gray-700 dark:text-gray-200
+          text-gray-800 dark:text-gray-200
           border border-gray-200 dark:border-[#2a3042]
           focus:outline-none
         "
@@ -149,18 +133,43 @@ useEffect(() => {
             CTRL K
           </span>
         </div>
-        <button
-          onClick={toggleTheme}
-          className="
-        w-9 h-9 flex items-center justify-center rounded-full
-        bg-gray-200 dark:bg-[#1c2130]
-        text-gray-700 dark:text-gray-200
-        hover:bg-gray-300 dark:hover:bg-[#242a3a]
-        transition
-      "
-        >
-          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
+       <div className="relative group">
+  <button
+    onClick={toggleTheme}
+    className="
+      w-10 h-10 flex items-center justify-center rounded-full
+      bg-gradient-to-br cursor-pointer from-indigo-500/20 to-purple-500/20
+      dark:from-indigo-500/10 dark:to-purple-500/10
+      backdrop-blur-md
+      border border-gray-300/40 dark:border-white/10
+      text-indigo-800 dark:text-indigo-200
+      shadow-sm hover:shadow-md
+      hover:scale-105 active:scale-95
+      transition-all duration-300
+    "
+  >
+    {theme === "dark" ? (
+      <Sun size={18} className="rotate-0 group-hover:rotate-180 transition duration-500" />
+    ) : (
+      <Moon size={18} className="rotate-0 group-hover:-rotate-12 transition duration-300" />
+    )}
+  </button>
+
+  {/* Tooltip */}
+  <span
+    className="
+      absolute -bottom-11 left-1/2 -translate-x-1/2
+      bg-black/90 text-white text-xs px-3 py-1.5 rounded-lg
+      opacity-0 group-hover:opacity-100
+      translate-y-1 group-hover:translate-y-0
+      transition-all duration-200
+      whitespace-nowrap
+      shadow-lg
+    "
+  >
+    Switch Theme
+  </span>
+      </div>
       </div>
 
       {/* CENTER SPACER */}
@@ -196,11 +205,12 @@ useEffect(() => {
         <div
           onClick={() => navigate("/Dashboard/pricing")}
           className="
-        px-4 h-[30px] rounded-md cursor-pointer flex items-center
+        px-2 h-[30px] rounded-md cursor-pointer flex items-center
         bg-blue-600 hover:bg-blue-700
         text-white text-sm font-semibold
       "
         >
+          <Zap size={16} strokeWidth={2.2} />
           Upgrade
         </div>
 

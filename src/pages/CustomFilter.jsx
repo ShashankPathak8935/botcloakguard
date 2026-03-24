@@ -1,7 +1,10 @@
 import React from "react";
 import { FaPlus, FaSyncAlt, FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function CustomFilter() {
+
+  const navigate = useNavigate();
   // ----- STATIC DATA -----
   const filters = [
     {
@@ -66,6 +69,7 @@ export default function CustomFilter() {
         <div className="flex gap-3">
           {/* CREATE BUTTON */}
           <button
+          onClick={() => navigate("/Dashboard/create-custom-filter")}
             className="
               flex items-center gap-2
               px-4 py-2 rounded-xl cursor-pointer
