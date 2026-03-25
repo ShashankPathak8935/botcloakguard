@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Search,
   Plus,
@@ -7,6 +7,9 @@ import {
   Activity,
   ShieldCheck,
   X,
+  CalendarClock,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 export default function DashboardTasks() {
@@ -14,6 +17,14 @@ export default function DashboardTasks() {
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerMonth, setPickerMonth] = useState(() => new Date());
+  const [tempDate, setTempDate] = useState("");
+  const [tempHour, setTempHour] = useState("09");
+  const [tempMinute, setTempMinute] = useState("00");
+  const [hourOpen, setHourOpen] = useState(false);
+  const [minuteOpen, setMinuteOpen] = useState(false);
+  const pickerRef = useRef(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -45,6 +56,9 @@ export default function DashboardTasks() {
     });
 
     setOpenModal(false);
+    setPickerOpen(false);
+    setHourOpen(false);
+    setMinuteOpen(false);
   };
 
   const deleteTask = (index) =>
@@ -54,31 +68,148 @@ export default function DashboardTasks() {
     setForm(task);
     setEditingIndex(index);
     setOpenModal(true);
+    setPickerOpen(false);
+    setHourOpen(false);
+    setMinuteOpen(false);
   };
 
   const filtered = tasks.filter((t) =>
     t.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const openDatePicker = () => {
+    const base = form.dueDate
+      ? new Date(form.dueDate)
+      : new Date();
+
+    if (!Number.isNaN(base.getTime())) {
+      const y = base.getFullYear();
+      const m = `${base.getMonth() + 1}`.padStart(2, "0");
+      const d = `${base.getDate()}`.padStart(2, "0");
+      const h = `${base.getHours()}`.padStart(2, "0");
+      const min = `${base.getMinutes()}`.padStart(2, "0");
+      setTempDate(`${y}-${m}-${d}`);
+      setTempHour(h);
+      setTempMinute(min);
+      setPickerMonth(new Date(y, base.getMonth(), 1));
+    }
+    setPickerOpen(true);
+    setHourOpen(false);
+    setMinuteOpen(false);
+  };
+
+  const closeDatePicker = () => {
+    setPickerOpen(false);
+    setHourOpen(false);
+    setMinuteOpen(false);
+  };
+
+  const applyDateTime = () => {
+    if (!tempDate) return;
+    setForm({ ...form, dueDate: `${tempDate}T${tempHour}:${tempMinute}` });
+    setPickerOpen(false);
+    setHourOpen(false);
+    setMinuteOpen(false);
+  };
+
+  const clearDateTime = () => {
+    setForm({ ...form, dueDate: "" });
+    setPickerOpen(false);
+    setHourOpen(false);
+    setMinuteOpen(false);
+  };
+
+  const displayDueDate = useMemo(() => {
+    if (!form.dueDate) return "";
+    const d = new Date(form.dueDate);
+    if (Number.isNaN(d.getTime())) return "";
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return d.toLocaleString(undefined, options);
+  }, [form.dueDate]);
+
+  const formatTaskDue = (value) => {
+    if (!value) return "";
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return "";
+    return d.toLocaleString(undefined, {
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const calendarDays = useMemo(() => {
+    const year = pickerMonth.getFullYear();
+    const month = pickerMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const startWeekday = firstDay.getDay(); // 0=Sun
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const days = [];
+    for (let i = 0; i < startWeekday; i += 1) {
+      days.push(null);
+    }
+    for (let d = 1; d <= daysInMonth; d += 1) {
+      days.push(new Date(year, month, d));
+    }
+    return days;
+  }, [pickerMonth]);
+
+  useEffect(() => {
+    if (!pickerOpen && !hourOpen && !minuteOpen) return;
+
+    const handleOutside = (e) => {
+      if (!pickerRef.current) return;
+      const path = e.composedPath ? e.composedPath() : [];
+      const clickedInside =
+        pickerRef.current.contains(e.target) ||
+        (path.length && path.includes(pickerRef.current));
+
+      if (!clickedInside) {
+        setPickerOpen(false);
+        setHourOpen(false);
+        setMinuteOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutside, true);
+    return () =>
+      document.removeEventListener("pointerdown", handleOutside, true);
+  }, [pickerOpen, hourOpen, minuteOpen]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
       {/* ================= LEFT CARD ================= */}
       <div
         className="
-        w-full rounded-2xl p-6 transition
-        bg-white border border-gray-200 text-gray-900
-        dark:bg-[#0F111A] dark:border-white/10 dark:text-gray-100
+        w-full rounded-2xl p-6
+        bg-white/90 border border-gray-200 text-gray-900
+        shadow-xl shadow-black/5
+        dark:bg-[#0F111A]/90 dark:border-white/10 dark:text-gray-100 dark:shadow-black/30
+        lg:h-[520px]
       "
       >
+        <div className="flex flex-col h-full">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-semibold">Task Manager</h2>
 
           <button
-            onClick={() => setOpenModal(true)}
+            onClick={() => {
+              setOpenModal(true);
+              setPickerOpen(false);
+              setHourOpen(false);
+              setMinuteOpen(false);
+            }}
             className="flex items-center gap-2 px-3 py-2 rounded-lg
             bg-gradient-to-r from-indigo-500 to-purple-500
-            text-white text-sm hover:scale-105 transition"
+            text-white text-sm hover:scale-105 transition-transform cursor-pointer"
           >
             <Plus size={16} /> Add Task
           </button>
@@ -95,86 +226,157 @@ export default function DashboardTasks() {
               w-full h-[38px] pl-10 rounded-xl text-sm
               bg-gray-50 dark:bg-[#151826]
               border border-gray-200 dark:border-white/10
-              focus:outline-none
+              focus:outline-none focus:ring-2 focus:ring-indigo-500/30
             "
           />
         </div>
 
         {/* Task List */}
-        <div className="space-y-3 max-h-[350px] overflow-auto">
-          {filtered.map((task, index) => (
-            <div
-              key={index}
-              className="
-              p-4 rounded-xl flex justify-between items-center
-              bg-gray-50 dark:bg-[#151826]
-              border border-gray-200 dark:border-white/10
-            "
-            >
-              <div>
-                <p className="font-medium">{task.name}</p>
-                <span className="text-xs opacity-70">
-                  {task.status} • {task.priority}
-                </span>
-              </div>
-
-              <div className="flex gap-3">
-                <Pencil
-                  size={16}
-                  className="cursor-pointer hover:text-indigo-500"
-                  onClick={() => editTask(task, index)}
-                />
-                <Trash2
-                  size={16}
-                  className="cursor-pointer hover:text-red-500"
-                  onClick={() => deleteTask(index)}
-                />
-              </div>
+        <div className="flex-1 overflow-auto pr-1">
+          {filtered.length === 0 ? (
+            <div className="h-full flex items-center justify-center rounded-xl border border-dashed border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-[#151826]/60 text-sm text-gray-500 dark:text-white/40">
+              No tasks yet. Click “Add Task” to create one.
             </div>
-          ))}
+          ) : (
+            <div className="space-y-3">
+              {filtered.map((task, index) => (
+                <div
+                  key={index}
+                  className="
+                  p-4 rounded-2xl flex justify-between items-start gap-4
+                  bg-gradient-to-br from-white via-white to-indigo-50/50
+                  border border-gray-200
+                  hover:border-indigo-300/60 hover:shadow-md hover:shadow-black/5
+                  dark:bg-gradient-to-br dark:from-[#151826] dark:via-[#0F111A] dark:to-[#0D141F]
+                  dark:border-white/10 dark:hover:border-white/20 dark:hover:shadow-black/20
+                "
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-3">
+                      <div className="min-w-0">
+                        <p className="font-semibold truncate">{task.name}</p>
+                        <p className="text-[11px] text-gray-500 dark:text-white/40 mt-0.5">
+                          Task ID {index + 1}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 mt-3">
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-300">
+                        {task.status}
+                      </span>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-700 dark:bg-white/10 dark:text-white/70">
+                        {task.priority}
+                      </span>
+                      {task.dueDate && (
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+                          {formatTaskDue(task.dueDate)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => editTask(task, index)}
+                      className="h-8 w-8 rounded-lg border border-gray-200 dark:border-white/10 hover:border-indigo-300 dark:hover:border-white/20 hover:text-indigo-500 transition cursor-pointer flex items-center justify-center"
+                    >
+                      <Pencil size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => deleteTask(index)}
+                      className="h-8 w-8 rounded-lg border border-gray-200 dark:border-white/10 hover:border-red-300 dark:hover:border-white/20 hover:text-red-500 transition cursor-pointer flex items-center justify-center"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         </div>
       </div>
 
       {/* ================= RIGHT CARD ================= */}
       <div
         className="
-        w-full rounded-2xl p-6 transition
-        bg-white border border-gray-200 text-gray-900
-        dark:bg-[#0F111A] dark:border-white/10 dark:text-gray-100
+        w-full rounded-2xl p-6
+        bg-white/90 border border-gray-200 text-gray-900
+        shadow-xl shadow-black/5
+        dark:bg-[#0F111A]/90 dark:border-white/10 dark:text-gray-100 dark:shadow-black/30
+        lg:h-[520px]
       "
       >
-        <h2 className="text-lg font-semibold mb-1">
-          Live Campaign Click Intelligence
-        </h2>
-        <p className="text-sm opacity-70 mb-6">
-          Real-time engagement insights across protected traffic
-        </p>
+        <div className="rounded-2xl p-5 bg-white border border-gray-200 shadow-sm dark:bg-[#0F111A] dark:border-white/10">
+          <h2 className="text-lg font-semibold mb-1">
+            Live Campaign Click Intelligence
+          </h2>
+          <p className="text-sm opacity-70 mb-6">
+            Real-time engagement insights across protected traffic
+          </p>
 
-        <div className="grid grid-cols-2 gap-4">
-          {/* Total Clicks */}
-          <div className="rounded-xl p-5 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-white/10">
-            <Activity className="mb-2 text-indigo-500" />
-            <p className="text-sm opacity-70">Total Clicks</p>
-            <h3 className="text-2xl font-semibold">12,480</h3>
-          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {/* Total Clicks */}
+            <div className="rounded-2xl p-4 border border-gray-200 bg-white/80 shadow-sm dark:bg-[#111827] dark:border-white/10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-xs text-gray-500 dark:text-white/50">
+                    Total Clicks
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                    12,480
+                  </div>
+                </div>
+                <div className="h-9 w-9 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+                  <Activity className="text-indigo-500" size={16} />
+                </div>
+              </div>
+              <div className="mt-3 text-[11px] text-emerald-600 dark:text-emerald-300">
+                +12.4% this week
+              </div>
+              <div className="mt-3 h-1.5 rounded-full bg-indigo-500/10 overflow-hidden">
+                <div className="h-full w-[70%] bg-indigo-500" />
+              </div>
+            </div>
 
-          {/* Safe Clicks */}
-          <div className="rounded-xl p-5 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-white/10">
-            <ShieldCheck className="mb-2 text-emerald-500" />
-            <p className="text-sm opacity-70">Safe Clicks</p>
-            <h3 className="text-2xl font-semibold">11,932</h3>
+            {/* Safe Clicks */}
+            <div className="rounded-2xl p-4 border border-gray-200 bg-white/80 shadow-sm dark:bg-[#111827] dark:border-white/10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-xs text-gray-500 dark:text-white/50">
+                    Safe Clicks
+                  </div>
+                  <div className="mt-2 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                    11,932
+                  </div>
+                </div>
+                <div className="h-9 w-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                  <ShieldCheck className="text-emerald-500" size={16} />
+                </div>
+              </div>
+              <div className="mt-3 text-[11px] text-indigo-600 dark:text-indigo-300">
+                95.6% safe rate
+              </div>
+              <div className="mt-3 h-1.5 rounded-full bg-emerald-500/10 overflow-hidden">
+                <div className="h-full w-[86%] bg-emerald-500" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ================= MODAL ================= */}
       {openModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div
             className="
-            w-[420px] rounded-2xl p-6
+            w-full max-w-[560px] rounded-2xl p-6 sm:p-7
             bg-white dark:bg-[#0F111A]
             border border-gray-200 dark:border-white/10
+            shadow-2xl shadow-black/10 dark:shadow-black/30
           "
           >
             <div className="flex justify-between mb-4">
@@ -185,7 +387,10 @@ export default function DashboardTasks() {
               </h3>
               <X
                 className="cursor-pointer"
-                onClick={() => setOpenModal(false)}
+                onClick={() => {
+                  setOpenModal(false);
+                  setPickerOpen(false);
+                }}
               />
             </div>
 
@@ -196,7 +401,15 @@ export default function DashboardTasks() {
                 onChange={(e) =>
                   setForm({ ...form, name: e.target.value })
                 }
-                className="input"
+                className="
+                  w-full rounded-xl px-3.5 py-2.5 text-sm
+                  bg-gray-50 dark:bg-[#151826]
+                  border border-gray-200 dark:border-white/10
+                  text-gray-900 dark:text-gray-100
+                  placeholder:text-gray-400 dark:placeholder:text-white/40
+                  focus:outline-none focus:ring-2 focus:ring-indigo-500/40
+                  transition
+                "
               />
 
               <textarea
@@ -205,48 +418,338 @@ export default function DashboardTasks() {
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
                 }
-                className="input h-20"
+                className="
+                  w-full rounded-xl px-3.5 py-2.5 text-sm min-h-[96px]
+                  bg-gray-50 dark:bg-[#151826]
+                  border border-gray-200 dark:border-white/10
+                  text-gray-900 dark:text-gray-100
+                  placeholder:text-gray-400 dark:placeholder:text-white/40
+                  focus:outline-none focus:ring-2 focus:ring-indigo-500/40
+                  transition
+                "
               />
 
-              <select
-                value={form.status}
-                onChange={(e) =>
-                  setForm({ ...form, status: e.target.value })
-                }
-                className="input"
-              >
-                <option>To Do</option>
-                <option>In Progress</option>
-                <option>Hold</option>
-                <option>Done</option>
-              </select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <select
+                  value={form.status}
+                  onChange={(e) =>
+                    setForm({ ...form, status: e.target.value })
+                  }
+                  className="
+                    w-full rounded-xl px-3.5 py-2.5 text-sm
+                    bg-gray-50 dark:bg-[#151826]
+                    border border-gray-200 dark:border-white/10
+                    text-gray-900 dark:text-gray-100
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500/40
+                    transition cursor-pointer
+                  "
+                >
+                  <option>To Do</option>
+                  <option>In Progress</option>
+                  <option>Hold</option>
+                  <option>Done</option>
+                </select>
 
-              <select
-                value={form.priority}
-                onChange={(e) =>
-                  setForm({ ...form, priority: e.target.value })
-                }
-                className="input"
-              >
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-              </select>
+                <select
+                  value={form.priority}
+                  onChange={(e) =>
+                    setForm({ ...form, priority: e.target.value })
+                  }
+                  className="
+                    w-full rounded-xl px-3.5 py-2.5 text-sm
+                    bg-gray-50 dark:bg-[#151826]
+                    border border-gray-200 dark:border-white/10
+                    text-gray-900 dark:text-gray-100
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500/40
+                    transition cursor-pointer
+                  "
+                >
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                </select>
+              </div>
 
-              <input
-                type="datetime-local"
-                value={form.dueDate}
-                onChange={(e) =>
-                  setForm({ ...form, dueDate: e.target.value })
-                }
-                className="input"
-              />
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-medium text-gray-600 dark:text-white/60">
+                    Due Date & Time
+                  </label>
+                  <span className="text-[11px] text-gray-400 dark:text-white/35">
+                    Local timezone
+                  </span>
+                </div>
+
+                <div className="relative" ref={pickerRef}>
+                  <button
+                    type="button"
+                    onClick={openDatePicker}
+                    className="
+                      w-full rounded-xl px-3.5 py-2.5 text-sm text-left
+                      bg-gray-50 dark:bg-[#151826]
+                      border border-gray-200 dark:border-white/10
+                      text-gray-900 dark:text-gray-100
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500/40
+                      hover:bg-gray-100 dark:hover:bg-[#1B2030]
+                      transition cursor-pointer
+                    "
+                  >
+                    <div className="flex items-center gap-2">
+                      <CalendarClock className="w-4 h-4 text-indigo-500/80" />
+                      {displayDueDate ? (
+                        <span>{displayDueDate}</span>
+                      ) : (
+                        <span className="text-gray-400 dark:text-white/40">
+                          Pick date & time
+                        </span>
+                      )}
+                    </div>
+                  </button>
+
+                  {pickerOpen && (
+                    <div
+                      className="
+                        absolute z-50 w-[320px] bottom-full mb-2
+                        rounded-2xl border border-gray-200 dark:border-white/10
+                        bg-white dark:bg-[#0F111A]
+                        shadow-2xl shadow-black/10 dark:shadow-black/30
+                        overflow-hidden
+                      "
+                    >
+                      {/* Calendar Header */}
+                      <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-white/10">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPickerMonth(
+                              new Date(
+                                pickerMonth.getFullYear(),
+                                pickerMonth.getMonth() - 1,
+                                1
+                              )
+                            )
+                          }
+                          className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <div className="text-xs font-medium">
+                          {pickerMonth.toLocaleString(undefined, {
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPickerMonth(
+                              new Date(
+                                pickerMonth.getFullYear(),
+                                pickerMonth.getMonth() + 1,
+                                1
+                              )
+                            )
+                          }
+                          className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Calendar Grid */}
+                      <div className="px-3 pt-2">
+                        <div className="grid grid-cols-7 gap-1 text-[10px] text-gray-400 dark:text-white/40 mb-2">
+                          {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(
+                            (d) => (
+                              <div key={d} className="text-center">
+                                {d}
+                              </div>
+                            )
+                          )}
+                        </div>
+                        <div className="grid grid-cols-7 gap-1 pb-2">
+                          {calendarDays.map((d, idx) => {
+                            if (!d)
+                              return (
+                                <div key={`e-${idx}`} className="h-7" />
+                              );
+                            const y = d.getFullYear();
+                            const m = `${d.getMonth() + 1}`.padStart(2, "0");
+                            const day = `${d.getDate()}`.padStart(2, "0");
+                            const value = `${y}-${m}-${day}`;
+                            const isSelected = value === tempDate;
+                            return (
+                              <button
+                                key={value}
+                                type="button"
+                                onClick={() => setTempDate(value)}
+                                className={`
+                                  h-7 rounded-md text-xs transition cursor-pointer
+                                  ${
+                                    isSelected
+                                      ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                                      : "hover:bg-gray-100 dark:hover:bg-white/5"
+                                  }
+                                `}
+                              >
+                                {d.getDate()}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Time + Actions */}
+                      <div className="px-3 py-2 border-t border-gray-200 dark:border-white/10">
+                        <div className="flex items-center gap-2">
+                          <div className="relative w-full">
+                            <button
+                              type="button"
+                              onClick={() => setHourOpen((v) => !v)}
+                              className="
+                                w-full rounded-lg px-2.5 py-1.5 text-xs text-left
+                                bg-gray-50 dark:bg-[#151826]
+                                border border-gray-200 dark:border-white/10
+                                focus:outline-none focus:ring-2 focus:ring-indigo-500/40
+                                hover:bg-gray-100 dark:hover:bg-[#1B2030]
+                                transition cursor-pointer
+                              "
+                            >
+                              {tempHour}
+                            </button>
+
+                            {hourOpen && (
+                              <div
+                                className="
+                                  absolute z-50 bottom-full mb-1 w-full
+                                  max-h-28 overflow-auto rounded-lg
+                                  border border-gray-200 dark:border-white/10
+                                  bg-white dark:bg-[#0F111A]
+                                  shadow-lg shadow-black/10 dark:shadow-black/30
+                                "
+                              >
+                                {Array.from({ length: 24 }).map((_, i) => {
+                                  const v = `${i}`.padStart(2, "0");
+                                  const active = v === tempHour;
+                                  return (
+                                    <button
+                                      key={v}
+                                      type="button"
+                                      onClick={() => {
+                                        setTempHour(v);
+                                        setHourOpen(false);
+                                      }}
+                                      className={`
+                                        w-full px-2.5 py-1.5 text-xs text-left transition cursor-pointer
+                                        ${
+                                          active
+                                            ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                                            : "hover:bg-gray-100 dark:hover:bg-white/5"
+                                        }
+                                      `}
+                                    >
+                                      {v}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-gray-400">:</span>
+                          <div className="relative w-full">
+                            <button
+                              type="button"
+                              onClick={() => setMinuteOpen((v) => !v)}
+                              className="
+                                w-full rounded-lg px-2.5 py-1.5 text-xs text-left
+                                bg-gray-50 dark:bg-[#151826]
+                                border border-gray-200 dark:border-white/10
+                                focus:outline-none focus:ring-2 focus:ring-indigo-500/40
+                                hover:bg-gray-100 dark:hover:bg-[#1B2030]
+                                transition cursor-pointer
+                              "
+                            >
+                              {tempMinute}
+                            </button>
+
+                            {minuteOpen && (
+                              <div
+                                className="
+                                  absolute z-50 bottom-full mb-1 w-full
+                                  max-h-28 overflow-auto rounded-lg
+                                  border border-gray-200 dark:border-white/10
+                                  bg-white dark:bg-[#0F111A]
+                                  shadow-lg shadow-black/10 dark:shadow-black/30
+                                "
+                              >
+                                {Array.from({ length: 60 }).map((_, i) => {
+                                  const v = `${i}`.padStart(2, "0");
+                                  const active = v === tempMinute;
+                                  return (
+                                    <button
+                                      key={v}
+                                      type="button"
+                                      onClick={() => {
+                                        setTempMinute(v);
+                                        setMinuteOpen(false);
+                                      }}
+                                      className={`
+                                        w-full px-2.5 py-1.5 text-xs text-left transition cursor-pointer
+                                        ${
+                                          active
+                                            ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                                            : "hover:bg-gray-100 dark:hover:bg-white/5"
+                                        }
+                                      `}
+                                    >
+                                      {v}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between mt-2">
+                          <button
+                            type="button"
+                            onClick={clearDateTime}
+                            className="text-xs text-gray-500 hover:text-red-500 transition cursor-pointer"
+                          >
+                            Clear
+                          </button>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={closeDatePicker}
+                              className="px-2.5 py-1 rounded-lg text-xs border border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={applyDateTime}
+                              className="px-2.5 py-1 rounded-lg text-xs text-white bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-110 transition cursor-pointer"
+                            >
+                              Apply
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               <button
                 onClick={handleSubmit}
-                className="w-full py-2 rounded-lg
-                bg-gradient-to-r from-indigo-500 to-purple-500
-                text-white font-medium mt-2"
+                className="
+                  w-full py-2.5 rounded-xl
+                  bg-gradient-to-r from-indigo-500 to-purple-500
+                  text-white font-medium mt-2
+                  hover:brightness-110 active:scale-[0.99] transition cursor-pointer
+                "
               >
                 Add Task
               </button>
