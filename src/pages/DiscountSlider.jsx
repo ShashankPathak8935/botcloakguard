@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function DiscountSlider() {
+  const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
 
   // ⭐ 12 hour deal timer
@@ -90,9 +92,10 @@ export default function DiscountSlider() {
 
             {/* CTA Button */}
             <button
+              onClick={() => navigate("/Dashboard/pricing")}
               className="
                 px-6 py-3 rounded-lg font-semibold
-                bg-white text-black
+                bg-white text-black cursor-pointer
                 hover:scale-105 transition
                 shadow-lg
               "

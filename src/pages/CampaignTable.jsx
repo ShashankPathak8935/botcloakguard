@@ -14,7 +14,24 @@ import {
 
 export default function CampaignTable({ campaigns, setCampaigns }) {
   const navigate = useNavigate();
+  const [filteredCampaigns, setFilteredCampaigns] = React.useState(campaigns);
   console.log("campaign data", campaigns);
+
+
+ const filterCampaigns = (value) => {
+   if (!value) {
+     setFilteredCampaigns(campaigns); // reset data
+     return;
+   }
+
+   const filtered = campaigns.filter((item) =>
+     item.campaign_info?.campaignName
+       ?.toLowerCase()
+       .includes(value.toLowerCase()),
+   );
+
+   setFilteredCampaigns(filtered);
+ };
 
   return (
     <div
@@ -36,6 +53,7 @@ export default function CampaignTable({ campaigns, setCampaigns }) {
 
         <div className="flex items-center gap-4">
           <input
+            onChange={(e) => filterCampaigns(e.target.value)}
             type="text"
             placeholder="Search"
             className="
@@ -45,9 +63,9 @@ export default function CampaignTable({ campaigns, setCampaigns }) {
               focus:outline-none focus:ring-1 focus:ring-emerald-500
             "
           />
-          <div className="text-gray-500 dark:text-gray-400 text-xl cursor-pointer">
+          {/* <div className="text-gray-500 dark:text-gray-400 text-xl cursor-pointer">
             •••
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -82,7 +100,7 @@ export default function CampaignTable({ campaigns, setCampaigns }) {
           </thead>
 
           <tbody>
-            {campaigns.map((item, index) => (
+            {filteredCampaigns.map((item, index) => (
               <tr
                 key={item.id}
                 className="

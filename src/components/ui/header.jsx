@@ -20,8 +20,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFunction } from "../../api/ApiFunction";
 import { getUpdatedPlan, signOutApi } from "../../api/Apis";
+import NotificationModal from "./NotificationModal";
 
 const Header = ({ onMenuClick }) => {
+  const [open, setOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -97,7 +99,7 @@ useEffect(() => {
   "
     >
       {/* LEFT SECTION */}
-      <div className="flex items-center gap-4 mb-2 mt-1">
+      <div className="flex items-center gap-1 mb-2 mt-1">
         {/* Logo */}
         <img
           src="/applogo.png"
@@ -105,8 +107,42 @@ useEffect(() => {
           className="w-15 h-15 cursor-pointer"
         />
 
-        
-        
+
+        {/* Brand Text */}
+<div className="flex flex-col leading-[1.1] select-none w-fit">
+  {/* Main Title */}
+  <h1
+    className="
+      text-[14px] font-semibold tracking-wide whitespace-nowrap
+      bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600
+      dark:from-indigo-400 dark:via-purple-400 dark:to-cyan-400
+      bg-clip-text text-transparent
+    "
+  >
+    Botcloakguard.com
+  </h1>
+
+  {/* Underline (same width as text) */}
+  <div
+    className="
+      h-[1.5px] rounded-full w-full
+      bg-gradient-to-r
+      from-indigo-500 via-purple-500 to-blue-500
+      dark:from-indigo-400 dark:via-purple-400 dark:to-cyan-400
+      my-[2px]
+    "
+  />
+
+  {/* Subtitle */}
+  <span
+    className="
+      text-[10px] font-medium tracking-wide whitespace-nowrap
+      text-indigo-700 dark:text-indigo-300
+    "
+  >
+    Advanced AI for Ad Traffic Protection
+  </span>
+</div>
 
         {/* Search */}
         <div className="relative ml-6">
@@ -133,10 +169,10 @@ useEffect(() => {
             CTRL K
           </span>
         </div>
-       <div className="relative group">
-  <button
-    onClick={toggleTheme}
-    className="
+        <div className="relative group">
+          <button
+            onClick={toggleTheme}
+            className="
       w-10 h-10 flex items-center justify-center rounded-full
       bg-gradient-to-br cursor-pointer from-indigo-500/20 to-purple-500/20
       dark:from-indigo-500/10 dark:to-purple-500/10
@@ -147,17 +183,23 @@ useEffect(() => {
       hover:scale-105 active:scale-95
       transition-all duration-300
     "
-  >
-    {theme === "dark" ? (
-      <Sun size={18} className="rotate-0 group-hover:rotate-180 transition duration-500" />
-    ) : (
-      <Moon size={18} className="rotate-0 group-hover:-rotate-12 transition duration-300" />
-    )}
-  </button>
+          >
+            {theme === "dark" ? (
+              <Sun
+                size={18}
+                className="rotate-0 group-hover:rotate-180 transition duration-500"
+              />
+            ) : (
+              <Moon
+                size={18}
+                className="rotate-0 group-hover:-rotate-12 transition duration-300"
+              />
+            )}
+          </button>
 
-  {/* Tooltip */}
-  <span
-    className="
+          {/* Tooltip */}
+          <span
+            className="
       absolute -bottom-11 left-1/2 -translate-x-1/2
       bg-black/90 text-white text-xs px-3 py-1.5 rounded-lg
       opacity-0 group-hover:opacity-100
@@ -166,10 +208,10 @@ useEffect(() => {
       whitespace-nowrap
       shadow-lg
     "
-  >
-    Switch Theme
-  </span>
-      </div>
+          >
+            Switch Theme
+          </span>
+        </div>
       </div>
 
       {/* CENTER SPACER */}
@@ -215,7 +257,17 @@ useEffect(() => {
         </div>
 
         {/* Notification */}
-        <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300 cursor-pointer" />
+        <Bell
+          onClick={() => setOpen(true)}
+          className="
+          w-5 h-5 cursor-pointer
+          text-gray-700 dark:text-gray-200
+          hover:text-orange-500
+          transition-colors
+        "
+        />
+
+        <NotificationModal open={open} onClose={() => setOpen(false)} />
 
         {/* Profile */}
         <div className="relative ml-auto">

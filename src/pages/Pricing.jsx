@@ -3,6 +3,7 @@ import { apiFunction, createApiFunction } from "../api/ApiFunction";
 import { cryptoPayment, getPlans } from "../api/Apis";
 import PayPalIntegration from "./paypalIntegration";
 import { useNavigate } from "react-router-dom";
+import FreeTrialModal from "../pages/FreeTrialModal";
 
 /* ===================== PAYMENT DETAILS ===================== */
 
@@ -20,6 +21,7 @@ const PAYMENT_DETAILS = {
 /* ===================== COMPONENT ===================== */
 
 export default function Pricing() {
+  const [showModal, setShowModal] = useState(false);
   const [billing, setBilling] = useState("Monthly");
   const [plans, setPlans] = useState([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
@@ -51,6 +53,14 @@ export default function Pricing() {
 
     fetchPlans();
   }, []);
+
+
+   const startFreeTrial = () => {
+    alert("hiii")
+     setShowModal(true);
+   };
+
+  const hasActivePlan = plans.length > 0;
 
   /* ===================== HELPERS ===================== */
 
@@ -137,6 +147,99 @@ export default function Pricing() {
           </p>
         </div>
 
+        <div
+          className="
+    relative overflow-hidden
+    rounded-3xl p-8 mb-8
+    border
+    border-gray-200 dark:border-[#1f2433]
+    bg-gradient-to-br
+    from-orange-50 via-white to-red-50
+    dark:from-[#0f172a] dark:via-[#111827] dark:to-[#020617]
+    shadow-lg hover:shadow-2xl
+    transition-all duration-300
+  "
+        >
+          {/* Glow Effect */}
+          <div className="absolute -top-20 -right-20 w-72 h-72 bg-orange-400/20 blur-3xl rounded-full"></div>
+          <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-red-500/20 blur-3xl rounded-full"></div>
+
+          {/* CONTENT */}
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            {/* LEFT SIDE */}
+            <div>
+              {/* Badge */}
+              <span
+                className="
+          inline-block mb-3 px-3 py-1 text-xs font-semibold
+          rounded-full
+          bg-orange-100 text-orange-700
+          dark:bg-orange-500/20 dark:text-orange-300
+        "
+              >
+                🚀 New Free Trial
+              </span>
+
+              {/* Heading */}
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                Free Tier — $0 / 24 Hours
+              </h2>
+
+              {/* Features */}
+              <p className="mt-2 text-gray-600 dark:text-gray-300 text-sm md:text-base">
+                1 Campaign • 500 Clicks • Full Feature Access
+              </p>
+
+              {/* Description */}
+              <p className="mt-2 text-gray-500 dark:text-gray-400 max-w-xl">
+                Experience all premium controls with zero commitment. Enjoy a
+                complete 24-hour evaluation window and explore advanced
+                protection, analytics, and automation features.
+              </p>
+            </div>
+
+            {/* RIGHT SIDE BUTTON */}
+            <div className="flex-shrink-0">
+              <button
+                // disabled={hasActivePlan}
+                onClick={() => {
+                  // if (!hasActivePlan) {
+                  startFreeTrial(); // your function
+                  // }
+                }}
+                className={`
+               px-7 py-3 rounded-xl font-semibold text-white
+               transition-all duration-300
+           ${
+             hasActivePlan
+               ? `
+             cursor-not-allowed
+            bg-gradient-to-r from-orange-500 to-red-500
+            opacity-60
+            shadow-md
+            `
+               : `
+            cursor-pointer
+            bg-gradient-to-r from-orange-500 to-red-500
+          hover:from-orange-600 hover:to-red-600
+            shadow-lg hover:shadow-orange-500/30
+            hover:scale-105 active:scale-95
+            `
+           }
+            `}
+              >
+                {hasActivePlan
+                  ? "✅ Plan Already Active"
+                  : "Start Free Trial →"}
+              </button>
+            </div>
+            <FreeTrialModal
+              open={showModal}
+              onClose={() => setShowModal(false)}
+            />
+          </div>
+        </div>
+
         {/* BILLING TOGGLE */}
         <div className="flex justify-center mb-10">
           <div className="bg-gray-200 dark:bg-[#1E293B] p-1 rounded-xl flex gap-1 transition-colors">
@@ -176,13 +279,16 @@ export default function Pricing() {
           {filteredPlans.map((plan) => {
             const savedPlan = JSON.parse(localStorage.getItem("plan"));
 
-            const isCurrentPlan = savedPlan && savedPlan?.Plan?.id === plan.id && savedPlan?.isActive;
+            const isCurrentPlan =
+              savedPlan &&
+              savedPlan?.Plan?.id === plan.id &&
+              savedPlan?.isActive;
 
             let buttonText = "Choose Plan";
-            if(savedPlan){
-              if(isCurrentPlan){
+            if (savedPlan) {
+              if (isCurrentPlan) {
                 buttonText = "Current Plan";
-              }else{
+              } else {
                 buttonText = "Upgrade Plan";
               }
             }

@@ -23,6 +23,7 @@ import CampaignTable from "./CampaignTable.jsx";
 import MarketAndActivity from "./MarketAndActivity.jsx";
 import ClientMapAnalytics from "./ClientMapAnalytics.jsx";
 import DiscountSlider from "./DiscountSlider.jsx";
+import DashboardTasks from "./DashboardTasks.jsx";
 
 import { apiFunction } from "../api/ApiFunction.js";
 import {
@@ -38,6 +39,7 @@ import {
 } from "../components/toast/toast.jsx";
 
 const Dashboard = () => {
+  const [user, setUser] = useState(null);
   const [page, setPage] = useState(1);
   const [stats, setStats] = useState({
     total_campaigns: 0,
@@ -168,7 +170,6 @@ const Dashboard = () => {
       // console.error("Stats API Error:", error);
     }
   };
-  console.log("state data", stats);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -178,10 +179,17 @@ const Dashboard = () => {
       navigate("/signin");
     }
 
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
     fetchIpClicks();
     fetchStats();
     fetchCampaigns();
   }, []);
+  const userName = localStorage.getItem("user");
 
   return (
     <div
@@ -193,9 +201,14 @@ const Dashboard = () => {
     >
       {/* HEADER */}
       <div className="mb-6">
-        <h2 className="text-xl font-semibold">Good evening, Shashank!</h2>
+        <h2 className="text-xl font-semibold">Welcome, {user?.name}</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Saturday, Feb 14, 2026
+          {new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
         </p>
       </div>
 
@@ -404,11 +417,11 @@ const Dashboard = () => {
             </div>
 
             {/* ⭐ Existing Content */}
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            {/* <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Updates from yesterday
-            </p>
+            </p> */}
 
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div>
                 <h3 className="text-2xl font-semibold">2,110</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -429,7 +442,7 @@ const Dashboard = () => {
                   Orders
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -576,6 +589,9 @@ const Dashboard = () => {
       </div>
       <div className="mt-4">
         <ClientMapAnalytics />
+      </div>
+      <div className="mt-4">
+        <DashboardTasks/>
       </div>
     </div>
   );
