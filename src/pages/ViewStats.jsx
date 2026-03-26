@@ -70,6 +70,7 @@ const handleFetch = async () => {
         null,
       ),
     ]);
+    showSuccessToast("data fetched Succesfully");
 
     setViewStatsData(statsRes?.data?.data || "");
 
@@ -149,7 +150,7 @@ const handleFetch = async () => {
               onChange={(e) => setCampId(e.target.value)}
               className="
                w-full h-9 rounded-md px-3 text-sm
-             bg-white dark:bg-[#1A1D2B]
+             bg-white dark:bg-[#1A1D2B] cursor-pointer
              text-gray-900 dark:text-white
                border border-gray-300 dark:border-white/10
                outline-none custom-scroll
@@ -223,7 +224,7 @@ const handleFetch = async () => {
             onClick={handleFetch}
             className="
               flex items-center justify-center gap-2
-              bg-green-600 hover:bg-green-700
+              bg-green-600 hover:bg-green-700 cursor-pointer
               text-white rounded-md py-2.5 transition
             "
           >

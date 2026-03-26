@@ -224,7 +224,7 @@ const Dashboard = () => {
           <Header onMenuClick={handleMenuClick} />
         </div>
 
-        <div className="flex flex-row w-full fixed top-[50px] md:top-[56px]">
+        <div className="flex flex-row w-full fixed top-[50px] md:top-[64px]">
           <Sidebar
             collapsed={isCollapsed}
             mobileVisible={mobileVisible}

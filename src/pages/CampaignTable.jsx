@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { SquarePen } from "lucide-react";
 import TrafficSource from "./TrafficSource";
+import DeleteConfirmModal from "../pages/DeleteConfirmModal";
 import {
   CheckCircle2,
   XCircle,
@@ -10,28 +11,44 @@ import {
   PlayCircle,
   Rocket,
   ShieldX,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 
-export default function CampaignTable({ campaigns, setCampaigns }) {
+
+export default function CampaignTable({
+  campaigns,
+  totalPages,
+  currentPage,
+  totalRecords,
+  onPrevious,
+  onNext,
+  ITEMS_PER_PAGE,
+}) {
   const navigate = useNavigate();
   const [filteredCampaigns, setFilteredCampaigns] = React.useState(campaigns);
+   const [modalOpen, setModalOpen] = React.useState(false);
   console.log("campaign data", campaigns);
 
+  // sync filtered data when campaigns load
+  useEffect(() => {
+    setFilteredCampaigns(campaigns);
+  }, [campaigns]);
 
- const filterCampaigns = (value) => {
-   if (!value) {
-     setFilteredCampaigns(campaigns); // reset data
-     return;
-   }
+  const filterCampaigns = (value) => {
+    if (!value) {
+      setFilteredCampaigns(campaigns); // reset data
+      return;
+    }
 
-   const filtered = campaigns.filter((item) =>
-     item.campaign_info?.campaignName
-       ?.toLowerCase()
-       .includes(value.toLowerCase()),
-   );
+    const filtered = campaigns.filter((item) =>
+      item.campaign_info?.campaignName
+        ?.toLowerCase()
+        .includes(value.toLowerCase()),
+    );
 
-   setFilteredCampaigns(filtered);
- };
+    setFilteredCampaigns(filtered);
+  };
 
   return (
     <div
@@ -313,8 +330,8 @@ export default function CampaignTable({ campaigns, setCampaigns }) {
                       {/* Tooltip */}
                       <div
                         className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
-        hidden group-hover:block whitespace-nowrap
-        bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg"
+                           hidden group-hover:block whitespace-nowrap
+                         bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg"
                       >
                         Duplicate your campaign
                       </div>
@@ -324,18 +341,24 @@ export default function CampaignTable({ campaigns, setCampaigns }) {
                     <div className="relative group">
                       <Trash2
                         size={18}
-                        className="cursor-pointer hover:text-red-500 transition"
-                        onClick={() => console.log("delete clicked")}
+                        className="cursor-pointer text-red-500 hover:text-red-800 transition"
+                        onClick={() => setModalOpen(true)}
                       />
 
                       {/* Tooltip */}
-                      <div
+                      {/* <div
                         className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
         hidden group-hover:block whitespace-nowrap
         bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg"
                       >
                         Delete your campaign
-                      </div>
+                      </div> */}
+                      <DeleteConfirmModal
+                        isOpen={modalOpen}
+                        onClose={() => setModalOpen(false)}
+                        // onConfirm={handleDelete}
+                        campaignName="Summer Promo 2025"
+                      />
                     </div>
                   </div>
                 </td>
@@ -348,16 +371,39 @@ export default function CampaignTable({ campaigns, setCampaigns }) {
       {/* FOOTER */}
       <div className="flex justify-between items-center mt-6 text-sm text-gray-600 dark:text-gray-400">
         <p>
-          Showing <span className="font-semibold">1–6</span> out of{" "}
-          <span className="font-semibold">12</span> items
+          Showing{" "}
+          <span className="font-semibold">
+            {(currentPage - 1) * ITEMS_PER_PAGE + 1}
+            {" - "}
+            {Math.min(currentPage * ITEMS_PER_PAGE, totalRecords)}
+          </span>{" "}
+          out of <span className="font-semibold">{totalRecords}</span> items
         </p>
 
-        <div className="flex gap-4">
-          <button className="hover:text-black dark:hover:text-white transition">
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={onPrevious}
+            disabled={currentPage === 1}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium
+      bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-900
+      dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-100
+      disabled:opacity-40 disabled:cursor-not-allowed
+      active:scale-95 transition-all duration-150 select-none cursor-pointer"
+          >
+            <ChevronLeft size={14} strokeWidth={2.5} />
             Previous
           </button>
-          <button className="text-emerald-600 dark:text-emerald-400">
+          <button
+            onClick={onNext}
+            disabled={currentPage === totalPages}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium
+      bg-indigo-600 text-white hover:bg-indigo-700
+      dark:bg-indigo-500 dark:hover:bg-indigo-400
+      disabled:opacity-40 disabled:cursor-not-allowed
+      active:scale-95 transition-all duration-150 select-none cursor-pointer"
+          >
             Next
+            <ChevronRight size={14} strokeWidth={2.5} />
           </button>
         </div>
       </div>

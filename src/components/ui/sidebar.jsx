@@ -51,6 +51,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Report",
       icon: <FileText size={24} />,
+      route: "/Dashboard/reports",
     },
     {
       label: "Analytics",
@@ -103,26 +104,6 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       label: "View Stats",
       route: "/Dashboard/view-stats",
     },
-    // {
-    //   label: "Tracking",
-    //   route: "/employerHome/UnlockedCandidates",
-    // },
-    // {
-    //   label: "Group By Stats",
-    //   route: "/employerHome/UnlockedCandidates",
-    // },
-    // {
-    //   label: "Cost Management",
-    //   route: "/employerHome/UnlockedCandidates",
-    // },
-    // {
-    //   label: "Campaign Timeline",
-    //   route: "/employerHome/UnlockedCandidates",
-    // },
-    // {
-    //   label: "Delete Campaigns",
-    //   route: "/employerHome/UnlockedCandidates",
-    // },
   ];
 
   const handleNavigate = (route) => {
@@ -135,7 +116,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     localStorage.removeItem("User");
     navigate("/");
   };
-
+   
   const isDatabaseActive = databaseSubItems.some(
     (sub) => location.pathname === sub.route,
   );
@@ -155,8 +136,8 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
           <span
             onClick={() => navigate("/Dashboard/create-campaign")}
             className="text-3xl font-light
-    text-gray-800 dark:text-white
-  "
+          text-gray-800 dark:text-white
+            "
           >
             +
           </span>
@@ -169,7 +150,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       </div>
 
       {/* NAVIGATION */}
-      <nav className="flex flex-col items-center gap-3 w-full">
+      {/* <nav className="flex flex-col items-center gap-3 w-full">
         {navItems.map((item, index) => {
           const isActive = location.pathname === item.route;
           const isDatabase = item.label === "Report";
@@ -220,7 +201,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
                 </span>
               </div>
 
-              {/* SUB ITEMS (Report) */}
+            
               {isDatabase && databaseOpen && !isCollapsed && (
                 <div className="mt-2 flex flex-col gap-2">
                   {databaseSubItems.map((sub, subIndex) => {
@@ -244,6 +225,49 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
                   })}
                 </div>
               )}
+            </div>
+          );
+        })}
+      </nav> */}
+
+      <nav className="flex flex-col items-center gap-3 w-full pb-6">
+        {navItems.map((item, index) => {
+          const isActive = item.route
+            ? location.pathname.startsWith(item.route)
+            : false;
+
+          return (
+            <div key={index} className="w-full flex flex-col items-center ">
+              <div
+                id={item.label}
+                onClick={() => {
+                  if (item.route) handleNavigate(item.route);
+                }}
+                className={`w-full flex flex-col items-center py-2 cursor-pointer transition-all duration-200
+            ${
+              isActive
+                ? "bg-[#ECF3FF] dark:bg-blue-500/10 text-[#091ea3] dark:text-blue-400"
+                : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/10"
+            }
+          `}
+              >
+                <span
+                  className={`transition-colors
+              ${isActive ? "text-[#091ea3] dark:text-blue-400" : "text-gray-700 dark:text-gray-200"}
+            `}
+                >
+                  {item.icon}
+                </span>
+
+                <span
+                  className={`text-[12px] mt-0 text-center leading-tight transition-all
+              ${isCollapsed ? "scale-90" : "scale-100"}
+              ${isActive ? "text-[#091ea3] dark:text-blue-400 font-medium" : "text-gray-700 dark:text-gray-200"}
+            `}
+                >
+                  {item.label}
+                </span>
+              </div>
             </div>
           );
         })}

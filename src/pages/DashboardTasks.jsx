@@ -10,9 +10,10 @@ import {
   CalendarClock,
   ChevronLeft,
   ChevronRight,
+  SquarePen,
 } from "lucide-react";
 
-export default function DashboardTasks() {
+export default function DashboardTasks({ clickSummary }) {
   const [tasks, setTasks] = useState([]);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -61,8 +62,7 @@ export default function DashboardTasks() {
     setMinuteOpen(false);
   };
 
-  const deleteTask = (index) =>
-    setTasks(tasks.filter((_, i) => i !== index));
+  const deleteTask = (index) => setTasks(tasks.filter((_, i) => i !== index));
 
   const editTask = (task, index) => {
     setForm(task);
@@ -74,13 +74,11 @@ export default function DashboardTasks() {
   };
 
   const filtered = tasks.filter((t) =>
-    t.name.toLowerCase().includes(search.toLowerCase())
+    t.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   const openDatePicker = () => {
-    const base = form.dueDate
-      ? new Date(form.dueDate)
-      : new Date();
+    const base = form.dueDate ? new Date(form.dueDate) : new Date();
 
     if (!Number.isNaN(base.getTime())) {
       const y = base.getFullYear();
@@ -196,107 +194,200 @@ export default function DashboardTasks() {
       "
       >
         <div className="flex flex-col h-full">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold">Task Manager</h2>
+          {/* Header */}
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-lg font-semibold">Task Manager</h2>
 
-          <button
-            onClick={() => {
-              setOpenModal(true);
-              setPickerOpen(false);
-              setHourOpen(false);
-              setMinuteOpen(false);
-            }}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg
+            <button
+              onClick={() => {
+                setOpenModal(true);
+                setPickerOpen(false);
+                setHourOpen(false);
+                setMinuteOpen(false);
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg
             bg-gradient-to-r from-indigo-500 to-purple-500
             text-white text-sm hover:scale-105 transition-transform cursor-pointer"
-          >
-            <Plus size={16} /> Add Task
-          </button>
-        </div>
+            >
+              <Plus size={16} /> Add Task
+            </button>
+          </div>
 
-        {/* Search */}
-        <div className="relative mb-5">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-60" />
-          <input
-            placeholder="Search tasks..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="
+          {/* Search */}
+          <div className="relative mb-5">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-60" />
+            <input
+              placeholder="Search tasks..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="
               w-full h-[38px] pl-10 rounded-xl text-sm
               bg-gray-50 dark:bg-[#151826]
               border border-gray-200 dark:border-white/10
               focus:outline-none focus:ring-2 focus:ring-indigo-500/30
             "
-          />
-        </div>
+            />
+          </div>
 
-        {/* Task List */}
-        <div className="flex-1 overflow-auto pr-1">
-          {filtered.length === 0 ? (
-            <div className="h-full flex items-center justify-center rounded-xl border border-dashed border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-[#151826]/60 text-sm text-gray-500 dark:text-white/40">
-              No tasks yet. Click “Add Task” to create one.
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {filtered.map((task, index) => (
-                <div
-                  key={index}
-                  className="
-                  p-4 rounded-2xl flex justify-between items-start gap-4
-                  bg-gradient-to-br from-white via-white to-indigo-50/50
-                  border border-gray-200
-                  hover:border-indigo-300/60 hover:shadow-md hover:shadow-black/5
-                  dark:bg-gradient-to-br dark:from-[#151826] dark:via-[#0F111A] dark:to-[#0D141F]
-                  dark:border-white/10 dark:hover:border-white/20 dark:hover:shadow-black/20
-                "
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-3">
-                      <div className="min-w-0">
-                        <p className="font-semibold truncate">{task.name}</p>
-                        <p className="text-[11px] text-gray-500 dark:text-white/40 mt-0.5">
-                          Task ID {index + 1}
-                        </p>
+          {/* Task List */}
+          <div className="flex-1 overflow-auto pr-1">
+            {filtered.length === 0 ? (
+              <div className="h-full flex items-center justify-center rounded-xl border border-dashed border-gray-200 dark:border-white/10 bg-gray-50/60 dark:bg-[#151826]/60 text-sm text-gray-500 dark:text-white/40">
+                No tasks yet. Click “Add Task” to create one.
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {filtered.map((task, index) => {
+                  const priorityConfig = {
+                    High: {
+                      dot: "bg-red-500",
+                      badge:
+                        "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400",
+                      bar: "bg-red-400",
+                    },
+                    Medium: {
+                      dot: "bg-amber-500",
+                      badge:
+                        "bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
+                      bar: "bg-amber-400",
+                    },
+                    Low: {
+                      dot: "bg-emerald-500",
+                      badge:
+                        "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+                      bar: "bg-emerald-400",
+                    },
+                  };
+                  const statusConfig = {
+                    "To Do":
+                      "bg-zinc-100 text-zinc-600 dark:bg-white/8 dark:text-zinc-400",
+                    "In Progress":
+                      "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400",
+                    Done: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400",
+                  };
+                  const p =
+                    priorityConfig[task.priority] ?? priorityConfig["Low"];
+                  const s = statusConfig[task.status] ?? statusConfig["To Do"];
+
+                  return (
+                    <div
+                      key={index}
+                      className="group relative flex items-stretch gap-0 rounded-xl overflow-hidden
+          border border-zinc-200/80 dark:border-white/[0.07]
+          bg-white dark:bg-[#0f1117]
+          hover:border-zinc-300 dark:hover:border-white/[0.13]
+          hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_4px_24px_rgba(0,0,0,0.35)]
+          transition-all duration-200"
+                    >
+                      {/* Left accent bar */}
+                      <div
+                        className={`w-[3px] shrink-0 ${p.bar} opacity-70 group-hover:opacity-100 transition-opacity duration-200`}
+                      />
+
+                      {/* Main content */}
+                      <div className="flex flex-1 items-center gap-4 px-4 py-3.5 min-w-0">
+                        {/* Priority dot */}
+                        <div
+                          className={`h-2 w-2 rounded-full shrink-0 ${p.dot} ring-4 ring-current/10`}
+                        />
+
+                        {/* Text block */}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-100 truncate leading-tight">
+                              {task.name}
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                            {/* Status badge */}
+                            <span
+                              className={`inline-flex items-center text-[10.5px] font-medium px-2 py-0.5 rounded-md ${s}`}
+                            >
+                              {task.status}
+                            </span>
+                            {/* Priority badge */}
+                            <span
+                              className={`inline-flex items-center text-[10.5px] font-medium px-2 py-0.5 rounded-md ${p.badge}`}
+                            >
+                              {task.priority}
+                            </span>
+                            {/* Due date */}
+                            {task.dueDate && (
+                              <span
+                                className="inline-flex items-center gap-1 text-[10.5px] font-medium px-2 py-0.5 rounded-md
+                  bg-zinc-100 text-zinc-500 dark:bg-white/[0.06] dark:text-zinc-400"
+                              >
+                                <svg
+                                  width="10"
+                                  height="10"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <rect
+                                    x="3"
+                                    y="4"
+                                    width="18"
+                                    height="18"
+                                    rx="2"
+                                  />
+                                  <line x1="16" y1="2" x2="16" y2="6" />
+                                  <line x1="8" y1="2" x2="8" y2="6" />
+                                  <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                {formatTaskDue(task.dueDate)}
+                              </span>
+                            )}
+                            {/* Task ID — subtle, far right */}
+                            <span
+                              className="inline-flex items-center text-[10px] font-mono font-medium px-1.5 py-0.5 rounded-md
+  bg-indigo-50 text-indigo-400
+  dark:bg-indigo-500/[0.08] dark:text-indigo-400/70
+  border border-indigo-100 dark:border-indigo-500/10"
+                            >
+                              #{String(index + 1).padStart(3, "0")}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action buttons — revealed on hover */}
+                      <div className="flex items-center gap-1 pr-3 transition-all duration-200">
+                        <button
+                          type="button"
+                          onClick={() => editTask(task, index)}
+                          className="h-7 w-7 rounded-lg flex items-center justify-center
+      text-emerald-500 dark:text-emerald-400
+      hover:text-emerald-600 dark:hover:text-emerald-300
+      hover:bg-emerald-50 dark:hover:bg-emerald-500/10
+      transition-colors duration-150 cursor-pointer"
+                          title="Edit"
+                        >
+                          <SquarePen className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => deleteTask(index)}
+                          className="h-7 w-7 rounded-lg flex items-center justify-center
+      text-red-400 dark:text-red-400
+      hover:text-red-600 dark:hover:text-red-300
+      hover:bg-red-50 dark:hover:bg-red-500/10
+      transition-colors duration-150 cursor-pointer"
+                          title="Delete"
+                        >
+                          <Trash2 size={13} />
+                        </button>
                       </div>
                     </div>
-
-                    <div className="flex flex-wrap items-center gap-2 mt-3">
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-300">
-                        {task.status}
-                      </span>
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-gray-200/70 text-gray-700 dark:bg-white/10 dark:text-white/70">
-                        {task.priority}
-                      </span>
-                      {task.dueDate && (
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-                          {formatTaskDue(task.dueDate)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => editTask(task, index)}
-                      className="h-8 w-8 rounded-lg border border-gray-200 dark:border-white/10 hover:border-indigo-300 dark:hover:border-white/20 hover:text-indigo-500 transition cursor-pointer flex items-center justify-center"
-                    >
-                      <Pencil size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => deleteTask(index)}
-                      className="h-8 w-8 rounded-lg border border-gray-200 dark:border-white/10 hover:border-red-300 dark:hover:border-white/20 hover:text-red-500 transition cursor-pointer flex items-center justify-center"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -327,7 +418,7 @@ export default function DashboardTasks() {
                     Total Clicks
                   </div>
                   <div className="mt-2 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                    12,480
+                    {clickSummary?.totalClicks || 0}
                   </div>
                 </div>
                 <div className="h-9 w-9 rounded-xl bg-indigo-500/10 flex items-center justify-center">
@@ -350,7 +441,7 @@ export default function DashboardTasks() {
                     Safe Clicks
                   </div>
                   <div className="mt-2 text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                    11,932
+                    {clickSummary?.safeClicks || 0}
                   </div>
                 </div>
                 <div className="h-9 w-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
@@ -381,9 +472,7 @@ export default function DashboardTasks() {
           >
             <div className="flex justify-between mb-4">
               <h3 className="font-semibold">
-                {editingIndex !== null
-                  ? "Edit Task"
-                  : "Create New Task"}
+                {editingIndex !== null ? "Edit Task" : "Create New Task"}
               </h3>
               <X
                 className="cursor-pointer"
@@ -398,9 +487,7 @@ export default function DashboardTasks() {
               <input
                 placeholder="Task Name"
                 value={form.name}
-                onChange={(e) =>
-                  setForm({ ...form, name: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="
                   w-full rounded-xl px-3.5 py-2.5 text-sm
                   bg-gray-50 dark:bg-[#151826]
@@ -432,9 +519,7 @@ export default function DashboardTasks() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <select
                   value={form.status}
-                  onChange={(e) =>
-                    setForm({ ...form, status: e.target.value })
-                  }
+                  onChange={(e) => setForm({ ...form, status: e.target.value })}
                   className="
                     w-full rounded-xl px-3.5 py-2.5 text-sm
                     bg-gray-50 dark:bg-[#151826]
@@ -525,8 +610,8 @@ export default function DashboardTasks() {
                               new Date(
                                 pickerMonth.getFullYear(),
                                 pickerMonth.getMonth() - 1,
-                                1
-                              )
+                                1,
+                              ),
                             )
                           }
                           className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer"
@@ -546,8 +631,8 @@ export default function DashboardTasks() {
                               new Date(
                                 pickerMonth.getFullYear(),
                                 pickerMonth.getMonth() + 1,
-                                1
-                              )
+                                1,
+                              ),
                             )
                           }
                           className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition cursor-pointer"
@@ -564,15 +649,13 @@ export default function DashboardTasks() {
                               <div key={d} className="text-center">
                                 {d}
                               </div>
-                            )
+                            ),
                           )}
                         </div>
                         <div className="grid grid-cols-7 gap-1 pb-2">
                           {calendarDays.map((d, idx) => {
                             if (!d)
-                              return (
-                                <div key={`e-${idx}`} className="h-7" />
-                              );
+                              return <div key={`e-${idx}`} className="h-7" />;
                             const y = d.getFullYear();
                             const m = `${d.getMonth() + 1}`.padStart(2, "0");
                             const day = `${d.getDate()}`.padStart(2, "0");

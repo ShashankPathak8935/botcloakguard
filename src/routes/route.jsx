@@ -33,6 +33,7 @@ const AllStats = lazy(() => import("../pages/AllStats"));
 const Pricing = lazy(() => import("../pages/Pricing"));
 const MyProfile = lazy(() => import("../pages/MyProfile"));
 const Clicklog = lazy(() => import("../pages/clickLogs1"));
+const ReportPage = lazy(() => import("../pages/ReportPage"));
 const ViewStats = lazy(() => import("../pages/ViewStats"));
 const ServerStatusCard = lazy(() => import("../pages/ServerStatusCard"));
 const CheckoutFlow = lazy(() => import("../components/ui/checkOutFlow"));
@@ -66,7 +67,7 @@ export default function Routess() {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
 
-           <Route path="/devtools-blocked" element={<DevToolsBlocked />} />
+          <Route path="/devtools-blocked" element={<DevToolsBlocked />} />
 
           <Route path="/socket" element={<Socket />} />
           <Route path="/paypal" element={<PaypalIntegration />} />
@@ -110,9 +111,9 @@ export default function Routess() {
           <Route
             path="/verify-otp"
             element={
-               <LoginProtector>
+              <LoginProtector>
                 <Verifyotp />
-               </LoginProtector>
+              </LoginProtector>
             }
           />
 
@@ -121,42 +122,45 @@ export default function Routess() {
             path="/Dashboard"
             element={
               <RoutesProtector>
-                <DashboardGuard >
-                  <Dashboard/>
+                <DashboardGuard>
+                  <Dashboard />
                 </DashboardGuard>
               </RoutesProtector>
             }
           >
-            
-              <Route path="allStats" element={<AllStats />} />
-              <Route path="allCampaign" element={<AllCampaignsDashboard />} />
-              <Route path="create-campaign" element={<Campaign />} />
-              <Route
-                path="campaign-integration"
-                element={<CloakingIntegration />}
-              />
-              <Route
-                path="campaign-custom-filter"
-                element={<CustomFilter />}
-              />
-              <Route path="create-custom-filter"element={<CreateCustomFilter />}/>
-              <Route path="ipListings" element={<IpListings />} />
-              <Route path="whitelistedip" element={<WhitelistIps/>}/>
-              <Route path="analytics" element={<Analytics />} />
-              <Route path="tools" element={<Toos />} />
-              <Route path="test" element={<Test />} />
-              {/* <Route path="clickLogs" element={<ClickLogs />} /> */}
+            <Route path="allStats" element={<AllStats />} />
+            <Route path="allCampaign" element={<AllCampaignsDashboard />} />
+            <Route path="create-campaign" element={<Campaign />} />
+            <Route
+              path="campaign-integration"
+              element={<CloakingIntegration />}
+            />
+            <Route path="campaign-custom-filter" element={<CustomFilter />} />
+            <Route
+              path="create-custom-filter"
+              element={<CreateCustomFilter />}
+            />
+            <Route path="ipListings" element={<IpListings />} />
+            <Route path="whitelistedip" element={<WhitelistIps />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="tools" element={<Toos />} />
+            <Route path="test" element={<Test />} />
+            {/* <Route path="clickLogs" element={<ClickLogs />} /> */}
 
-              <Route path="reports" element={<Clicklog />} />
+            {/* <Route path="reports" element={<Clicklog />} />
+              <Route path="view-stats" element={<ViewStats />} /> */}
+            <Route path="reports" element={<ReportPage />}>
+              <Route index element={<Navigate to="click-logs" replace />} />
+              <Route path="click-logs" element={<Clicklog />} />
               <Route path="view-stats" element={<ViewStats />} />
-              <Route
-                path="real-time-analytics/:id"
-                element={<RealtimeAnalytics />}
-              />
-              <Route path="pricing" element={<Pricing />} />
-              <Route path="billing" element={<Billing />} />
-              <Route path="server" element={<ServerStatusCard />} />
-           
+            </Route>
+            <Route
+              path="real-time-analytics/:id"
+              element={<RealtimeAnalytics />}
+            />
+            <Route path="pricing" element={<Pricing />} />
+            <Route path="billing" element={<Billing />} />
+            <Route path="server" element={<ServerStatusCard />} />
           </Route>
 
           <Route

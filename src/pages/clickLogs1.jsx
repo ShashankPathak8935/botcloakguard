@@ -144,8 +144,6 @@ const Clicklogs = () => {
         startDate: start.toISOString().split("T")[0],
         endDate: end.toISOString().split("T")[0],
       };
-
-      //   https://app.clockerly.io/api/v2/campaign/clicksbycamp?startdate=2025-11-01&enddate=2025-11-21&campId=14
       const res = await apiFunction(
         "get",
         `${clicksbycampaign}?startdate=${startDate}&enddate=${endDate}&campId=${campId}`,
@@ -310,11 +308,11 @@ const Clicklogs = () => {
                   <table className="min-w-full divide-y divide-gray-700 table-fixed">
                     <thead
                       className="
-    sticky top-0 z-10
-    bg-gray-100 text-gray-700
-    dark:bg-slate-900 dark:text-gray-300
-    border-b border-gray-200 dark:border-gray-700
-  "
+                   sticky top-0 z-10
+                bg-gray-100 text-gray-700
+                dark:bg-slate-900 dark:text-gray-300
+                  border-b border-gray-200 dark:border-gray-700
+                  "
                     >
                       <tr>
                         <th className="px-6 py-3 text-center text-xs font-semibold uppercase tracking-wider w-16">
@@ -437,7 +435,7 @@ const Clicklogs = () => {
                                 </span>
                               ) : (
                                 <span className="text-gray-600 dark:text-gray-400">
-                                  Save Page
+                                  Safe Page
                                 </span>
                               )}
                             </td>
@@ -445,12 +443,12 @@ const Clicklogs = () => {
                             {/* Country + Browser + OS + Device icons */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap w-32
-    flex items-center gap-2
-    text-sm
-    text-gray-700 dark:text-gray-300
-    transition-colors
-  "
+                         px-6 py-4 whitespace-nowrap w-32
+                         flex items-center gap-2
+                         text-sm
+                       text-gray-700 dark:text-gray-300
+                         transition-colors
+                          "
                             >
                               {/* COUNTRY FLAG */}
                               {item?.isocode ? (
@@ -520,9 +518,9 @@ const Clicklogs = () => {
                               {item?.device ? (
                                 <div
                                   className="
-        w-6 h-6 flex items-center justify-center
-        text-gray-700 dark:text-gray-300
-      "
+                                  w-6 h-6 flex items-center justify-center
+                                text-gray-700 dark:text-gray-300
+                                 "
                                   data-tooltip-id={`tooltip-${item.device}`}
                                   data-tooltip-content={item.device}
                                 >
@@ -544,10 +542,10 @@ const Clicklogs = () => {
                             {/* City */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap
-    text-sm
-    text-gray-700 dark:text-gray-300
-  "
+                             px-6 py-4 whitespace-nowrap
+                             text-sm
+                           text-gray-700 dark:text-gray-300
+                             "
                             >
                               {item.city || (
                                 <span className="text-gray-400 dark:text-gray-500">
@@ -559,10 +557,10 @@ const Clicklogs = () => {
                             {/* IP */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap
-    text-sm
-    text-gray-700 dark:text-gray-300
-  "
+                            px-6 py-4 whitespace-nowrap
+                            text-sm
+                          text-gray-700 dark:text-gray-300
+                            "
                             >
                               {item.ip || (
                                 <span className="text-gray-400 dark:text-gray-500">
@@ -574,10 +572,10 @@ const Clicklogs = () => {
                             {/* IP Score */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap text-center
-    text-sm
-    text-gray-700 dark:text-gray-300
-  "
+                             px-6 py-4 whitespace-nowrap text-center
+                             text-sm
+                           text-gray-700 dark:text-gray-300
+                             "
                             >
                               {item.risk !== undefined && item.risk !== null ? (
                                 item.risk
@@ -591,10 +589,10 @@ const Clicklogs = () => {
                             {/* Proxy */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap text-center
-    text-sm
-    text-gray-700 dark:text-gray-300
-  "
+                              px-6 py-4 whitespace-nowrap text-center
+                              text-sm
+                            text-gray-700 dark:text-gray-300
+                              "
                             >
                               {item.proxy || (
                                 <span className="text-gray-400 dark:text-gray-500">
@@ -606,10 +604,10 @@ const Clicklogs = () => {
                             {/* ISP */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap text-center
-    text-sm
-    text-gray-700 dark:text-gray-300
-  "
+                              px-6 py-4 whitespace-nowrap text-center
+                              text-sm
+                            text-gray-700 dark:text-gray-300
+                              "
                             >
                               {item.isp || (
                                 <span className="text-gray-400 dark:text-gray-500">
@@ -621,10 +619,10 @@ const Clicklogs = () => {
                             {/* ASN */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap text-center
-    text-sm
-    text-gray-700 dark:text-gray-300
-  "
+                              px-6 py-4 whitespace-nowrap text-center
+                              text-sm
+                          text-gray-700 dark:text-gray-300
+                              "
                             >
                               {item.asn || (
                                 <span className="text-gray-400 dark:text-gray-500">
@@ -636,11 +634,11 @@ const Clicklogs = () => {
                             {/* REFERRER */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap
-    text-sm text-left
-    min-w-48
-    text-gray-700 dark:text-gray-300
-  "
+                              px-6 py-4 whitespace-nowrap
+                              text-sm text-left
+                              min-w-48
+                            text-gray-700 dark:text-gray-300
+                              "
                             >
                               {item.referrer ? (
                                 item.referrer
@@ -654,11 +652,11 @@ const Clicklogs = () => {
                             {/* USER AGENT */}
                             <td
                               className="
-    px-6 py-4 whitespace-nowrap
-    text-sm text-left
-    min-w-48
-    text-gray-700 dark:text-gray-300
-  "
+                             px-6 py-4 whitespace-nowrap
+                             text-sm text-left
+                             min-w-48
+                           text-gray-700 dark:text-gray-300
+                             "
                             >
                               {item.user_agent || (
                                 <span className="text-gray-400 dark:text-gray-500">
@@ -677,50 +675,50 @@ const Clicklogs = () => {
               {/* Pagination (Unchanged) */}
               <div
                 className="
-    flex items-center justify-center
-    pt-4 pb-4
-    bg-gray-100 dark:bg-gray-800
-    rounded-b-lg
-    border-t border-gray-200 dark:border-gray-700
-  "
+                    flex items-center justify-center
+                    pt-4 pb-4
+                  bg-gray-100 dark:bg-gray-800
+                    rounded-b-lg
+                    border-t border-gray-200 dark:border-gray-700
+                  "
               >
                 <button
                   className="
-      h-8 w-8 flex items-center justify-center
-      text-gray-500 dark:text-gray-400
-      hover:text-gray-800 dark:hover:text-white
-      transition
-    "
+                    h-8 w-8 flex items-center justify-center
+                  text-gray-500 dark:text-gray-400
+                  hover:text-gray-800 dark:hover:text-white
+                    transition
+                  "
                 >
                   &lt;
                 </button>
                 <button
                   className="
-      h-8 w-8 mx-1 rounded-full text-sm
-      bg-blue-600 text-white
-      shadow-sm
-    "
+                 h-8 w-8 mx-1 rounded-full text-sm
+               bg-blue-600 text-white
+                 shadow-sm
+                  "
                 >
                   1
                 </button>
                 <button
                   className="
-      h-8 w-8 mx-1 rounded-full text-sm
-      text-gray-600 dark:text-gray-400
-      hover:bg-gray-200 dark:hover:bg-gray-700
-      hover:text-gray-900 dark:hover:text-white
-      transition
-    "
+                   h-8 w-8 mx-1 rounded-full text-sm
+                 text-gray-600 dark:text-gray-400
+                 hover:bg-gray-200 dark:hover:bg-gray-700
+                 hover:text-gray-900 dark:hover:text-white
+                   transition
+                  "
                 >
                   2
                 </button>
                 <button
                   className="
-      h-8 w-8 flex items-center justify-center
-      text-gray-500 dark:text-gray-400
-      hover:text-gray-800 dark:hover:text-white
-      transition
-    "
+                  h-8 w-8 flex items-center justify-center
+                text-gray-500 dark:text-gray-400
+                hover:text-gray-800 dark:hover:text-white
+                  transition
+                 "
                 >
                   &gt;
                 </button>

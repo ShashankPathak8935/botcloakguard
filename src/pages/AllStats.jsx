@@ -14,7 +14,7 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-import { Smartphone, Monitor, Tablet } from "lucide-react";
+import { Smartphone, Monitor, Tablet, } from "lucide-react";
 
 import { useNavigate, Link } from "react-router-dom";
 import RevenueinSights from "./RevenueInsights.jsx";
@@ -48,8 +48,6 @@ const Dashboard = () => {
     allowed_campaigns: 0,
   });
 
-  const [newTask, setNewTask] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [campaigns, setCampaigns] = useState([]);
@@ -59,10 +57,6 @@ const Dashboard = () => {
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const [dropdownPos, setDropdownPos] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem("todo_tasks");
-    return saved ? JSON.parse(saved) : [];
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -131,9 +125,6 @@ const Dashboard = () => {
         null,
         null,
       );
-      // console.log(response);
-
-      // Assume total items is available in response.data.total or we use array length
       const dataRows = response.data.data || [];
 
       setCampaigns(dataRows);
@@ -189,7 +180,6 @@ const Dashboard = () => {
     fetchStats();
     fetchCampaigns();
   }, []);
-  const userName = localStorage.getItem("user");
 
   return (
     <div
@@ -582,7 +572,16 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mt-4">
-        <CampaignTable campaigns={campaigns} setCampaigns={setCampaigns} />
+        <CampaignTable
+          campaigns={campaigns}
+          setCampaigns={setCampaigns}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          totalRecords={totalRecords}
+          onNext={() => fetchCampaigns(currentPage + 1)}
+          onPrevious={() => fetchCampaigns(currentPage - 1)}
+          ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+        />
       </div>
       <div className="mt-4">
         <MarketAndActivity />
@@ -591,8 +590,11 @@ const Dashboard = () => {
         <ClientMapAnalytics />
       </div>
       <div className="mt-4">
-        <DashboardTasks/>
+        <DashboardTasks clickSummary={clickSummary} />
       </div>
+      {/* <div className="mt-4">
+        <RevenueinSights/>
+      </div> */}
     </div>
   );
 };
