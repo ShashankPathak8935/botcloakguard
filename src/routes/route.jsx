@@ -34,6 +34,9 @@ const Pricing = lazy(() => import("../pages/Pricing"));
 const MyProfile = lazy(() => import("../pages/MyProfile"));
 const Clicklog = lazy(() => import("../pages/clickLogs1"));
 const ReportPage = lazy(() => import("../pages/ReportPage"));
+const UrlShortener = lazy(() => import("../pages/UrlShortener"));
+const CreateLink = lazy(() => import("../pages/CreateLink"));
+const ManageLinks = lazy(() => import("../pages/ManageLink"));
 const ViewStats = lazy(() => import("../pages/ViewStats"));
 const ServerStatusCard = lazy(() => import("../pages/ServerStatusCard"));
 const CheckoutFlow = lazy(() => import("../components/ui/checkOutFlow"));
@@ -153,6 +156,11 @@ export default function Routess() {
               <Route index element={<Navigate to="click-logs" replace />} />
               <Route path="click-logs" element={<Clicklog />} />
               <Route path="view-stats" element={<ViewStats />} />
+            </Route>
+            <Route path="url-shortner" element={<UrlShortener />}>
+              <Route index element={<Navigate to="create" replace />} />
+              <Route path="create" element={<CreateLink />} />
+              <Route path="manage" element={<ManageLinks />} />
             </Route>
             <Route
               path="real-time-analytics/:id"

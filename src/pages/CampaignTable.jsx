@@ -24,10 +24,12 @@ export default function CampaignTable({
   onPrevious,
   onNext,
   ITEMS_PER_PAGE,
+  handleStatusChange,
+  handleActionSelect,
 }) {
   const navigate = useNavigate();
   const [filteredCampaigns, setFilteredCampaigns] = React.useState(campaigns);
-   const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = React.useState(false);
   console.log("campaign data", campaigns);
 
   // sync filtered data when campaigns load
@@ -129,7 +131,9 @@ export default function CampaignTable({
                 <td className="p-4">
                   <div className="relative group inline-block">
                     <button
-                      onClick={() => navigate(`/edit/${row.id}`)}
+                      onClick={() =>
+                        handleActionSelect("edit", item?.uid, item)
+                      }
                       className="text-blue-500 hover:text-blue-400 cursor-pointer"
                     >
                       <SquarePen size={18} />
@@ -138,10 +142,10 @@ export default function CampaignTable({
                     {/* Tooltip */}
                     <div
                       className="
-    absolute left-full top-1/2 -translate-y-1/2 ml-2
-    hidden group-hover:block whitespace-nowrap
-    bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg z-50
-  "
+                          absolute left-full top-1/2 -translate-y-1/2 ml-2
+                          hidden group-hover:block whitespace-nowrap
+                        bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg z-50
+                          "
                     >
                       Edit your campaign
                     </div>
@@ -161,13 +165,13 @@ export default function CampaignTable({
                     disabled={item.statusLoading}
                     onClick={() => handleStatusChange(item.uid, "Active")}
                     className={`
-      ${item.statusLoading ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
-      ${
-        item.status === "Active"
-          ? "text-green-500"
-          : "text-gray-400 hover:text-green-500"
-      }
-    `}
+                    ${item.statusLoading ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
+                    ${
+                      item.status === "Active"
+                        ? "text-green-500"
+                        : "text-gray-400 hover:text-green-500"
+                    }
+                  `}
                   >
                     {/* Play icon */}
                     <svg
@@ -186,13 +190,13 @@ export default function CampaignTable({
                     disabled={item.statusLoading}
                     onClick={() => handleStatusChange(item.uid, "Allow")}
                     className={`
-      ${item.statusLoading ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
-      ${
-        item.status === "Allow"
-          ? "text-yellow-500"
-          : "text-gray-400 hover:text-yellow-500"
-      }
-    `}
+                   ${item.statusLoading ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
+                   ${
+                     item.status === "Allow"
+                       ? "text-yellow-500"
+                       : "text-gray-400 hover:text-yellow-500"
+                   }
+                 `}
                   >
                     {/* Lightning icon */}
                     <svg
@@ -211,13 +215,13 @@ export default function CampaignTable({
                     disabled={item.statusLoading}
                     onClick={() => handleStatusChange(item.uid, "Block")}
                     className={`
-      ${item.statusLoading ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
-      ${
-        item.status === "Block"
-          ? "text-red-500"
-          : "text-gray-400 hover:text-red-500"
-      }
-    `}
+                   ${item.statusLoading ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}
+                    ${
+                      item.status === "Block"
+                        ? "text-red-500"
+                        : "text-gray-400 hover:text-red-500"
+                    }
+                  `}
                   >
                     {/* Ban icon */}
                     <svg
@@ -277,8 +281,8 @@ export default function CampaignTable({
                     {/* Tooltip */}
                     <div
                       className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 
-      hidden group-hover:block bg-gray-800 text-gray-200 text-xs 
-      px-3 py-1 rounded shadow-lg whitespace-nowrap z-50"
+                      hidden group-hover:block bg-gray-800 text-gray-200 text-xs 
+                      px-3 py-1 rounded shadow-lg whitespace-nowrap z-50"
                     >
                       {item?.safe_page || "No URL Found"}
                     </div>
@@ -307,8 +311,8 @@ export default function CampaignTable({
                     {/* Tooltip */}
                     <div
                       className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 
-      hidden group-hover:block bg-gray-800 text-gray-200 text-xs 
-      px-3 py-1 rounded shadow-lg whitespace-nowrap z-50"
+                       hidden group-hover:block bg-gray-800 text-gray-200 text-xs 
+                       px-3 py-1 rounded shadow-lg whitespace-nowrap z-50"
                     >
                       {item?.money_page?.[0]?.url || "No URL Found"}
                     </div>
@@ -324,7 +328,9 @@ export default function CampaignTable({
                       <Copy
                         size={18}
                         className="cursor-pointer hover:text-blue-500 transition"
-                        onClick={() => console.log("duplicate clicked")}
+                        onClick={() =>
+                          handleActionSelect("duplicate", item?.uid, item)
+                        }
                       />
 
                       {/* Tooltip */}
@@ -346,18 +352,18 @@ export default function CampaignTable({
                       />
 
                       {/* Tooltip */}
-                      {/* <div
+                      <div
                         className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
         hidden group-hover:block whitespace-nowrap
         bg-gray-800 text-white text-xs px-3 py-1 rounded shadow-lg"
                       >
                         Delete your campaign
-                      </div> */}
+                      </div>
                       <DeleteConfirmModal
                         isOpen={modalOpen}
                         onClose={() => setModalOpen(false)}
-                        // onConfirm={handleDelete}
-                        campaignName="Summer Promo 2025"
+                        onConfirm={()=>handleActionSelect("delete", item?.uid, null)}
+                        campaignName={item.campaign_info?.campaignName}
                       />
                     </div>
                   </div>

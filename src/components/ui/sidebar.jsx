@@ -66,7 +66,7 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
     {
       label: "Url Shortner",
       icon: <FontAwesomeIcon icon={faLink} size="lg" />,
-      // route: "/Dashboard/url-shortner",
+      route: "/Dashboard/url-shortner",
     },
     {
       label: "Blacklisted IP",

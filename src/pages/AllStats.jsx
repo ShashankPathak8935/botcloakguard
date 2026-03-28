@@ -181,6 +181,171 @@ const Dashboard = () => {
     fetchCampaigns();
   }, []);
 
+
+    const handleStatusChange = async (uid, newStatus) => {
+      try {
+        // 🔎 current campaign find karo
+        const currentItem = campaigns.find((item) => item.uid === uid);
+        const oldStatus = currentItem?.status;
+
+        // agar same status pe click hua to kuch mat karo
+        if (!currentItem || oldStatus === newStatus) return;
+
+        // ⏳ loading UI
+        setCampaigns((prev) =>
+          prev.map((item) =>
+            item.uid === uid ? { ...item, statusLoading: true } : item,
+          ),
+        );
+
+        const data = { status: newStatus };
+
+        // 🔗 PATCH API
+        const res = await apiFunction("patch", createCampaignApi, uid, data);
+
+        if (!res?.data?.success) {
+          showErrorToast("Failed updating status");
+          return;
+        }
+
+        // ✅ update campaigns list
+        setCampaigns((prev) =>
+          prev.map((item) =>
+            item.uid === uid
+              ? { ...item, status: newStatus, statusLoading: false }
+              : item,
+          ),
+        );
+
+        // 🔥 UPDATE STATS WITHOUT RELOAD
+        setStats((prev) => {
+          const updated = { ...prev };
+
+          // old status decrement
+          if (oldStatus === "Active") updated.active_campaigns--;
+          if (oldStatus === "Allow") updated.allowed_campaigns--;
+          if (oldStatus === "Block") updated.blocked_campaigns--;
+
+          // new status increment
+          if (newStatus === "Active") updated.active_campaigns++;
+          if (newStatus === "Allow") updated.allowed_campaigns++;
+          if (newStatus === "Block") updated.blocked_campaigns++;
+
+          return updated;
+        });
+
+        showSuccessToast(`Status updated ✔ : ${newStatus}`);
+      } catch (err) {
+        console.error("Status update error:", err);
+        showErrorToast("Something went wrong!");
+
+        // ❌ loading hatao
+        setCampaigns((prev) =>
+          prev.map((item) =>
+            item.uid === uid ? { ...item, statusLoading: false } : item,
+          ),
+        );
+      }
+    };
+
+
+      const handleActionSelect = async (action, campaignId, row) => {
+        alert("hii function hitted")
+        // setOpenDropdownId(null);
+        console.log("action", action);
+        console.log("campaignId", campaignId);
+        console.log("row", row);
+
+        switch (action) {
+          case "edit":
+            // alert(`Editing campaign ID: ${campaignId}`);
+            navigate("/Dashboard/create-campaign", {
+              state: {
+                mode: "edit",
+                id: row.uid,
+                data: row, // campaign data from db
+              },
+            });
+            // TODO: Navigate to Edit screen or open a modal
+            break;
+          case "duplicate": {
+            try {
+              if (!row) return;
+              console.log(row);
+
+              // 🔁 deep clone campaign
+              const payload = JSON.parse(JSON.stringify(row));
+
+              // ❌ backend generated fields hatao
+              delete payload.uid;
+              delete payload._id;
+              delete payload.createdAt;
+              delete payload.updatedAt;
+              delete payload.date_time;
+
+              // 📝 campaign name modify
+              const data = {
+                ...payload,
+
+                campaignName:
+                  (payload.campaign_info?.campaignName || "Campaign") +
+                  " (Copy)",
+                trafficSource: payload.campaign_info?.trafficSource,
+              };
+
+              // optional default status
+
+              // 🚀 CREATE API CALL (same API as create)
+              const res = await apiFunction(
+                "post",
+                createCampaignApi,
+                null,
+                data,
+              );
+
+              if (res?.data?.status || res?.data?.success) {
+                const newCampaign = res.data.data;
+
+                // ✅ UI update (top me add)
+                setCampaigns((prev) => [newCampaign, ...prev]);
+
+                showSuccessToast("Campaign duplicated successfully");
+                await fetchCampaigns();
+                await fetchStats();
+              }
+            } catch (err) {
+              console.error("Duplicate campaign error:", err);
+              showErrorToast("Failed to duplicate campaign");
+            }
+
+            break;
+          }
+
+          case "delete":
+            if (
+              window.confirm(`Are you sure you want to delete this campaign?`)
+            ) {
+              const res = await apiFunction(
+                "delete",
+                createCampaignApi,
+                campaignId,
+                null,
+              );
+
+              if (res) {
+                setCampaigns((prev) =>
+                  prev.filter((item) => item.uid !== campaignId),
+                );
+                await fetchCampaigns();
+                await fetchStats();
+              }
+            }
+            break;
+          default:
+            break;
+        }
+      };
+
   return (
     <div
       className="
@@ -581,6 +746,8 @@ const Dashboard = () => {
           onNext={() => fetchCampaigns(currentPage + 1)}
           onPrevious={() => fetchCampaigns(currentPage - 1)}
           ITEMS_PER_PAGE={ITEMS_PER_PAGE}
+          handleStatusChange={handleStatusChange}
+          handleActionSelect={handleActionSelect}
         />
       </div>
       <div className="mt-4">
