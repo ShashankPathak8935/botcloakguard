@@ -27,6 +27,8 @@ export const getClickLogs = `${base_url}/api/v2/viewstats/getclicklogs`;
 
 export const getClickIp = `${base_url}/api/v2/viewstats/getclickip`;
 
+export const getIpLookup = `${base_url}/api/v2/services`;
+
 export const signOutApi = `${base_url}/auth/signout`;  
 
 export const ipClicks = `${base_url}/api/v2/analytics/ipclicks`;

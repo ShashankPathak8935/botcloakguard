@@ -1,17 +1,39 @@
 import { useState } from "react";
 import { Copy } from "lucide-react";
 import FloatingInput from "./FloatingInput";
+import UtmInfo from "./UtmInfo";
+import { showErrorToast, showSuccessToast } from "../components/toast/toast";
 
 export default function UrlBuilder() {
   const [url, setUrl] = useState("");
   const [source, setSource] = useState("");
   const [medium, setMedium] = useState("");
+  const [campaignId, setCampaignId] = useState("");
   const [campaign, setCampaign] = useState("");
+  const [campaignTerm, setCampaignTerm] = useState("");
+  const [campaignContent, setCampaignContent] = useState("");
 
-  const generatedUrl =
-    url && source && medium && campaign
-      ? `${url}?utm_source=${source}&utm_medium=${medium}&utm_campaign=${campaign}`
-      : "Enter required fields to generate URL";
+
+const generatedUrl = (() => {
+  if (!url) return "";
+
+  const params = new URLSearchParams();
+
+  if (source) params.append("utm_source", source);
+  if (medium) params.append("utm_medium", medium);
+  if (campaign) params.append("utm_campaign", campaign);
+  if (campaignId) params.append("utm_id", campaignId);
+  if (campaignTerm) params.append("utm_term", campaignTerm);
+  if (campaignContent) params.append("utm_content", campaignContent);
+
+  const queryString = params.toString();
+
+  if (!queryString) return url;
+
+  return url.includes("?")
+    ? `${url}&${queryString}`
+    : `${url}?${queryString}`;
+})();
 
   return (
     <div className="w-full space-y-8">
@@ -63,10 +85,28 @@ export default function UrlBuilder() {
             />
 
             <FloatingInput
+              label="Campaign Id"
+              placeholder="Campaign ID"
+              value={campaignId}
+              setValue={setCampaignId}
+            />
+            <FloatingInput
               label="Campaign Name"
-              placeholder="spring_sale"
+              placeholder="campaign name"
               value={campaign}
               setValue={setCampaign}
+            />
+            <FloatingInput
+              label="Identify The Paid Keywords"
+              placeholder="Campaign Term"
+              value={campaignTerm}
+              setValue={setCampaignTerm}
+            />
+            <FloatingInput
+              label="Use to diffrentiate Ads"
+              placeholder="Campaign Content"
+              value={campaignContent}
+              setValue={setCampaignContent}
             />
           </div>
         </div>
@@ -104,39 +144,72 @@ export default function UrlBuilder() {
             </span>
 
             <button
-              className="
-                ml-4 flex items-center gap-2
-                px-3 py-2 rounded-lg
-                bg-blue-600 hover:bg-blue-700
-                text-white text-sm
-                transition
-              "
-              onClick={() =>
-                navigator.clipboard.writeText(generatedUrl)
-              }
-            >
-              <Copy size={16} />
-              Copy
-            </button>
+          disabled={!generatedUrl}
+          onClick={async () => {
+          if (!generatedUrl) {
+          showErrorToast("Generate URL first");
+          return;
+          }
+
+         try {
+         await navigator.clipboard.writeText(generatedUrl);
+        showSuccessToast("Url Copied");
+        } catch (error) {
+        showErrorToast("Copy failed");
+        }
+       }}
+      className={`
+      ml-4 flex items-center gap-2
+      px-3 py-2 rounded-lg
+      text-sm transition-all duration-200
+
+       ${
+        generatedUrl
+        ? "bg-blue-600 hover:bg-blue-700 text-white cursor-pointer shadow hover:shadow-md"
+        : "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+       }
+     `}
+     >
+      <Copy size={16} />
+        Copy
+          </button>
           </div>
 
           {/* Shorten */}
           <button
-            className="
-              mt-6 w-full
-              rounded-xl py-3
-              font-medium
-              bg-gradient-to-r
-              from-blue-600 to-indigo-600
-              hover:from-blue-700 hover:to-indigo-700
-              text-white
-              shadow-lg hover:shadow-xl
-              transition
-            "
+         disabled={!generatedUrl}
+         className={`
+          mt-6 w-full
+          rounded-xl py-3
+          font-medium
+          text-white
+          transition-all duration-300
+          shadow-lg
+         ${
+         generatedUrl
+          ? `
+          bg-gradient-to-r
+          from-indigo-500 via-violet-500 to-blue-500
+          hover:from-indigo-600 hover:via-violet-600 hover:to-blue-600
+          hover:shadow-2xl
+          active:scale-[0.98]
+          cursor-pointer
+        `
+        : `
+          bg-zinc-300 dark:bg-zinc-700
+          text-zinc-500 dark:text-zinc-400
+          cursor-not-allowed
+          shadow-none
+        `
+        }
+        `}
           >
-            Shorten Link
+          Shorten Link
           </button>
         </div>
+      </div>
+      <div className="mt-4">
+        <UtmInfo/>
       </div>
     </div>
   );

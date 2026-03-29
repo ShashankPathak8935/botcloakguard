@@ -1,4 +1,3 @@
-// ── UrlShortener.jsx (Parent) ─────────────────────────────────
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
@@ -84,9 +83,18 @@ export default function UrlShortener() {
               your links
             </span>
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed">
+          <p
+            className="
+              text-base
+              text-zinc-500 dark:text-zinc-400
+              max-w-lg
+              leading-relaxed
+              text-center
+              mx-auto
+            "
+          >
             Create powerful short links with analytics, custom domains, and QR
-            codes — all in one place.
+            codes - all in one place.
           </p>
         </div>
 
@@ -119,41 +127,58 @@ export default function UrlShortener() {
         <Outlet />
 
         {/* Divider */}
-        <div className="flex items-center gap-4 pt-4">
-          <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
-          <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+        <div className="flex items-center gap-4 pt-6">
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent dark:via-zinc-800" />
+          <span
+            className="text-[11px] font-semibold uppercase tracking-[0.25em]
+            text-zinc-400 dark:text-zinc-500
+            px-3 py-1 rounded-full
+            border border-zinc-200/80 dark:border-white/10
+            bg-white/80 dark:bg-zinc-900/70
+            shadow-[inset_0_0_0_1px_rgba(255,255,255,0.6)]"
+          >
             What we provide
           </span>
-          <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
+          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent dark:via-zinc-800" />
         </div>
 
         {/* Feature Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10">
+        <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-4 pb-10">
+          <div className="pointer-events-none absolute -inset-4 rounded-[32px] bg-gradient-to-r from-indigo-500/10 via-sky-400/10 to-violet-400/10 blur-2xl" />
           {FEATURE_CARDS.map((card) => {
             const Icon = card.icon;
             const c = colorMap[card.color];
             return (
               <div
                 key={card.title}
-                className="group relative p-5 rounded-2xl cursor-pointer
-                  bg-white dark:bg-zinc-900
-                  border border-zinc-200/80 dark:border-zinc-800
-                  hover:border-zinc-300 dark:hover:border-zinc-700
-                  hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)]
-                  transition-all duration-200"
+                className="group relative p-5 rounded-[22px] cursor-pointer
+                  bg-white/90 dark:bg-zinc-900/70
+                  border border-zinc-200/80 dark:border-white/10
+                  ring-1 ring-black/5 dark:ring-white/5
+                  shadow-[0_12px_40px_-28px_rgba(2,6,23,0.45)]
+                  hover:shadow-[0_18px_50px_-28px_rgba(2,6,23,0.6)]
+                  hover:-translate-y-0.5
+                  transition-[transform,box-shadow,border-color,background-color] duration-200"
               >
+                <div className="pointer-events-none absolute inset-x-5 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-white/10" />
+                <div className="pointer-events-none absolute inset-0 rounded-[22px] bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.12),transparent_55%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.12),transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                 <div
-                  className={`h-9 w-9 rounded-xl flex items-center justify-center mb-4
+                  className={`relative h-10 w-10 rounded-xl flex items-center justify-center mb-4
                   border ${c.icon}`}
                 >
                   <Icon size={16} strokeWidth={1.8} />
                 </div>
-                <h3 className={`text-[14px] font-semibold mb-1.5 ${c.title}`}>
+                <h3 className={`text-[15px] font-semibold mb-1.5 ${c.title}`}>
                   {card.title}
                 </h3>
                 <p className="text-[13px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
                   {card.desc}
                 </p>
+                <div className="mt-4 inline-flex items-center gap-2 text-[11px] font-medium text-zinc-400 dark:text-zinc-500">
+                  Learn more
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                  See details
+                </div>
               </div>
             );
           })}

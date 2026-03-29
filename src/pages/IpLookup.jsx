@@ -1,32 +1,48 @@
 import { useState } from "react";
 import { Search, Globe, ShieldCheck, Server } from "lucide-react";
+import {getIpLookup} from "../api/Apis";
+import {apiFunction} from "../api/ApiFunction";
+import { showErrorToast } from "../components/toast/toast";
 
 export default function IpLookup() {
   const [ip, setIp] = useState("");
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // ✅ Dummy Data (for UI testing)
-  const dummyData = {
-    ip: "122.161.76.107",
-    fraudScore: 20,
-    country: "IN",
-    region: "Uttar Pradesh",
-    city: "Kanpur",
-    isp: "Jio Fiber",
-    asn: "24560",
-    organization: "Airtel Broadband",
-    crawler: "No",
-    timezone: "Asia/Kolkata",
-    mobile: "No",
-    host:
-      "abts-north-dynamic-107.76.161.122.airtelbroadband.in",
-    proxy: "No",
-  };
+const isValidIP = (ip) => {
+  const ipv4 =
+    /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/;
 
-  const handleLookup = () => {
-    if (!ip) return;
-    setResult(dummyData);
+  const ipv6 =
+    /^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::1)$/;
+
+  return ipv4.test(ip) || ipv6.test(ip);
+};
+
+  const handleLookup = async () => {
+    if (!ip?.trim()) {
+    showErrorToast("Please enter IP address");
+    return;
+  }
+
+  // ip is valid or not
+  if (!isValidIP(ip.trim())) {
+    showErrorToast("Invalid IP address format");
+    return;
+  }
+    try {
+      setLoading(true);
+      const ipLookupData = await apiFunction("get", getIpLookup, ip.trim(), null);
+      setResult(ipLookupData?.data?.data?.data)
+    } catch (error) {
+      console.error("error", error);
+    }finally {
+      setLoading(false);
+    }
   };
+  const Spinner = () => (
+  <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+);
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6 space-y-6">
@@ -61,18 +77,29 @@ export default function IpLookup() {
           />
 
           <button
-            onClick={handleLookup}
-            className="
-              flex items-center gap-2 px-5
-              bg-blue-600 hover:bg-blue-700
-              text-white rounded-lg
-              transition-all duration-200
-              shadow hover:shadow-lg
-            "
-          >
-            <Search className="w-4 h-4" />
-            Lookup
-          </button>
+  onClick={handleLookup}
+  disabled={loading}
+  className={`
+    flex items-center gap-2 px-5 py-2 cursor-pointer
+    bg-blue-600 hover:bg-blue-700
+    text-white rounded-lg
+    transition-all duration-200
+    shadow hover:shadow-lg
+    ${loading ? "opacity-70 cursor-not-allowed" : ""}
+  `}
+>
+  {loading ? (
+    <>
+      <Spinner />
+      Looking up...
+    </>
+  ) : (
+    <>
+      <Search className="w-4 h-4" />
+      Lookup
+    </>
+  )}
+</button>
         </div>
       </div>
 
@@ -97,18 +124,35 @@ export default function IpLookup() {
             <div className="grid sm:grid-cols-2 gap-4">
 
               {[
-                ["IP Address", result.ip],
-                ["Fraud Score", result.fraudScore],
-                ["Country Code", result.country],
-                ["Region", result.region],
-                ["City", result.city],
-                ["ISP", result.isp],
-                ["ASN", result.asn],
-                ["Organization", result.organization],
-                ["Crawler", result.crawler],
-                ["Timezone", result.timezone],
-                ["Mobile", result.mobile],
-                ["Proxy", result.proxy],
+                ["IP Address", result?.ip],
+                ["Fraud Score", result?.detections?.risk ? result?.detections?.risk : 0],
+                ["Country", result?.location?.country_name],
+                ["Country Code", result?.location?.country_code],
+                ["Region", result?.location?.region_name],
+                ["City", result?.location?.city_name],
+                ["ISP", result?.network?.provider],
+                ["ASN", result?.network?.asn],
+                ["Organization", result?.network?.organisation],
+                ["Timezone", result?.location?.timezone],
+                ["IS Crawler", result.crawler ? "YES" : "NO"],
+                ["Mobile", result.mobile ? "YES" : "NO"],
+                ["HOST", result?.network?.hostname ? result?.network?.hostname : "N/A"],
+                ["Proxy", result?.detections?.proxy ? "YES" : "NO"],  
+                ["VPN", result?.detections?.vpn ? "YES" : "NO"],
+                ["TOR", result?.detections?.tor ? "YES" : "NO"],
+                ["Scraper", result?.detections?.scraper ? "Yes" : "No"],
+                ["Compromised", result?.detections?.compromised ? "Yes" : "No"],
+                ["ACTIVE VPN", result?.proxy ? "YES" : "NO"],
+                ["ACTIVE TOR", result?.tor ? "YES" : "NO"],
+                ["RECENT ABUSE", result?.recent ? "YES": "NO"],
+                ["BOT STATUS", result?.bot ? "YES" : "NO"],
+                ["ZIP CODE", result?.location?.Zip],
+                ["Provider Range", result?.location?.range],
+                ["Request ID", result?.id],
+                ["Last Updated", result?.last_updated],
+                ["LATITUDE", result?.location?.latitude],
+                ["LONGITUDE", result?.location?.longitude],
+                ["REQUEST ID", result?.id],
               ].map(([label, value], i) => (
                 <div
                   key={i}

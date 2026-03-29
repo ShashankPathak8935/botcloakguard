@@ -82,7 +82,7 @@ const handleCheck = async () => {
             className="
               flex items-center gap-2 px-5
               bg-blue-600 hover:bg-blue-700
-              text-white rounded-lg
+              text-white rounded-lg cursor-pointer
               transition
             "
           >
