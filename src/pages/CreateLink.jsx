@@ -10,11 +10,13 @@ import {
   BarChart2,
   Settings,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const DOMAINS = ["tsshrt.click", "trfshld.io", "lnk.run"];
 
 export default function CreateLink() {
   const [url, setUrl] = useState("");
+  const navigate = useNavigate();
   const [domain, setDomain] = useState(DOMAINS[0]);
   const [tag, setTag] = useState("");
   const [dropOpen, setDropOpen] = useState(false);
@@ -265,6 +267,7 @@ export default function CreateLink() {
                 Test URL
               </button>
               <button
+               onClick={()=> navigate("/Dashboard/link-stats")}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12.5px] font-medium cursor-pointer
                 bg-violet-50 dark:bg-violet-500/10
                 text-violet-600 dark:text-violet-400
@@ -276,6 +279,7 @@ export default function CreateLink() {
                 View Stats
               </button>
               <button
+               onClick={()=> navigate("/Dashboard/url-shortner/manage")}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12.5px] font-medium cursor-pointer
                 bg-gray-100 dark:bg-white/10
                 text-gray-600 dark:text-gray-300
