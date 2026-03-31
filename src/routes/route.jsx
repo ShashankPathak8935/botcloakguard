@@ -39,6 +39,7 @@ const CreateLink = lazy(() => import("../pages/CreateLink"));
 const ManageLinks = lazy(() => import("../pages/ManageLink"));
 const LinkStats = lazy(() => import("../pages/LinkStats"));
 const ViewStats = lazy(() => import("../pages/ViewStats"));
+const UserPermission = lazy(() => import("../pages/UserPermission"));
 const ServerStatusCard = lazy(() => import("../pages/ServerStatusCard"));
 const CheckoutFlow = lazy(() => import("../components/ui/checkOutFlow"));
 const ResetPassword = lazy(() => import("../auth/ResetPassword"));
@@ -150,6 +151,7 @@ export default function Routess() {
             <Route path="tools" element={<Toos />} />
             <Route path="test" element={<Test />} />
             <Route path="link-stats" element={<LinkStats />} />
+            <Route path="users-permissions" element={<UserPermission />} />
             {/* <Route path="clickLogs" element={<ClickLogs />} /> */}
 
             {/* <Route path="reports" element={<Clicklog />} />

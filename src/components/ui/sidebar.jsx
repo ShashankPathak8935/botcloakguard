@@ -5,6 +5,8 @@ import {
   X,
   Power,
   FileText,
+  ShieldCheck,
+  Key
 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -92,6 +94,11 @@ const SidebarContent = ({ isCollapsed, mobileVisible, onCloseMobile }) => {
       label: "Server",
       icon: <Database size={24} />,
       route: "/Dashboard/server",
+    },
+    {
+      label: "Permission",
+      icon: <Key size={24} />,
+      route: "/Dashboard/users-permissions",
     },
   ];
 
