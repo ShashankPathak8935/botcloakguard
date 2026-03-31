@@ -14,10 +14,12 @@ import {
   showInfoToast,
   showSuccessToast,
 } from "../components/toast/toast";
+import DeleteConfirmModal from "../pages/DeleteConfirmModal";
 
 // Note: TABS definition is kept here for reference
 
 function AllCampaignsDashboard() {
+  const [modalOpen, setModalOpen] = React.useState(false);
   // --- Existing State ---
 
   const [dateRange, setDateRange] = useState("d/m/y to d/m/y");
@@ -446,11 +448,18 @@ function AllCampaignsDashboard() {
           Duplicate Campaign
         </button>
         <button
-          onClick={() => handleActionSelect("delete", campaignId, null)}
+        onClick={() => setModalOpen(true)}
+          // onClick={() => handleActionSelect("delete", campaignId, null)}
           className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-600 hover:text-red-300 transition duration-100 cursor-pointer"
         >
           Delete Campaign
         </button>
+        <DeleteConfirmModal
+      isOpen={modalOpen}
+      onClose={() => setModalOpen(false)}
+      // onConfirm={() => handleActionSelect("delete", item?.uid, null)}
+      campaignName="test"
+    />
       </div>
     </div>
   );

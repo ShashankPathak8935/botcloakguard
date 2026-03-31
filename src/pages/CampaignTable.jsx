@@ -30,7 +30,6 @@ export default function CampaignTable({
   const navigate = useNavigate();
   const [filteredCampaigns, setFilteredCampaigns] = React.useState(campaigns);
   const [modalOpen, setModalOpen] = React.useState(false);
-  console.log("campaign data", campaigns);
 
   // sync filtered data when campaigns load
   useEffect(() => {
