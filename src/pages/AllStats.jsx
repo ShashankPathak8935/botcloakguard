@@ -250,11 +250,6 @@ const Dashboard = () => {
 
 
       const handleActionSelect = async (action, campaignId, row) => {
-        alert("hii function hitted")
-        // setOpenDropdownId(null);
-        console.log("action", action);
-        console.log("campaignId", campaignId);
-        console.log("row", row);
 
         switch (action) {
           case "edit":
@@ -322,15 +317,14 @@ const Dashboard = () => {
           }
 
           case "delete":
-            if (
-              window.confirm(`Are you sure you want to delete this campaign?`)
-            ) {
+            if (true) {
               const res = await apiFunction(
                 "delete",
                 createCampaignApi,
                 campaignId,
                 null,
               );
+              
 
               if (res) {
                 setCampaigns((prev) =>

@@ -23,6 +23,7 @@ import {
   Layers,
 } from "lucide-react";
 import TrafficSourceSelect from "./TrafficSourceSelect";
+import CampaignSecuritySettings from "./CampaignSecuritySettings";
 
 /* ===========================
    Icon components (inline SVG)
@@ -2569,6 +2570,11 @@ export default function CampaignBuilder() {
               </div>
             </div>
           )}
+          {/* {step === 7 && (
+            <div className="mt-1">
+              <CampaignSecuritySettings />
+            </div>
+          )} */}
         </form>
 
         {/* small footer note */}

@@ -29,6 +29,7 @@ export default function CampaignTable({
 }) {
   const navigate = useNavigate();
   const [filteredCampaigns, setFilteredCampaigns] = React.useState(campaigns);
+  const [selectedCampaign, setSelectedCampaign] = React.useState(null);
   const [modalOpen, setModalOpen] = React.useState(false);
 
   // sync filtered data when campaigns load
@@ -68,6 +69,14 @@ export default function CampaignTable({
             more.
           </p>
         </div>
+        <DeleteConfirmModal
+  isOpen={modalOpen}
+  onClose={() => setModalOpen(false)}
+  onConfirm={() =>
+    handleActionSelect("delete", selectedCampaign?.uid, null)
+  }
+  campaignName={selectedCampaign?.campaign_info?.campaignName}
+/>
 
         <div className="flex items-center gap-4">
           <input
@@ -347,7 +356,10 @@ export default function CampaignTable({
                       <Trash2
                         size={18}
                         className="cursor-pointer text-red-500 hover:text-red-800 transition"
-                        onClick={() => setModalOpen(true)}
+                        onClick={() => {
+                                setSelectedCampaign(item);
+                                setModalOpen(true);
+                      }}
                       />
 
                       {/* Tooltip */}
@@ -358,12 +370,6 @@ export default function CampaignTable({
                       >
                         Delete your campaign
                       </div>
-                      <DeleteConfirmModal
-                        isOpen={modalOpen}
-                        onClose={() => setModalOpen(false)}
-                        onConfirm={()=>handleActionSelect("delete", item?.uid, null)}
-                        campaignName={item.campaign_info?.campaignName}
-                      />
                     </div>
                   </div>
                 </td>

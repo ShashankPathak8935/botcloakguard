@@ -20,17 +20,25 @@ export default function AnalyticsPageCards({ view, uniqueVisitors }) {
       iconColor: "text-orange-600 dark:text-orange-400",
     },
     {
-      title: "Conversion",
+      title: "Desktop Clicks",
       value: "21.91%",
-      subtitle: "See last week's Top Products",
+      subtitle: "Clicks from Desktop",
       icon: BadgeCheck,
       iconBg: "bg-emerald-100 dark:bg-emerald-900/40",
       iconColor: "text-emerald-600 dark:text-emerald-400",
     },
     {
-      title: "Active Referrals",
+      title: "Tablet Clicks",
       value: "470",
-      subtitle: "See all inbound Referral links",
+      subtitle: "Clicks from Tablet",
+      icon: Share2,
+      iconBg: "bg-cyan-100 dark:bg-cyan-900/40",
+      iconColor: "text-cyan-600 dark:text-cyan-400",
+    },
+    {
+      title: "Mobile Clicks",
+      value: "470",
+      subtitle: "Clicks from Mobile",
       icon: Share2,
       iconBg: "bg-cyan-100 dark:bg-cyan-900/40",
       iconColor: "text-cyan-600 dark:text-cyan-400",
@@ -40,7 +48,7 @@ export default function AnalyticsPageCards({ view, uniqueVisitors }) {
   return (
     <div
       className="
-        grid grid-cols-1 md:grid-cols-4 rounded-xl overflow-hidden transition
+        grid grid-cols-1 md:grid-cols-5 rounded-xl overflow-hidden transition
         border border-gray-200 bg-white text-gray-900
         dark:border-white/10 dark:bg-[#0B0E18] dark:text-white
       "
